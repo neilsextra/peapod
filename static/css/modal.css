@@ -1,0 +1,189 @@
+/* The Modal (background) */
+.modal {
+    position: fixed; /* Stay in place */
+    padding-top: 60px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    font-family: sans-serif;
+    margin: auto;
+    padding: 0;
+    top: 40px;
+    border: 1px solid #000;
+    width: 70%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: fadeIn;
+    -webkit-animation-duration: 0.4s;
+    animation-name: fadeIn;
+    animation-duration: 0.4s
+}
+
+.modal-header {
+    padding: 2px 2px;
+    font-size: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: rgb(3, 97, 173);
+    letter-spacing: 4px;
+    text-indent: 10px;
+    color: white;
+    border-bottom: 2px solid #000;
+}
+
+.modal-body {padding: 16px 20px; display:block;}
+
+.modal-close {
+    font-family: sans-serif;
+    font-size: 24px;
+}
+
+.modal-btn {
+     position: relative;
+     border: none; /* Remove borders */
+     color: rgba(255, 255, 255, 0.8);
+     background-color: #afafaf; /* Add a backgriund color */
+     padding: 12px 20px;
+     margin: 4px 2px;
+     border-radius: 4px;
+     left: -15px;
+     cursor: pointer; /* Add a pointer cursor on mouse-over */
+}
+
+.modal-ok-btn {
+    position: relative;
+    border: none; /* Remove borders */
+    color: rgba(255, 255, 255, 0.8);
+    background-color: #4CAF50; /* Add a backgriund color */
+    padding: 12px 20px;
+    margin: 4px 2px;
+    border-radius: 4px;
+    left: -15px;
+    cursor: pointer; /* Add a pointer cursor on mouse-over */
+}
+
+.modal-btn:hover {
+    opacity: 1.0;
+}
+
+.modal-small-btn:hover {
+    opacity: 0.8;
+}
+
+.modal-small-btn {
+    position: relative;
+    border: none; /* Remove borders */
+    color: white;
+    background-color: #afafaf; /* Add a background color */
+    padding: 4px 4px;
+    margin: 2px 2px;
+    border-radius: 4px;
+    cursor: pointer; /* Add a pointer cursor on mouse-over */
+}
+.modal-small-ok-btn {
+    position: relative;
+    border: none; /* Remove borders */
+    color: white;
+    background-color: #4CAF50; /* Add a background color */
+    padding: 4px 4px;
+    margin: 2px 2px;
+    border-radius: 4px;
+    cursor: pointer; /* Add a pointer cursor on mouse-over */
+}
+
+.modal-cancel-btn {
+     position: relative;
+     border: none; /* Remove borders */
+     color: white;
+     background-color: #f44336;; /* Add a background color */
+     padding: 12px 20px;
+     margin: 4px 2px;
+     border-radius: 4px;
+     left: -15px;
+     cursor: pointer; /* Add a pointer cursor on mouse-over */
+}
+
+.modal-cancel-btn:hover {
+    opacity: 0.8;
+}
+
+.model-small-button {
+    width: 24px;
+    height: 24px;
+    padding-bottom: 1px;
+    border-radius: 50%;
+    border: none;
+    overflow: hidden;
+    background: rgb(69, 89, 102);
+  }
+
+.modal-small-label {
+    color: black;
+    font-family: sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.modal-label {
+    color: black;
+    font-family: sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.modal-entry {
+    width: 100%; /* Full width */
+    height: 32px;
+    font-size: 14px;
+    margin-top: 10px;
+    font-family: sans-serif;
+}
+
+.modal-text {
+    width: 100%; /* Full width */
+    height:80px;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.modal-checkbox {
+    height: 13px;
+    font-family: sans-serif;
+    font-size: 12px;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+} 
+
+/* The Close Button */
+.close {
+    color:rgb(155, 154, 154);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #f1eded;
+    text-decoration: none;
+    cursor: pointer;
+}

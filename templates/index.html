@@ -1,0 +1,308 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <link rel="icon" type="text/css" href="{{ url_for('static', filename='images/favicon.ico') }}" />
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}" />
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/tableview.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/scrollbar.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/popup.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/modal.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/toolbar.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/tab.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/tablefixed.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/content.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/collapsible.css') }}" />
+    <style>
+        textarea {
+            resize: none;
+        }
+    </style>
+
+    <script src="{{ url_for('static', filename='javascripts/util/date.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/util/fileutil.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/util/message.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/gui/tabview.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/gui/tableview.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/gui/util.js') }}"></script>
+
+</head>
+
+<script type="text/template" data-template="network-entry">
+    <tr id="network-entry-${id}" style="margin-top:10px;">
+        <td style="border:1px solid rgba(255,255,255,0.2); width:140px;">
+            <label style="text-align:left; font-size:14px; font-weight: bold; height:28px;  text-overflow: ellipsis ellipsis;">${corpus}</label>
+       </td>
+    </tr>
+    <tr id="network-entry-${id}" style="margin-top:20px;">
+        <td style="border:1px solid rgba(255,255,255,0.2); width:140px;">
+            <label style="text-align:left; font-size:12px; height:28px;  text-overflow: ellipsis ellipsis;"><b>ID:</b> ${id}</label>
+       </td>
+    </tr>
+    <tr id="network-date-${id}">
+        <td style="border:1px solid rgba(255,255,255,0.2); width:140px;">
+            <label style="text-align:left; font-size:12px; height:28px;  text-overflow: ellipsis ellipsis;">${date}</label>
+       </td>
+    </tr>
+    <tr id="network-title-${id}">
+        <td style="border:1px solid rgba(255,255,255,0.2); width:400px; ">
+            <label style="text-align:left; font-size:12px; height:28px; text-overflow: ellipsis ellipsis">${title}</label>
+        </td>
+    </tr>
+</script>
+
+<script type="text/template" data-template="network-entity-entry">
+    <tr>
+        <td><div style="bottom-top:1px dashed rgb(0,0,0); height:5px; width:280px;"></div><hr/></td>
+    </tr>
+
+    <tr id="network-entry-${id}">
+        <td style="border:1px solid rgba(255,255,255,0.2); width:140px;">
+            <label style="text-align:left; font-size:12px; height:28px;  text-overflow: ellipsis ellipsis;"><b>ID:</b> ${id}</label>
+       </td>
+    </tr>
+    <tr id="network-date-${id}">
+        <td style="border:1px solid rgba(255,255,255,0.2); width:140px;">
+            <label style="text-align:left; font-size:12px; height:28px;  text-overflow: ellipsis ellipsis;">${date}</label>
+       </td>
+    </tr>
+    <tr id="network-title-${id}">
+        <td style="border:1px solid rgba(255,255,255,0.2); width:400px; ">
+            <label style="text-align:left; font-size:12px; height:28px; text-overflow: ellipsis ellipsis">${title}</label>
+        </td>
+    </tr>
+</script>
+
+<body style="overflow: hidden;" oncontextmenu="return false;">
+    <!-- templates -->
+    <script type="text/template" data-template="keyword-entry">
+        <div id="keyword-${id}" class="keyword-entry">
+            <input type="text" class="keyword-entry-value" style="height:28px" value="${value}"/>
+            <input type="image" src="{{url_for( 'static', filename='images/trash.svg')}}"
+                   style="height:24px; width:24px; margin:2px; margin-left:4px; float: right"  
+                   onclick="deleteElement('keyword-${id}')"/>
+        </div>
+    </script>
+
+    <script type="text/template" data-template="entry-details">
+        <div style="margin: 0 auto; margin-top: 6px; text-align:left; overflow:hidden;">
+            <input id="pinned-corpus" type="hidden" value="${corpus}"/>
+            <input id="pinned-id" type="hidden" value="${id}"/>
+            <div style="position:absolute; margin:5px; top:0px; bottom:600px; width:565px;">
+                   <label style="color:navy; font-size:12px; margin-bottom:10px;">ID: ${id}</label>
+                <h2 style="color:black; font-size:12px; font-weight: bold">${title}</h2>
+ 
+                <div style="font-size:12px; margin-top:20px;">
+                    <hr/>
+                    <div style="position-relative; font-size:12px; margin-top:2px; height:160px; overflow: auto;">
+                        <p>${description}</p>
+                    </div>
+                    <hr/>
+                </div>
+
+            </div>
+        
+        </div>
+    
+    </script>
+
+    <!-- dialogs -->
+
+    <dialog id="wait-dialog" class="dialog"
+        style="position:absolute; width:100%; height:100%; opacity: 0.5; border: none; overflow: hidden;">
+        <div style="position:absolute; width:100%; height:100%; overflow: hidden;">
+            <div id="wait-spinner" style="position:absolute; left: 50%; top: 45%; opacity: 1.0;">
+                <div style="width:48px; height:48px; z-index: 10; opacity: 1.0;" class="waiting">
+                    <img src="{{url_for( 'static', filename='images/wait.svg')}}" width="48" height="48" />
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog id="save-dialog" class="dialog message-dialog" style="min-width:400px;">
+        <img src="{{url_for( 'static', filename='images/exclamation.svg')}}" width="48" height="48"
+            style="float: left;" />
+        <p id="save-message" style="font-size: 18px; font-weight: bold;">Document Saved</p>
+        <form method="dialog">
+            <button class="message-dialog-small-button" style="float: right;">OK</button>
+        </form>
+    </dialog>
+
+    <dialog id="error-dialog" class="dialog message-dialog" style="min-width:400px;">
+        <img src="{{url_for( 'static', filename='images/exclamation.svg')}}" width="48" height="48"
+            style="float: left;" />
+        <p id="error-message" style="font-size: 18px; font-weight: bold;">/p>
+        <form method="dialog">
+            <button class="message-dialog-small-button" style="float: right;">OK</button>
+        </form>
+    </dialog>
+
+    <dialog id="upload-file-dialog" class="dialog message-dialog" style="min-width:400px;">
+        <img src="{{url_for( 'static', filename='images/upload.svg')}}" width="48" height="48" style="float: left;" />
+        <p style="font-size: 18px; font-weight: bold;">File Upload</p>
+        <div>
+            <div>
+                <input class="modal-entry" id="upload-file-name" style="width:90%;" type="text" name="upload-file-name"
+                    placeholder="Upload CSV File..." readonly>
+
+                </input>
+                <div style="float:right;padding-top:6px;">
+                    <button id="select-upload-file" class="message-dialog-small-button">...</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="upload-message"
+            style="color:rgba(255,0,0,0.6); width:300px; float:left; font-size: 12px; margin-top:8px;"></div>
+
+        <div>
+            <button id="upload-file-dialog-ok" class="message-dialog-small-ok-button"
+                style="float: right; margin-top:10px;">Upload</button>
+
+            <button id="upload-file-dialog-close" class="close-button message-dialog-small-cancel-button"
+                style="float: right; margin-top:10px;">Cancel</button>
+        </div>
+
+    </dialog>
+
+    <dialog id="key-generation-dialog" class="dialog message-dialog" style="min-width:340px; width:340px">
+        <img src="{{url_for( 'static', filename='images/keys.svg')}}" width="22" height="22" style="float: left;" />
+        
+        <p style="font-size: 18px; font-weight: bold; text-align: top; float: right;  margin-top:6px;">&nbsp;Generate Certificates and Keys</p>
+ 
+        <button id="ok-key-generation-dialog" class="message-dialog-small-ok-button"
+            style="float: right; margin-top:10px;">Generate</button>
+
+        <button id="cancel-key-generation-dialog" class="close-button message-dialog-small-cancel-button"
+            style="float: right; margin-top:10px;">Cancel</button>
+        </div>
+    </dialog>
+
+    
+    <dialog id="key-generation-resultsdialog" class="dialog message-dialog" style="min-width:200px;">
+        <img src="{{url_for( 'static', filename='images/keys.svg')}}" width="32" height="32" style="float: left;" />
+        <p style="font-size: 18px; font-weight: bold;">Generate/Keys Pair</p>
+        <form method="dialog">
+            <button class="message-dialog-small-button" style="float: right;">OK</button>
+        </form>
+
+    </dialog>
+
+    <div style="overflow:hidden; user-select: none;">
+        <div style="overflow:hidden;">
+
+            <div id="toolbar"
+                style="position: absolute; top:0px; left:0px; right:0px; height:36px; -webkit-app-region: drag;">
+                <div style="position: absolute; top:5px; left:0px; padding-right:0px;">
+                    <img src="{{ url_for( 'static', filename='images/peapod.png' ) }}" width="32" height="32" />
+                </div>
+                <div style="position: absolute; top:-4px; left:36px; padding-right:0px;">
+                    <h1>PEAPOD - POD Consent</h1>
+                </div>
+
+                <div style="position:absolute; top:5px; right:2px; width:96px;">
+
+                    <a id="update-settings" style="position:absolute; right:2px; top:2px; " class="menu-item">
+                        <img src="{{ url_for( 'static', filename='images/settings.svg' ) }}" width="28" height="28" />
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div id="menu-panels"
+                style="position:absolute; top:44px; left:10px; width:440px; bottom:40px; border: 1px solid rgba(0,0,0, 0.2); padding:4px; overflow:hidden;">
+                <button class="collapsible">Actions</button>
+                <div class="collapsible-content"
+                    style="margin-top:4px; margin-bottom:12px; margin-bottom:12px; max-height:800px;">
+                    <table class="selection" style="margin-top: 4px;">
+                        <tr>
+                            <td>
+                                <button class="collapsible-menu" id="open-vault">
+                                    <img src="{{url_for( 'static', filename='images/open-vault.svg')}}"
+                                        style="width:24px; height:24px; margin-top:2px; margin-right:4px;"></img>
+                                    <label for="open-vault" style="position:relative; top:-8px;">Open Vault</label>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="collapsible-menu" id="secure-save">
+                                    <img src="{{url_for( 'static', filename='images/secure-save.svg')}}"
+                                        style="width:24px; height:24px; margin-top:2px;margin-right:4px;"></img>
+                                    <label for="secure-save" style="position:relative; top:-6px;">Save Vault</label>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="collapsible-menu" id="generate-key-pair">
+                                    <img src="{{url_for( 'static', filename='images/keys.svg')}}"
+                                        style="width:20px; height:20px; margin-top:2px; margin-right:4px;"></img>
+                                    <label for="generate-key-pair" style="position:relative; top:-6px;">Generate Certificate/Keys
+                                        Pair</label>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="collapsible-menu" id="upload-file">
+                                    <img src="{{url_for( 'static', filename='images/upload.svg')}}"
+                                        style="width:24px; height:24px; margin-top:4px; margin-right:4px;"></img>
+                                    <label for="upload-file" style="position:relative; top:-8px;">Upload
+                                        CSV File</label>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="collapsible-menu" id="encrypted-export">
+                                    <img src="{{url_for( 'static', filename='images/secure-export.svg')}}"
+                                        style="width:24px; height:24px; margin-top:2px; margin-right:4px;"></img>
+                                    <label for="encrypted-export" style="position:relative; top:-6px;">Secure
+                                        Export</label>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="collapsible-menu" id="encrypted-import">
+                                    <img src="{{url_for( 'static', filename='images/secure-import.svg')}}"
+                                        style="width:24px; height:24px; margin-top:2px; margin-right:4px;"></img>
+                                    <label for="encrypted-import" style="position:relative; top:-6px;">Secure
+                                        Import</label>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+
+            <div id="container"
+                style="position:absolute; top:44px; left:460px; right:595px; bottom:40px; border: 1px solid rgba(0,0,0, 0.2); overflow:hidden;">
+
+                <div id="search-table"
+                    style="position:absolute; display:none; left:2px; top:6px; bottom:2px; right:2px; overflow:none; font-family: sans-serif; font-size: 12px; padding:5px; ;">
+
+                </div>
+            </div>
+            <div id="details" class="details"
+                style="position:absolute; top:44px; right:10px; width:575px; bottom: 40px; border: 1px solid rgba(0,0,0, 0.2); overflow:hidden; background-color: white;">
+            </div>
+            <div id="status-message" class="status-message" style="position:absolute; bottom:10px; right:6px;">
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+<script src="{{ url_for('static', filename='javascripts/main.js') }}"></script>
+
+</html

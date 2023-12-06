@@ -1,0 +1,8 @@
+{
+  "name": "bongo",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "python app.py"
+  }
+}

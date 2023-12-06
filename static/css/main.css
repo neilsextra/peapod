@@ -1,0 +1,201 @@
+.main-small-btn {
+    position: relative;
+    border: none;
+    /* Remove borders */
+    color: white;
+    background-color: #4CAF50;
+    /* Add a background color */
+    padding: 6px 6px;
+    margin: 2px 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    /* Add a pointer cursor on mouse-over */
+}
+
+.display-pin {
+
+    display:inline-block;
+
+}
+
+.hide-pin {
+
+    display:none;
+    
+}
+
+.search:hover {
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.search-date {
+    width: 100%;
+    /* Full width */
+    height: 48px;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+
+.search-checkbox {
+    height: 13px;
+    font-family: sans-serif;
+    font-size: 12px;
+}
+
+.message-dialog {
+    font-family: sans-serif;
+    font-size: 16px;
+}
+
+.message-dialog-small-button {
+    border: none;
+    /* Remove borders */
+    color: white;
+    background-color: #a1a1a1;
+    /* Add a background color */
+    padding: 8px 8px;
+    margin: 4px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    /* Add a pointer cursor on mouse-over */
+}
+
+.message-dialog-small-ok-button {
+    border: none;
+    /* Remove borders */
+    color: white;
+    background-color: #4CAF50;
+    /* Add a background color */
+    padding: 8px 8px;
+    margin: 4px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    /* Add a pointer cursor on mouse-over */
+}
+
+.message-dialog-small-cancel-button {
+    border: none;
+    /* Remove borders */
+    color: white;
+    background-color: #f44336;
+    /* Add a background color */
+    padding: 8px 8px;
+    margin: 4px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    /* Add a pointer cursor on mouse-over */
+}
+
+.message-dialog-small-cancel-button:hover,
+.message-dialog-small-cancel-button:focus {
+    color: #f1eded;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.status-message {
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+.keyword-container {
+    margin-top: 64x;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    width: 100%;
+    height: 100%;
+    justify-content: left;
+    box-sizing: border-box;
+    border: 1px;
+    color: black;
+}
+
+.keyword-container::-webkit-scrollbar-track:vertical {
+    width: 8px;
+    background: rgba(240, 240, 240, 0.05);
+    border-radius: 3px;
+}
+
+.keyword-container::-webkit-scrollbar {
+    width: 8px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+}
+
+.keyword-container::-webkit-scrollbar-thumb {
+    border: 1px solid rgb(134, 134, 134);
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+}
+
+.keyword-entry {
+    height: 48px;
+    font-family: sans-serif;
+    font-size: 14px;
+    margin: 10px;
+    color: rgba(0, 0, 0, 1.0);
+}
+
+.tracking-entry {
+    height: 48px;
+    font-family: sans-serif;
+    font-size: 14px;
+    margin: 10px;
+    color: rgba(0, 0, 0, 1.0);
+}
+
+hr {
+    border-top: 1px dashed rgb(134, 134, 134);
+}
+
+.wait {
+    animation-name: waiting;
+    animation-duration: 100.0s;
+}
+
+.waiting {
+    animation-name: rotate;
+    animation-duration: 0.8s;
+    animation-iteration-count: infinite;
+    transform-origin: 50% 50%;
+    display: inline-block;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-border-radius: 4px;
+    background: rgba(240, 240, 240, 0.05);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 3px;
+    border: 1px solid rgb(134, 134, 134);
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(0, 0, 0, 0.05);
+}

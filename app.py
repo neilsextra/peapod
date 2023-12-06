@@ -8,14 +8,14 @@ import csv
 import codecs
 
 from pathlib import Path
-from datetime import datetime, timedelta
+import datetime
+from datetime import timedelta
 from flask_npm import Npm
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID
-import datetime
-
+from cryptography.hazmat.primitives import serialization
 
 import parameters as params
 
@@ -65,9 +65,10 @@ def save_document():
 @app.route("/keys", methods=["GET"])
 def keys():
 
-    output = []
+    output = {}
 
     one_day = datetime.timedelta(1, 0, 0)
+
     private_key = rsa.generate_private_key(
         public_exponent=65537,
         key_size=2048,
@@ -75,10 +76,11 @@ def keys():
     public_key = private_key.public_key()
     builder = x509.CertificateBuilder()
     builder = builder.subject_name(x509.Name([
-        x509.NameAttribute(NameOID.COMMON_NAME, 'cryptography.io'),
+        x509.NameAttribute(NameOID.COMMON_NAME, 'Neil Brittliff'),
+        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Defence")
     ]))
     builder = builder.issuer_name(x509.Name([
-        x509.NameAttribute(NameOID.COMMON_NAME, 'cryptography.io'),
+        x509.NameAttribute(NameOID.COMMON_NAME, 'dd.test.gov.au'),
     ]))
     builder = builder.not_valid_before(datetime.datetime.today() - one_day)
     builder = builder.not_valid_after(datetime.datetime.today() + (one_day * 30))
@@ -96,6 +98,18 @@ def keys():
     certificate = builder.sign(
         private_key=private_key, algorithm=hashes.SHA256(),
     )
+
+    bytes = certificate.public_bytes(serialization.Encoding.PEM)
+
+    output['certificate'] = bytes.decode("UTF-8")
+
+    bytes = private_key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.TraditionalOpenSSL,
+        encryption_algorithm=serialization.NoEncryption()
+    )
+    
+    output['private-key'] = bytes.decode("UTF-8")
 
     return json.dumps(output, sort_keys=True), 200
 

@@ -4,3 +4,4 @@ itsdangerous==2.1.2
 MarkupSafe==2.1.1
 Werkzeug==2.3.3
 fitz==0.0.1.dev2
+cryptography==41.0.7

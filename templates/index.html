@@ -33,51 +33,6 @@
 
 </head>
 
-<script type="text/template" data-template="network-entry">
-    <tr id="network-entry-${id}" style="margin-top:10px;">
-        <td style="border:1px solid rgba(255,255,255,0.2); width:140px;">
-            <label style="text-align:left; font-size:14px; font-weight: bold; height:28px;  text-overflow: ellipsis ellipsis;">${corpus}</label>
-       </td>
-    </tr>
-    <tr id="network-entry-${id}" style="margin-top:20px;">
-        <td style="border:1px solid rgba(255,255,255,0.2); width:140px;">
-            <label style="text-align:left; font-size:12px; height:28px;  text-overflow: ellipsis ellipsis;"><b>ID:</b> ${id}</label>
-       </td>
-    </tr>
-    <tr id="network-date-${id}">
-        <td style="border:1px solid rgba(255,255,255,0.2); width:140px;">
-            <label style="text-align:left; font-size:12px; height:28px;  text-overflow: ellipsis ellipsis;">${date}</label>
-       </td>
-    </tr>
-    <tr id="network-title-${id}">
-        <td style="border:1px solid rgba(255,255,255,0.2); width:400px; ">
-            <label style="text-align:left; font-size:12px; height:28px; text-overflow: ellipsis ellipsis">${title}</label>
-        </td>
-    </tr>
-</script>
-
-<script type="text/template" data-template="network-entity-entry">
-    <tr>
-        <td><div style="bottom-top:1px dashed rgb(0,0,0); height:5px; width:280px;"></div><hr/></td>
-    </tr>
-
-    <tr id="network-entry-${id}">
-        <td style="border:1px solid rgba(255,255,255,0.2); width:140px;">
-            <label style="text-align:left; font-size:12px; height:28px;  text-overflow: ellipsis ellipsis;"><b>ID:</b> ${id}</label>
-       </td>
-    </tr>
-    <tr id="network-date-${id}">
-        <td style="border:1px solid rgba(255,255,255,0.2); width:140px;">
-            <label style="text-align:left; font-size:12px; height:28px;  text-overflow: ellipsis ellipsis;">${date}</label>
-       </td>
-    </tr>
-    <tr id="network-title-${id}">
-        <td style="border:1px solid rgba(255,255,255,0.2); width:400px; ">
-            <label style="text-align:left; font-size:12px; height:28px; text-overflow: ellipsis ellipsis">${title}</label>
-        </td>
-    </tr>
-</script>
-
 <body style="overflow: hidden;" oncontextmenu="return false;">
     <!-- templates -->
     <script type="text/template" data-template="keyword-entry">
@@ -142,43 +97,29 @@
         </form>
     </dialog>
 
-    <dialog id="upload-file-dialog" class="dialog message-dialog" style="min-width:400px;">
-        <img src="{{url_for( 'static', filename='images/upload.svg')}}" width="48" height="48" style="float: left;" />
-        <p style="font-size: 18px; font-weight: bold;">File Upload</p>
-        <div>
-            <div>
-                <input class="modal-entry" id="upload-file-name" style="width:90%;" type="text" name="upload-file-name"
-                    placeholder="Upload CSV File..." readonly>
+    <dialog id="new-vault-dialog" class="dialog message-dialog" style="min-width:640px; width:640px">
+        <img src="{{url_for( 'static', filename='images/new.svg')}}" width="22" height="22" style="float: left;" />
 
-                </input>
-                <div style="float:right;padding-top:6px;">
-                    <button id="select-upload-file" class="message-dialog-small-button">...</button>
-                </div>
-            </div>
+        <p style="font-size: 18px; font-weight: bold; text-align: top; float: left; margin-top:6px;">&nbsp;New Vault</p>
+        <div class="modal-body" style="margin-top:12px;">
+            <p></p>
+            <label class="modal-label" for="document-title" value="Title">
+                Title
+            </label>
+            <input class="modal-entry template-entry" id="document-title" type="text" name="title-entry"
+                placeholder="Title...">
+            </input>
+            <p style="height:4px;"></p>
+            <label class="modal-label" for="vault-description" value="Description" style="margin-top:40px;">
+                Description
+            </label>
+            <textarea class="modal-entry template-entry" id="vault-description" type="textarea"
+            name="vault-description" style="height:100px;"></textarea>
         </div>
-
-        <div id="upload-message"
-            style="color:rgba(255,0,0,0.6); width:300px; float:left; font-size: 12px; margin-top:8px;"></div>
-
-        <div>
-            <button id="upload-file-dialog-ok" class="message-dialog-small-ok-button"
-                style="float: right; margin-top:10px;">Upload</button>
-
-            <button id="upload-file-dialog-close" class="close-button message-dialog-small-cancel-button"
-                style="float: right; margin-top:10px;">Cancel</button>
-        </div>
-
-    </dialog>
-
-    <dialog id="key-generation-dialog" class="dialog message-dialog" style="min-width:340px; width:340px">
-        <img src="{{url_for( 'static', filename='images/keys.svg')}}" width="22" height="22" style="float: left;" />
-        
-        <p style="font-size: 18px; font-weight: bold; text-align: top; float: right;  margin-top:6px;">&nbsp;Generate Certificates and Keys</p>
- 
-        <button id="ok-key-generation-dialog" class="message-dialog-small-ok-button"
+        <button id="new-vault-dialog-ok" class="message-dialog-small-ok-button"
             style="float: right; margin-top:10px;">Generate</button>
 
-        <button id="cancel-key-generation-dialog" class="close-button message-dialog-small-cancel-button"
+        <button id="new-vault-dialog-cancel" class="close-button message-dialog-small-cancel-button"
             style="float: right; margin-top:10px;">Cancel</button>
         </div>
     </dialog>
@@ -186,14 +127,15 @@
 
 
     <dialog id="key-generation-results-dialog" class="dialog message-dialog" style="min-width:700px;">
-        <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="24" height="24" style="float: left;" />
-        <p style="font-size: 18px; font-weight: bold; text-align: top; float: left;  margin-top:6px;">&nbsp;Generate/Keys Pair</p>
+        <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="24" height="24"
+            style="float: left;" />
+        <p style="font-size: 18px; font-weight: bold; text-align: top; float: left;  margin-top:6px;">
+            &nbsp;Generate/Keys Pair</p>
         <p style="height:10px;"></p>
         <pre id="certificate-pem" style="height:360px;"></pre>
         <form method="dialog">
             <button class="message-dialog-small-button" style="float: right;">OK</button>
         </form>
-
     </dialog>
 
     <div style="overflow:hidden; user-select: none;">
@@ -226,6 +168,15 @@
                     <table class="selection" style="margin-top: 4px;">
                         <tr>
                             <td>
+                                <button class="collapsible-menu" id="new-vault">
+                                    <img src="{{url_for( 'static', filename='images/new.svg')}}"
+                                        style="width:24px; height:24px; margin-top:2px; margin-right:4px;"></img>
+                                    <label for="new-vault" style="position:relative; top:-8px;">New Vault</label>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
                                 <button class="collapsible-menu" id="open-vault">
                                     <img src="{{url_for( 'static', filename='images/open-vault.svg')}}"
                                         style="width:24px; height:24px; margin-top:2px; margin-right:4px;"></img>
@@ -242,13 +193,13 @@
                                 </button>
                             </td>
                         </tr>
+
                         <tr>
                             <td>
-                                <button class="collapsible-menu" id="generate-key-pair">
-                                    <img src="{{url_for( 'static', filename='images/keys.svg')}}"
-                                        style="width:20px; height:20px; margin-top:2px; margin-right:4px;"></img>
-                                    <label for="generate-key-pair" style="position:relative; top:-6px;">Generate Certificate/Keys
-                                        Pair</label>
+                                <button class="collapsible-menu" id="add-card">
+                                    <img src="{{url_for( 'static', filename='images/card.svg')}}"
+                                        style="width:24px; height:24px; margin-top:4px; margin-right:4px;"></img>
+                                    <label for="upload-file" style="position:relative; top:-8px;">Add a Card</label>
                                 </button>
                             </td>
                         </tr>

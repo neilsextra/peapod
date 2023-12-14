@@ -160,44 +160,9 @@ window.onload = function () {
     
     setCollapsible();
 
-    document.getElementById("upload-file").addEventListener("click", async function (event) {
-
-        clearDialog(document.getElementById("upload-file-dialog"));
-
-        document.getElementById("upload-file-dialog").showModal();
-
-    });
-    
-    document.getElementById("select-upload-file").addEventListener("click", async function (event) {
-        var fileUtil = new FileUtil(document);
-
-        fileUtil.load(async function (files) {
+    document.getElementById("new-vault").addEventListener("click", async function (event) {
         
-            for (var file = 0; file < files.length; file++) {
-      
-                document.getElementById("upload-file-name").value = files[file].name;
-
-                uploadedFile = files[file];
-
-            }
-
-        });
-
-        return false;
-
-    });   
-
-    document.getElementById("upload-file-dialog-ok").addEventListener("click", async function (event) {
-        var message = new Message();
-        var result = await message.sendFile(uploadedFile);
-
-        document.getElementById("upload-file-dialog").close();
- 
-    });
-
-    document.getElementById("generate-key-pair").addEventListener("click", async function (event) {
-        
-        document.getElementById("key-generation-dialog").showModal();
+        document.getElementById("new-vault-dialog").showModal();
 
     });
 

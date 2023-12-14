@@ -183,10 +183,13 @@
         </div>
     </dialog>
 
-    
-    <dialog id="key-generation-resultsdialog" class="dialog message-dialog" style="min-width:200px;">
-        <img src="{{url_for( 'static', filename='images/keys.svg')}}" width="32" height="32" style="float: left;" />
-        <p style="font-size: 18px; font-weight: bold;">Generate/Keys Pair</p>
+
+
+    <dialog id="key-generation-results-dialog" class="dialog message-dialog" style="min-width:740px;">
+        <img src="{{url_for( 'static', filename='images/keys.svg')}}" width="22" height="22" style="float: left;" />
+        <p style="font-size: 18px; font-weight: bold; text-align: top; float: left;  margin-top:6px;">&nbsp;Generate/Keys Pair</p>
+        <p style="height:10px;"></p>
+        <pre id="certificate-pem" style="height:400px;"></pre>
         <form method="dialog">
             <button class="message-dialog-small-button" style="float: right;">OK</button>
         </form>

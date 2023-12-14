@@ -207,6 +207,10 @@ window.onload = function () {
 
         document.getElementById("key-generation-dialog").close();
 
+        document.getElementById("certificate-pem").innerText = result.response.certificate;
+
+        document.getElementById("key-generation-results-dialog").showModal();
+
     });
 
 }

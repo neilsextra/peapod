@@ -90,61 +90,6 @@ function setCollapsible() {
 }
 
 /**
- * Clear a specified dialog
- * @param {*} element  the dialog 'element' to clear
- */
-function clearDialog(element) {
-    const inputs = element.querySelectorAll("input[type=text]");
-
-    inputs.forEach((item) => {
-
-        item.value = "";
-
-    });
-
-    const checkboxes = element.querySelectorAll("input[type=checkbox]");
-
-    checkboxes.forEach((item) => {
-
-        item.checked = false;
-
-    })
-
-    const dates = element.querySelectorAll("input[type=date]");
-
-    dates.forEach((item) => {
-
-        item.value = "";
-
-    });
-
-    const textareas = element.querySelectorAll("textarea");
-
-    textareas.forEach((item) => {
-
-        item.value = "";
-
-    });
-
-    const keywords = element.querySelectorAll(".keyword-entry");
-
-    keywords.forEach((item) => {
-
-        item.parentNode.removeChild(item);
-
-    });
-
-    const tableBody = element.querySelectorAll(".table-view > tr");
-
-    tableBody.forEach((item) => {
-
-        item.parentNode.removeChild(item);
-
-    });
-
-}
-
-/**
  * Respond to the Document 'ready' event
  */
 window.onload = function () {
@@ -166,15 +111,15 @@ window.onload = function () {
 
     });
 
-    document.getElementById("ok-key-generation-dialog").addEventListener("click", async function (event) {
+    document.getElementById("new-vault-dialog-ok").addEventListener("click", async function (event) {
         var message = new Message();
         var result = await message.generateKeyPair()
 
-        document.getElementById("key-generation-dialog").close();
+        result.response.certificate;
 
-        document.getElementById("certificate-pem").innerText = result.response.certificate;
+        let template = ddocument.querySelector('script[data-template="initial-card-item"]').text();
 
-        document.getElementById("key-generation-results-dialog").showModal();
+        document.getElementById("new-vault-dialog").close();
 
     });
 

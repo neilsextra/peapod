@@ -26,45 +26,34 @@
 
     <script src="{{ url_for('static', filename='javascripts/util/date.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/util/fileutil.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/util/stringutil.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/util/message.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/gui/tabview.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/gui/tableview.js') }}"></script>
-    <script src="{{ url_for('static', filename='javascripts/gui/util.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='javascripts/gui/guiutil.js') }}"></script>
 
 </head>
 
 <body style="overflow: hidden;" oncontextmenu="return false;">
     <!-- templates -->
-    <script type="text/template" data-template="keyword-entry">
-        <div id="keyword-${id}" class="keyword-entry">
-            <input type="text" class="keyword-entry-value" style="height:28px" value="${value}"/>
-            <input type="image" src="{{url_for( 'static', filename='images/trash.svg')}}"
-                   style="height:24px; width:24px; margin:2px; margin-left:4px; float: right"  
-                   onclick="deleteElement('keyword-${id}')"/>
-        </div>
-    </script>
 
-    <script type="text/template" data-template="entry-details">
-        <div style="margin: 0 auto; margin-top: 6px; text-align:left; overflow:hidden;">
-            <input id="pinned-corpus" type="hidden" value="${corpus}"/>
-            <input id="pinned-id" type="hidden" value="${id}"/>
-            <div style="position:absolute; margin:5px; top:0px; bottom:600px; width:565px;">
-                   <label style="color:navy; font-size:12px; margin-bottom:10px;">ID: ${id}</label>
-                <h2 style="color:black; font-size:12px; font-weight: bold">${title}</h2>
- 
-                <div style="font-size:12px; margin-top:20px;">
-                    <hr/>
-                    <div style="position-relative; font-size:12px; margin-top:2px; height:160px; overflow: auto;">
-                        <p>${description}</p>
-                    </div>
-                    <hr/>
+    <script type="text/template" data-template="certifate-card-item">
+        <div id="certificate-initial" class="card-certificate" style="position:relative;">
+            <div class="card-initial-main">
+                <div style="position:relative; color:black;">
+                    <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="22" height="22" style="float: left;" />
                 </div>
-
-            </div>
-        
+                <div style="font-size:12px; font-family:Arial, Helvetica, sans-serif; position:absolute; top:5px; bottom:0px; left:45px;">
+                    <input style="font-size:12px; width:80%; margin-top:2px; margin-bottom:5px; border:none; border-bottom: 1px dashed rgba(0,0,0, 0.2); outline: none; background-color: transparent;" value="${merchant}" placeholder="title")
+                    />
+                    <input type="text" id="amount-${id}" name="currency-field" style="font-size:12px; width:80%; border:none; border-bottom: 1px dashed rgba(0,0,0, 0.2); outline: none; margin-bottom:5px; background-color: transparent;" id="currency-field" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$"
+                        value="${amount}" data-type="currency" placeholder="$0.0" oninput="$(this).OnInput('amount', '${id}', this.value)" />
+                </div>
+             </div>
         </div>
-    
     </script>
+    
 
     <!-- dialogs -->
 

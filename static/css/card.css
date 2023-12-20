@@ -1,0 +1,27 @@
+.card {
+    width: 182px;
+    height: 92px;
+    font-size: 10px;
+    margin: 10px;
+    color: rgba(0, 0, 0, 1.0);
+}
+
+.card:hover {
+    width: 182px;
+    height: 92px;
+    font-size: 10px;
+    margin: 10px;
+    background-color: #DCEDFF;
+}
+
+.card-main {
+    position: absolute;
+    width: 160px;
+    height: 70px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: white;
+    font-size: 10px;
+    margin: 5px;
+    color: rgba(0, 0, 0, 1.0);
+    padding: 5px;
+}

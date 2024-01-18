@@ -117,9 +117,7 @@ window.onload = function () {
 
         console.log(result.response.certificate);
 
-        console.log(document.querySelector('script[data-template="certificate-card-item"]'));
-
-        let template = document.querySelector('script[data-template="certificate-card-item"]').text();
+        let template = document.querySelector('script[data-template="certificate-card-item"]').text;
 
         document.getElementById("new-vault-dialog").close();
 

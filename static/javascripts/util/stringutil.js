@@ -1,4 +1,3 @@
-$
 function StringUtil() {
  
     StringUtil.prototype.substitute = (template, values) => {

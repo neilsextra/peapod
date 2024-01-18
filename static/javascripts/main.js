@@ -115,9 +115,11 @@ window.onload = function () {
         var message = new Message();
         var result = await message.generateKeyPair()
 
-        result.response.certificate;
+        console.log(result.response.certificate);
 
-        let template = ddocument.querySelector('script[data-template="initial-card-item"]').text();
+        console.log(document.querySelector('script[data-template="certificate-card-item"]'));
+
+        let template = document.querySelector('script[data-template="certificate-card-item"]').text();
 
         document.getElementById("new-vault-dialog").close();
 

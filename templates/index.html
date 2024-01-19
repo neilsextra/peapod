@@ -15,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/modal.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/toolbar.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/tab.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/tablefixed.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/card.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/content.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/collapsible.css') }}" />
     <style>
@@ -36,16 +36,16 @@
     <!-- templates -->
 
     <script type="text/template" data-template="certificate-card-item">
-        <div id="certificate-initial" class="card-certificate" style="position:relative;">
-            <div class="card-initial-main">
+        <div id="certificate-initial" class="card" style="position:relative;">
+            <div>
                 <div style="position:relative; color:black;">
                     <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="22" height="22" style="float: left;" />
                 </div>
                 <div style="font-size:12px; font-family:Arial, Helvetica, sans-serif; position:absolute; top:5px; bottom:0px; left:45px;">
-                    <input style="font-size:12px; width:80%; margin-top:2px; margin-bottom:5px; border:none; border-bottom: 1px dashed rgba(0,0,0, 0.2); outline: none; background-color: transparent;" value="${merchant}" placeholder="title")
+                    <input style="font-size:12px; width:80%; margin-top:2px; margin-bottom:5px; border:none; border-bottom: 1px dashed rgba(0,0,0, 0.2); outline: none; background-color: transparent;" value="${isser}" placeholder="issuer")
                     />
                     <input type="text" id="amount-${id}" name="currency-field" style="font-size:12px; width:80%; border:none; border-bottom: 1px dashed rgba(0,0,0, 0.2); outline: none; margin-bottom:5px; background-color: transparent;" id="currency-field" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$"
-                        value="${amount}" data-type="currency" placeholder="$0.0" oninput="$(this).OnInput('amount', '${id}', this.value)" />
+                        value="${serial}" data-type="text" oninput="OnInput('issuer', '${id}', this.value)" />
                 </div>
              </div>
         </div>
@@ -92,18 +92,26 @@
         <p style="font-size: 18px; font-weight: bold; text-align: top; float: left; margin-top:6px;">&nbsp;New Vault</p>
         <div class="modal-body" style="margin-top:12px;">
             <p></p>
-            <label class="modal-label" for="document-title" value="Title">
-                Title
+            <label class="modal-label" value="Issuer">
+               Issuer
             </label>
-            <input class="modal-entry template-entry" id="document-title" type="text" name="title-entry"
-                placeholder="Title...">
+            <input class="modal-entry template-entry" id="issuer" type="text" name="issuer"
+                placeholder="Issuer...">
+            </input>               
+            <p style="height:-1px"></p>
+            <label class="modal-label" value="Organisation">
+                Organisation
+            </label>
+            <input class="modal-entry template-entry" id="organisation" type="text" name="organisation"
+                placeholder="Organisation...">
+            </input>         
+            <p style="height:-1px"></p>
+            <label class="modal-label" value="Common Name">
+                Common Name
+            </label>
+            <input class="modal-entry template-entry" id="common-name" type="text" name="common-name"
+                placeholder="Common Name...">
             </input>
-            <p style="height:4px;"></p>
-            <label class="modal-label" for="vault-description" value="Description" style="margin-top:40px;">
-                Description
-            </label>
-            <textarea class="modal-entry template-entry" id="vault-description" type="textarea"
-            name="vault-description" style="height:100px;"></textarea>
         </div>
         <button id="new-vault-dialog-ok" class="message-dialog-small-ok-button"
             style="float: right; margin-top:10px;">Generate</button>
@@ -112,8 +120,6 @@
             style="float: right; margin-top:10px;">Cancel</button>
         </div>
     </dialog>
-
-
 
     <dialog id="key-generation-results-dialog" class="dialog message-dialog" style="min-width:700px;">
         <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="24" height="24"
@@ -136,7 +142,7 @@
                     <img src="{{ url_for( 'static', filename='images/peapod.png' ) }}" width="32" height="32" />
                 </div>
                 <div style="position: absolute; top:-4px; left:36px; padding-right:0px;">
-                    <h1>PEAPOD - POD Consent</h1>
+                    <h1>PEAPOD - POD Management Console</h1>
                 </div>
 
                 <div style="position:absolute; top:5px; right:2px; width:96px;">
@@ -200,9 +206,9 @@
             <div id="container"
                 style="position:absolute; top:44px; left:460px; right:595px; bottom:40px; border: 1px solid rgba(0,0,0, 0.2); overflow:hidden;">
 
-                <div id="search-table"
-                    style="position:absolute; display:none; left:2px; top:6px; bottom:2px; right:2px; overflow:none; font-family: sans-serif; font-size: 12px; padding:5px; ;">
-
+                <div id="artifacts" style="position:absolute; top:10px; left:10px; right:10px; bottom:10px; font-size:14px; overflow:auto;">
+                    <div id="artifacts-container" class="mainbox">
+                    </div>
                 </div>
             </div>
             <div id="details" class="details"

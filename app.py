@@ -67,6 +67,12 @@ def keys():
 
     output = {}
 
+    issuer = request.values.get('issuer')
+    organisation = request.values.get('org')
+    common_name = request.values.get('cn')
+
+    print("[KEYS] - 'CERT: %s - %s - %s" % (issuer, organisation, common_name))
+
     one_day = datetime.timedelta(1, 0, 0)
 
     private_key = rsa.generate_private_key(
@@ -103,6 +109,7 @@ def keys():
 
     output['certificate'] = bytes.decode("UTF-8")
 
+
     bytes = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.TraditionalOpenSSL,
@@ -110,6 +117,8 @@ def keys():
     )
     
     output['private-key'] = bytes.decode("UTF-8")
+    output['serial-number'] = certificate.serial_number
+    output['issuer'] = certificate.serial_number
 
     return json.dumps(output, sort_keys=True), 200
 

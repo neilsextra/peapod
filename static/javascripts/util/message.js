@@ -47,11 +47,11 @@ function Message() {
 
     }
     
-    this.getKeyPair = function () {
+    this.getKeyPair = function (issuer, org, cn) {
 
         return new Promise((accept, reject) => {
 
-            let parmURL = `/keys`;
+            let parmURL = `/keys?issuer=${encodeURI(issuer)}&org=${encodeURI(org)}&cn=${encodeURI(cn)}`;
 
             var xhttp = new XMLHttpRequest();
 

@@ -11,6 +11,8 @@ var columns = null;
 
 var uploadedFile = null;
 
+var stringUtil = new StringUtil();
+
 /**
  * Get the next ID
  * @returns the next ID
@@ -113,11 +115,19 @@ window.onload = function () {
 
     document.getElementById("new-vault-dialog-ok").addEventListener("click", async function (event) {
         var message = new Message();
-        var result = await message.generateKeyPair()
+
+        var issuer = document.getElementById("issuer").value;
+        var organisation = document.getElementById("organisation").value;
+        var cn = document.getElementById("common-name").value;
+        var result = await message.generateKeyPair(issuer, organisation, cn)
 
         console.log(result.response.certificate);
 
         let template = document.querySelector('script[data-template="certificate-card-item"]').text;
+        let value = stringUtil.substitute(template, {});
+        let fragment = document.createRange().createContextualFragment(value);
+
+        document.getElementById("artifacts-container").appendChild(fragment);
 
         document.getElementById("new-vault-dialog").close();
 

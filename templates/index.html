@@ -39,13 +39,15 @@
         <div id="certificate-initial" class="card" style="position:relative;">
             <div>
                 <div style="position:relative; color:black;">
-                    <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="22" height="22" style="float: left;" />
+                    <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="32" height="32" style="float: left;" />
                 </div>
                 <div style="font-size:12px; font-family:Arial, Helvetica, sans-serif; position:absolute; top:5px; bottom:0px; left:45px;">
-                    <input style="font-size:12px; width:80%; margin-top:2px; margin-bottom:5px; border:none; border-bottom: 1px dashed rgba(0,0,0, 0.2); outline: none; background-color: transparent;" value="${isser}" placeholder="issuer")
-                    />
-                    <input type="text" id="amount-${id}" name="currency-field" style="font-size:12px; width:80%; border:none; border-bottom: 1px dashed rgba(0,0,0, 0.2); outline: none; margin-bottom:5px; background-color: transparent;" id="currency-field" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$"
-                        value="${serial}" data-type="text" oninput="OnInput('issuer', '${id}', this.value)" />
+                    <label style="font-size:12px; width:100%; margin-top:2px; margin-bottom:5px; border:none; border-bottom: 1px dashed rgba(0,0,0, 0.2); outline: none; background-color: transparent;">
+                        ${issuer}
+                    </label>
+                    <label type="text" name="serial" style="font-size:12px; width:100%; border:none; border-bottom: 1px dashed rgba(0,0,0, 0.2); outline: none; margin-bottom:5px; background-color: transparent;"> 
+                        ${serial}
+                    </label>
                 </div>
              </div>
         </div>
@@ -87,7 +89,7 @@
     </dialog>
 
     <dialog id="new-vault-dialog" class="dialog message-dialog" style="min-width:640px; width:640px">
-        <img src="{{url_for( 'static', filename='images/new.svg')}}" width="22" height="22" style="float: left;" />
+        <img src="{{url_for( 'static', filename='images/new.svg')}}" width="32" height="32" style="float: left;" />
 
         <p style="font-size: 18px; font-weight: bold; text-align: top; float: left; margin-top:6px;">&nbsp;New POD</p>
         <div class="modal-body" style="margin-top:12px;">

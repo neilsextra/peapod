@@ -51,7 +51,7 @@ function Message() {
 
         return new Promise((accept, reject) => {
 
-            let parmURL = `/keys?issuer=${encodeURI(issuer)}&org=${encodeURI(org)}&cn=${encodeURI(cn)}`;
+            let parmURL = `/keys?issuer=${encodeURIComponent(issuer)}&org=${encodeURIComponent(org)}&cn=${encodeURIComponent(cn)}`;
 
             var xhttp = new XMLHttpRequest();
 
@@ -98,9 +98,9 @@ function Message() {
 
     }
 
-    Message.prototype.generateKeyPair = function (keylength) {
+    Message.prototype.generateKeyPair = function (keylength, issuer, org, cn) {
 
-        return this.getKeyPair();
+        return this.getKeyPair(keylength, issuer, org, cn);
 
     }
 

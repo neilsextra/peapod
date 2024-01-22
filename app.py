@@ -67,11 +67,11 @@ def keys():
 
     output = {}
 
-    issuer = request.values.get('issuer')
-    organisation = request.values.get('org')
-    common_name = request.values.get('cn')
+    issuer = request.values.get('issuer').lower()
+    organisation_name = request.values.get('org').lower()
+    common_name = request.values.get('cn').lower()
 
-    print("[KEYS] - 'CERT: %s - %s - %s" % (issuer, organisation, common_name))
+    print("[KEYS] - 'CERT: %s - %s - %s" % (issuer, organisation_name, common_name))
 
     one_day = datetime.timedelta(1, 0, 0)
 
@@ -82,11 +82,10 @@ def keys():
     public_key = private_key.public_key()
     builder = x509.CertificateBuilder()
     builder = builder.subject_name(x509.Name([
-        x509.NameAttribute(NameOID.COMMON_NAME, 'Neil Brittliff'),
-        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Defence")
-    ]))
+        x509.NameAttribute(NameOID.COMMON_NAME, common_name),
+        x509.NameAttribute(NameOID.ORGANIZATION_NAME, organisation_name)]))
     builder = builder.issuer_name(x509.Name([
-        x509.NameAttribute(NameOID.COMMON_NAME, 'dd.test.gov.au'),
+        x509.NameAttribute(NameOID.COMMON_NAME, request.remote_addr),
     ]))
     builder = builder.not_valid_before(datetime.datetime.today() - one_day)
     builder = builder.not_valid_after(datetime.datetime.today() + (one_day * 30))
@@ -94,7 +93,7 @@ def keys():
     builder = builder.public_key(public_key)
     builder = builder.add_extension(
         x509.SubjectAlternativeName(
-            [x509.DNSName('cryptography.io')]
+            [x509.DNSName(issuer)]
         ),
         critical=False
     )
@@ -108,7 +107,6 @@ def keys():
     bytes = certificate.public_bytes(serialization.Encoding.PEM)
 
     output['certificate'] = bytes.decode("UTF-8")
-
 
     bytes = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,

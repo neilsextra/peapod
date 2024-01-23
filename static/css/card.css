@@ -4,7 +4,7 @@
     font-size: 10px;
     margin: 10px;
     color: rgba(0, 0, 0, 1.0);
-    border:2px solid rgba(118, 118, 250, 0.3);
+    border: 2px solid rgba(118, 118, 250, 0.3);
 }
 
 .card:hover {
@@ -25,4 +25,18 @@
     margin: 5px;
     color: rgba(0, 0, 0, 1.0);
     padding: 5px;
+}
+
+.card-field {
+    font-size: 12px;
+    text-overflow: ellipsis;
+    width: 130px;
+    border: none;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+    outline: none;
+    margin-bottom: 5px;
+    background-color: transparent;
+    overflow: hidden;
+    display: inline-block;
+
 }

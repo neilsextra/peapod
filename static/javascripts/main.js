@@ -124,7 +124,10 @@ window.onload = function () {
         console.log(result.response.certificate);
 
         let template = document.querySelector('script[data-template="certificate-card-item"]').text;
-        let value = stringUtil.substitute(template, {});
+        let value = stringUtil.substitute(template, {
+            "issuer": result.response.issuer,
+            "serial": result.response['serial-number'],
+        });
         let fragment = document.createRange().createContextualFragment(value);
 
         document.getElementById("artifacts-container").appendChild(fragment);

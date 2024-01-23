@@ -115,8 +115,8 @@ def keys():
     )
     
     output['private-key'] = bytes.decode("UTF-8")
-    output['serial-number'] = certificate.serial_number
-    output['issuer'] = certificate.serial_number
+    output['serial-number'] = '{0:x}'.format(certificate.serial_number)
+    output['issuer'] = issuer
 
     return json.dumps(output, sort_keys=True), 200
 

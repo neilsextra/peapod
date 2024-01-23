@@ -45,7 +45,8 @@
                     <label style="font-size:12px; width:100%; margin-top:2px; margin-bottom:5px; border:none; border-bottom: 1px dashed rgba(0,0,0, 0.2); outline: none; background-color: transparent;">
                         ${issuer}
                     </label>
-                    <label type="text" name="serial" style="font-size:12px; width:100%; border:none; border-bottom: 1px dashed rgba(0,0,0, 0.2); outline: none; margin-bottom:5px; background-color: transparent;"> 
+                    <p></p>
+                    <label type="text" name="serial" class="card-field"> 
                         ${serial}
                     </label>
                 </div>
@@ -91,12 +92,10 @@
     <dialog id="new-vault-dialog" class="dialog message-dialog" style="min-width:640px; width:640px">
         <img src="{{url_for( 'static', filename='images/new.svg')}}" width="32" height="32" style="float: left;" />
 
-        <p style="font-size: 18px; font-weight: bold; text-align: top; float: left; margin-top:6px;">&nbsp;New POD</p>
+        <p style="font-size: 18px; font-weight: bold; text-align: top; float: left; margin-top:6px; width:90%">&nbsp;New POD</p>
         <div class="modal-body" style="margin-top:12px;">
-            <p></p>
-            <label class="modal-label" value="Issuer">
-               Issuer
-            </label>
+            <p style="height:-1px"></p>
+            <label class="modal-label" value="Issuer">Issuer</label>
             <input class="modal-entry template-entry" id="issuer" type="text" name="issuer"
                 placeholder="Issuer...">
             </input>               

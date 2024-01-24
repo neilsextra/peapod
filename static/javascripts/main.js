@@ -127,6 +127,7 @@ window.onload = function () {
         let value = stringUtil.substitute(template, {
             "issuer": result.response.issuer,
             "serial": result.response['serial-number'],
+            "subject": result.response['subject']
         });
         let fragment = document.createRange().createContextualFragment(value);
 

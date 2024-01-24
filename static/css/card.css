@@ -1,5 +1,5 @@
 .card {
-    width: 182px;
+    width: 332px;
     height: 92px;
     font-size: 10px;
     margin: 10px;
@@ -8,7 +8,7 @@
 }
 
 .card:hover {
-    width: 182px;
+    width: 332px;
     height: 92px;
     font-size: 10px;
     margin: 10px;
@@ -30,7 +30,7 @@
 .card-field {
     font-size: 12px;
     text-overflow: ellipsis;
-    width: 130px;
+    width: 280px;
     border: none;
     border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
     outline: none;

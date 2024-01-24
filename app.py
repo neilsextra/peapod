@@ -85,7 +85,7 @@ def keys():
         x509.NameAttribute(NameOID.COMMON_NAME, common_name),
         x509.NameAttribute(NameOID.ORGANIZATION_NAME, organisation_name)]))
     builder = builder.issuer_name(x509.Name([
-        x509.NameAttribute(NameOID.COMMON_NAME, request.remote_addr),
+        x509.NameAttribute(NameOID.COMMON_NAME, issuer),
     ]))
     builder = builder.not_valid_before(datetime.datetime.today() - one_day)
     builder = builder.not_valid_after(datetime.datetime.today() + (one_day * 30))
@@ -116,7 +116,8 @@ def keys():
     
     output['private-key'] = bytes.decode("UTF-8")
     output['serial-number'] = '{0:x}'.format(certificate.serial_number)
-    output['issuer'] = issuer
+    output['issuer'] = certificate.issuer.rfc4514_string()
+    output['subject'] = certificate.subject.rfc4514_string()
 
     return json.dumps(output, sort_keys=True), 200
 

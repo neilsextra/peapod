@@ -121,6 +121,7 @@ def keys():
     output['serial-number'] = '{0:x}'.format(certificate.serial_number)
     output['issuer'] = certificate.issuer.rfc4514_string()
     output['subject'] = certificate.subject.rfc4514_string()
+    output['key-size'] = private_key.key_size
 
     return json.dumps(output, sort_keys=True), 200
 

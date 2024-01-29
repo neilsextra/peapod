@@ -115,7 +115,28 @@
             </label>
             <input class="modal-entry template-entry" id="common-name" type="text" name="common-name"
                 placeholder="Common Name...">
+            </input>            
+            <p style="height:-1px"></p>
+            <label class="modal-label" value="Key Length">
+                Key Length
+            </label>
+            <input class="modal-entry template-entry" id="key-length" type="number" name="key-length"
+                placeholder="Key Length..." value="2048">
             </input>
+            <p style="height:-1px"></p>
+            <label class="modal-label" value="Exponent">
+                Public Exponent
+            </label>
+            <input class="modal-entry template-entry" id="public-exponent" type="number" name="public-exponent"
+                placeholder="Public Exponent..." value="65537">
+            </input>
+            <p style="height:-1px"></p>
+            <label class="modal-label" value="Validaty Period">
+                Validaty Period (Days)
+            </label>
+            <input class="modal-entry template-entry" id="validaty-period" type="number" name="validaty-period"
+                placeholder="Days..." value="366">
+            </input>        
         </div>
         <button id="new-vault-dialog-ok" class="message-dialog-small-ok-button"
             style="float: right; margin-top:10px;">Generate</button>

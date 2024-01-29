@@ -119,9 +119,12 @@ window.onload = function () {
         var issuer = document.getElementById("issuer").value;
         var organisation = document.getElementById("organisation").value;
         var cn = document.getElementById("common-name").value;
-        var result = await message.generateKeyPair(issuer, organisation, cn)
-
-        console.log(result.response.certificate);
+        
+        var keyLength = document.getElementById("key-length").value;
+        var exponent = document.getElementById("public-exponent").value;
+        var validity = document.getElementById("validaty-period").value;
+        
+        var result = await message.generateKeyPair(issuer, organisation, cn, validity, keyLength, exponent)
 
         let template = document.querySelector('script[data-template="certificate-card-item"]').text;
         let value = stringUtil.substitute(template, {

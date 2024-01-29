@@ -70,8 +70,11 @@ def keys():
     issuer = request.values.get('issuer').lower()
     organisation_name = request.values.get('org').lower()
     common_name = request.values.get('cn').lower()
+    validity = int(request.values.get('validity'))
+    key_length = int(request.values.get('keylength'))
+    exponent = int(request.values.get('exponent'))
 
-    print("[KEYS] - 'CERT: %s - %s - %s" % (issuer, organisation_name, common_name))
+    print("[KEYS] - 'CERT: %s - %s - %s - %d" % (issuer, organisation_name, common_name, validity))
 
     one_day = datetime.timedelta(1, 0, 0)
 

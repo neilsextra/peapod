@@ -47,7 +47,7 @@ function Message() {
 
     }
     
-    this.getKeyPair = function (issuer, org, cn, validity, keyLength, exponent) {
+    this.getKeyPair = function (issuer, org, cn, validity, keysize, exponent) {
 
         return new Promise((accept, reject) => {
 
@@ -55,7 +55,8 @@ function Message() {
                           `org=${encodeURIComponent(org)}&` +
                           `cn=${encodeURIComponent(cn)}&` +
                           `validity=${encodeURIComponent(validity)}&` +
-                          `keylength=${encodeURIComponent(keyLength)}`;
+                          `keysize=${encodeURIComponent(keysize)}&` +
+                          `exponent=${encodeURIComponent(exponent)}&`;
 
             var xhttp = new XMLHttpRequest();
 
@@ -102,9 +103,9 @@ function Message() {
 
     }
 
-    Message.prototype.generateKeyPair = function (keylength, issuer, org, cn, validity, keyLength, exponent) {
+    Message.prototype.generateKeyPair = function (issuer, org, cn, validity, keysize, exponent) {
 
-        return this.getKeyPair(keylength, issuer, org, cn, validity, keyLength, exponent);
+        return this.getKeyPair(issuer, org, cn, validity, keysize, exponent);
 
     }
 

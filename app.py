@@ -71,16 +71,16 @@ def keys():
     organisation_name = request.values.get('org').lower()
     common_name = request.values.get('cn').lower()
     validity = int(request.values.get('validity'))
-    key_length = int(request.values.get('keylength'))
+    key_size = int(request.values.get('keysize'))
     exponent = int(request.values.get('exponent'))
 
-    print("[KEYS] - 'CERT: %s - %s - %s - %d" % (issuer, organisation_name, common_name, validity))
+    print("[KEYS] - 'CERT: %s - %s - %s - %d - %d - %d" % (issuer, organisation_name, common_name, validity, key_size, exponent))
 
     one_day = datetime.timedelta(1, 0, 0)
 
     private_key = rsa.generate_private_key(
         public_exponent=65537,
-        key_size=2048,
+        key_size=key_size,
     )
     public_key = private_key.public_key()
     builder = x509.CertificateBuilder()
@@ -91,7 +91,7 @@ def keys():
         x509.NameAttribute(NameOID.COMMON_NAME, issuer),
     ]))
     builder = builder.not_valid_before(datetime.datetime.today() - one_day)
-    builder = builder.not_valid_after(datetime.datetime.today() + (one_day * 30))
+    builder = builder.not_valid_after(datetime.datetime.today() + (one_day * validity))
     builder = builder.serial_number(x509.random_serial_number())
     builder = builder.public_key(public_key)
     builder = builder.add_extension(

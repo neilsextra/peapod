@@ -120,11 +120,11 @@ window.onload = function () {
         var organisation = document.getElementById("organisation").value;
         var cn = document.getElementById("common-name").value;
         
-        var keyLength = document.getElementById("key-length").value;
+        var keysize = document.getElementById("key-size").value;
         var exponent = document.getElementById("public-exponent").value;
         var validity = document.getElementById("validaty-period").value;
         
-        var result = await message.generateKeyPair(issuer, organisation, cn, validity, keyLength, exponent)
+        var result = await message.generateKeyPair(issuer, organisation, cn, validity, keysize, exponent)
 
         let template = document.querySelector('script[data-template="certificate-card-item"]').text;
         let value = stringUtil.substitute(template, {

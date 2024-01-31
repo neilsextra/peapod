@@ -123,6 +123,14 @@ def keys():
     output['subject'] = certificate.subject.rfc4514_string()
     output['key-size'] = private_key.key_size
 
+
+    public_numbers = private_key.public_key().public_numbers()
+
+    output['private-key-modulus'] = str(public_numbers.n)
+    output['private-key-exponent'] = str(public_numbers.e)
+
+    print("[KEYS] - KEY: %s" % output['private-key-modulus'])
+
     return json.dumps(output, sort_keys=True), 200
 
 if __name__ == "__main__":

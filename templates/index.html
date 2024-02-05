@@ -57,6 +57,25 @@
         </div>
     </script>
 
+    <script type="text/template" data-template="key-card-item">
+        <div id="key-initial" class="card" style="position:relative;">
+            <div>
+                <div style="position:relative; color:black;">
+                    <img src="{{url_for( 'static', filename='images/keys.svg')}}" width="32" height="32" style="float: left;" />
+                </div>
+                <div style="font-size:12px; font-family:Arial, Helvetica, sans-serif; position:absolute; top:5px; bottom:0px; left:45px;">
+                    <label type="text" name="serial" class="card-field">
+                        ${modulus}
+                    </label>
+                    <p></p>
+                    <label type="text" name="serial" class="card-field"> 
+                        ${exponent}
+                    </label>
+                </div>
+             </div>
+        </div>
+    </script>
+
 </head>
 
 <body style="overflow: hidden;" oncontextmenu="return false;">

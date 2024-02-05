@@ -132,7 +132,17 @@ window.onload = function () {
             "serial": result.response['serial-number'],
             "subject": result.response['subject']
         });
+
         let fragment = document.createRange().createContextualFragment(value);
+        document.getElementById("artifacts-container").appendChild(fragment);
+
+        template = document.querySelector('script[data-template="key-card-item"]').text;
+        value = stringUtil.substitute(template, {
+            "modulus": result.response['private-key-modulus'],
+            "exponent": result.response['private-key-exponent']
+        });
+   
+        fragment = document.createRange().createContextualFragment(value);
 
         document.getElementById("artifacts-container").appendChild(fragment);
 

@@ -27,6 +27,7 @@
     <script src="{{ url_for('static', filename='javascripts/util/date.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/util/fileutil.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/util/stringutil.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/util/couchdb.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/util/message.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/gui/tabview.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/gui/tableview.js') }}"></script>
@@ -207,28 +208,28 @@
                     <table class="selection" style="margin-top: 4px;">
                         <tr>
                             <td>
-                                <button class="collapsible-menu" id="new-vault">
+                                <button class="collapsible-menu" id="new-pod">
                                     <img src="{{url_for( 'static', filename='images/new.svg')}}"
                                         style="width:24px; height:24px; margin-top:2px; margin-right:4px;"></img>
-                                    <label for="new-vault" style="position:relative; top:-8px;">New POD</label>
+                                    <label for="new-pod" style="position:relative; top:-8px;">New POD</label>
                                 </button>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <button class="collapsible-menu" id="open-vault">
-                                    <img src="{{url_for( 'static', filename='images/open-vault.svg')}}"
+                                <button class="collapsible-menu" id="open-pod">
+                                    <img src="{{url_for( 'static', filename='images/open-pod.svg')}}"
                                         style="width:24px; height:24px; margin-top:2px; margin-right:4px;"></img>
-                                    <label for="open-vault" style="position:relative; top:-8px;">Open POD</label>
+                                    <label for="open-pod" style="position:relative; top:-8px;">Open POD</label>
                                 </button>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <button class="collapsible-menu" id="secure-save">
+                                <button class="collapsible-menu" id="save-pod">
                                     <img src="{{url_for( 'static', filename='images/secure-save.svg')}}"
                                         style="width:24px; height:24px; margin-top:2px;margin-right:4px;"></img>
-                                    <label for="secure-save" style="position:relative; top:-6px;">Save POD</label>
+                                    <label for="save-pod" style="position:relative; top:-6px;">Save POD</label>
                                 </button>
                             </td>
                         </tr>

@@ -17,6 +17,8 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import serialization
 
+import pycouchdb
+
 import parameters as params
 
 views = Blueprint('views', __name__, template_folder='templates')
@@ -26,6 +28,30 @@ app = Flask(__name__)
 Npm(app)
 
 app.register_blueprint(views)
+
+def createInstance(server, name):
+    print(f"Creating: {name}")
+    
+    instance = server.create(name)
+    
+    print(f"Created: {name}")
+       
+    return instance
+
+def getInstance(server, name):
+
+    instance = None
+
+    try:
+        instance = server.database(name)
+    
+    except pycouchdb.exceptions.NotFound as e:
+        print(f"{type(e).__name__} was raised: {e}")
+
+    if instance == None:
+        instance = createInstance(server, name)
+
+    return instance
 
 @app.route("/")
 def start():
@@ -130,6 +156,26 @@ def keys():
     output['private-key-exponent'] = str(public_numbers.e)
 
     print("[KEYS] - KEY: %s" % output['private-key-modulus'])
+
+    return json.dumps(output, sort_keys=True), 200
+
+@app.route("/connect", methods=["GET"])
+def connect():
+
+    output = {}
+
+    couchdb_url = request.values.get('couchdb-url')
+
+    print("[CONNECT] - 'URL: %s' " % (couchdb_url))
+
+    server = pycouchdb.Server(couchdb_url)
+    output['version'] = server.info()['version']
+
+    for key, value in params.CORPUS_MAP.items():
+        print("[CHECKING] - 'Corpus: %s:%s' " % (key, value))
+        getInstance(server, value)
+
+    print("[CONNECTED] - 'Version: %s' " % (output['version']))
 
     return json.dumps(output, sort_keys=True), 200
 

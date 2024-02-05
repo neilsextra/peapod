@@ -113,6 +113,12 @@ window.onload = function () {
 
     });
 
+    document.getElementById("new-vault").addEventListener("click", async function (event) {
+        
+        document.getElementById("new-vault-dialog").showModal();
+
+    });
+
     document.getElementById("new-vault-dialog-ok").addEventListener("click", async function (event) {
         var message = new Message();
 
@@ -143,9 +149,7 @@ window.onload = function () {
         });
    
         fragment = document.createRange().createContextualFragment(value);
-
         document.getElementById("artifacts-container").appendChild(fragment);
-
         document.getElementById("new-vault-dialog").close();
 
     });

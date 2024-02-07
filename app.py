@@ -14,10 +14,9 @@ from flask_npm import Npm
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.x509.oid import NameOID
+from cryptography.x509.oid import NameOID, ObjectIdentifier
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.serialization import BestAvailableEncryption, load_pem_private_key, pkcs12
-
 
 import pycouchdb
 
@@ -100,6 +99,13 @@ def keys():
     builder = builder.add_extension(
         x509.BasicConstraints(ca=False, path_length=None), critical=True,
     )
+
+    oid = NameOID.USER_ID()
+        
+    builder = builder.add_extension(
+        UnrecognizedExtension(oid, b'foo')
+    )
+
     certificate = builder.sign(
         private_key=private_key, algorithm=hashes.SHA256(),
     )
@@ -138,7 +144,7 @@ def save():
     p12 = pkcs12.serialize_key_and_certificates(
         b"friendlyname", key, cert, None, BestAvailableEncryption(b"password")
     )
-    
+
     output = {}
 
     return json.dumps(output, sort_keys=True), 200

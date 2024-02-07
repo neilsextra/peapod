@@ -18,6 +18,7 @@ from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.serialization import BestAvailableEncryption, load_pem_private_key, pkcs12
 
+
 import pycouchdb
 
 import parameters as params
@@ -57,37 +58,6 @@ def getInstance(server, name):
 @app.route("/")
 def start():
     return render_template("index.html")
-
-@app.route("/upload", methods=["POST"])
-def save_document():
-    output = []
-
-    try:
-
-        files = request.files
-
-        for file in files:
-            fileContent = request.files.get(file)
-            data = []
-            stream = codecs.iterdecode(fileContent.stream, 'utf-8')
-            for row in csv.reader(stream, dialect=csv.excel):
-                if row:
-                    print(row)
-                    data.append(row)
-                output.append({
-                     "document": data
-                })
-
-    except Exception as e:
-
-        output = [] 
-
-        output.append({
-            "status": 'fail',
-            "error": str(e)
-        })
-
-    return json.dumps(output, sort_keys=True), 200
 
 @app.route("/keys", methods=["GET"])
 def keys():
@@ -163,6 +133,12 @@ def keys():
 @app.route("/save", methods=["GET"])
 def save():
 
+    cert = x509.load_pem_x509_certificate(ca_cert)
+    key = load_pem_private_key(ca_key, None)
+    p12 = pkcs12.serialize_key_and_certificates(
+        b"friendlyname", key, cert, None, BestAvailableEncryption(b"password")
+    )
+    
     output = {}
 
     return json.dumps(output, sort_keys=True), 200

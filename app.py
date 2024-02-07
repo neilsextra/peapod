@@ -160,23 +160,10 @@ def keys():
 
     return json.dumps(output, sort_keys=True), 200
     
-@app.route("/connect", methods=["GET"])
-def connect():
+@app.route("/save", methods=["GET"])
+def save():
 
     output = {}
-
-    couchdb_url = request.values.get('couchdb-url')
-
-    print("[CONNECT] - 'URL: %s' " % (couchdb_url))
-
-    server = pycouchdb.Server(couchdb_url)
-    output['version'] = server.info()['version']
-
-    for key, value in params.CORPUS_MAP.items():
-        print("[CHECKING] - 'Corpus: %s:%s' " % (key, value))
-        getInstance(server, value)
-
-    print("[CONNECTED] - 'Version: %s' " % (output['version']))
 
     return json.dumps(output, sort_keys=True), 200
 

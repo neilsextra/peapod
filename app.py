@@ -16,6 +16,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.serialization import BestAvailableEncryption, load_pem_private_key, pkcs12
 
 import pycouchdb
 
@@ -158,7 +159,7 @@ def keys():
     print("[KEYS] - KEY: %s" % output['private-key-modulus'])
 
     return json.dumps(output, sort_keys=True), 200
-
+    
 @app.route("/connect", methods=["GET"])
 def connect():
 

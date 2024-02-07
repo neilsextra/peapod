@@ -112,7 +112,7 @@
         </form>
     </dialog>
 
-    <dialog id="new-vault-dialog" class="dialog message-dialog" style="min-width:640px; width:640px">
+    <dialog id="new-pod-dialog" class="dialog message-dialog" style="min-width:640px; width:640px">
         <img src="{{url_for( 'static', filename='images/new.svg')}}" width="32" height="32" style="float: left;" />
 
         <p style="font-size: 18px; font-weight: bold; text-align: top; float: left; margin-top:6px; width:90%">&nbsp;New POD</p>
@@ -158,21 +158,20 @@
                 placeholder="Days..." value="366">
             </input>        
         </div>
-        <button id="new-vault-dialog-ok" class="message-dialog-small-ok-button"
+        <button id="new-pod-dialog-ok" class="message-dialog-small-ok-button"
             style="float: right; margin-top:10px;">Generate</button>
 
-        <button id="new-vault-dialog-cancel" class="close-button message-dialog-small-cancel-button"
+        <button id="new-pod-dialog-cancel" class="close-button message-dialog-small-cancel-button"
             style="float: right; margin-top:10px;">Cancel</button>
         </div>
     </dialog>
 
-    <dialog id="key-generation-results-dialog" class="dialog message-dialog" style="min-width:700px;">
-        <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="24" height="24"
+    <dialog id="pod-creation-results-dialog" class="dialog message-dialog" style="min-width:700px;">
+        <img src="{{url_for( 'static', filename='images/card.svg')}}" width="24" height="24"
             style="float: left;" />
         <p style="font-size: 18px; font-weight: bold; text-align: top; float: left;  margin-top:6px;">
-            &nbsp;Generate/Keys Pair</p>
+            &nbsp;Save to P12</p>
         <p style="height:10px;"></p>
-        <pre id="certificate-pem" style="height:360px;"></pre>
         <form method="dialog">
             <button class="message-dialog-small-button" style="float: right;">OK</button>
         </form>
@@ -218,7 +217,7 @@
                         <tr>
                             <td>
                                 <button class="collapsible-menu" id="open-pod">
-                                    <img src="{{url_for( 'static', filename='images/open-pod.svg')}}"
+                                    <img src="{{url_for( 'static', filename='images/open.svg')}}"
                                         style="width:24px; height:24px; margin-top:2px; margin-right:4px;"></img>
                                     <label for="open-pod" style="position:relative; top:-8px;">Open POD</label>
                                 </button>

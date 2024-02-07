@@ -107,19 +107,13 @@ window.onload = function () {
     
     setCollapsible();
 
-    document.getElementById("new-vault").addEventListener("click", async function (event) {
+    document.getElementById("new-pod").addEventListener("click", async function (event) {
         
-        document.getElementById("new-vault-dialog").showModal();
+        document.getElementById("new-pod-dialog").showModal();
 
     });
 
-    document.getElementById("new-vault").addEventListener("click", async function (event) {
-        
-        document.getElementById("new-vault-dialog").showModal();
-
-    });
-
-    document.getElementById("new-vault-dialog-ok").addEventListener("click", async function (event) {
+    document.getElementById("new-pod-dialog-ok").addEventListener("click", async function (event) {
         var message = new Message();
 
         var issuer = document.getElementById("issuer").value;
@@ -150,7 +144,7 @@ window.onload = function () {
    
         fragment = document.createRange().createContextualFragment(value);
         document.getElementById("artifacts-container").appendChild(fragment);
-        document.getElementById("new-vault-dialog").close();
+        document.getElementById("new-pod-dialog").close();
 
     });
 

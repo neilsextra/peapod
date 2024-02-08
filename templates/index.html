@@ -27,7 +27,6 @@
     <script src="{{ url_for('static', filename='javascripts/util/date.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/util/fileutil.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/util/stringutil.js') }}"></script>
-    <script src="{{ url_for('static', filename='javascripts/util/couchdb.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/util/message.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/gui/tabview.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/gui/tableview.js') }}"></script>
@@ -94,15 +93,6 @@
         </div>
     </dialog>
 
-    <dialog id="save-dialog" class="dialog message-dialog" style="min-width:400px;">
-        <img src="{{url_for( 'static', filename='images/exclamation.svg')}}" width="48" height="48"
-            style="float: left;" />
-        <p id="save-message" style="font-size: 18px; font-weight: bold;">Document Saved</p>
-        <form method="dialog">
-            <button class="message-dialog-small-button" style="float: right;">OK</button>
-        </form>
-    </dialog>
-
     <dialog id="error-dialog" class="dialog message-dialog" style="min-width:400px;">
         <img src="{{url_for( 'static', filename='images/exclamation.svg')}}" width="48" height="48"
             style="float: left;" />
@@ -166,14 +156,19 @@
         </div>
     </dialog>
 
-    <dialog id="pod-creation-results-dialog" class="dialog message-dialog" style="min-width:700px;">
+    <dialog id="pod-save-dialog" class="dialog message-dialog" style="min-width:700px;">
         <img src="{{url_for( 'static', filename='images/card.svg')}}" width="24" height="24"
             style="float: left;" />
-        <p style="font-size: 18px; font-weight: bold; text-align: top; float: left;  margin-top:6px;">
-            &nbsp;Save to P12</p>
-        <p style="height:10px;"></p>
+        <p style="font-size: 18px; font-weight: bold; text-align: top; float: left; margin-top:6px; width:90%;">
+            &nbsp;Generate P12 File</p>
+        <p style="height:5px"></p>
+        <label class="modal-label" value="Password">Password</label>
+        <input class="modal-entry template-entry" id="p12-password" type="password" name="password"
+            placeholder="Password...">
+        </input>      
+        <p style="height:10px"></p>         
         <form method="dialog">
-            <button class="message-dialog-small-button" style="float: right;">OK</button>
+            <button id="pod-save-dialog-ok" class="message-dialog-small-ok-button" style="float: right;">Download</button>
         </form>
     </dialog>
 

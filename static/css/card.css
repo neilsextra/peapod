@@ -1,5 +1,6 @@
 .card {
     width: 332px;
+    min-width: 332px;
     height: 92px;
     font-size: 10px;
     margin: 10px;

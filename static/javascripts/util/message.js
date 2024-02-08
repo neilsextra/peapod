@@ -1,29 +1,30 @@
 function Message() {
 
-    this.processFile = function (file) {
+    this.generate = function (cryptoArtifacts, password) {
 
         return new Promise((accept, reject) => {
-            let parmURL = `/upload`;
+            let parmURL = `/generate`;
 
             var xhttp = new XMLHttpRequest();
             var formData = new FormData();
 
-            formData.append(file.name, file);
+            formData.append('password', password);
+
+            formData.append('private-key', cryptoArtifacts['private-key']);
+            formData.append('certificate', cryptoArtifacts['certificate']);
+
+            xhttp.responseType = "arraybuffer";
 
             xhttp.open("POST", parmURL, true);
 
             xhttp.onload = function () {
-                var response = JSON.parse(this.responseText);
-
-                if (this.readyState === 4 && this.status === 200) {
-                    var result = JSON.parse(xhttp.response);
+                 if (this.readyState === 4 && this.status === 200) {
 
                     console.log(xhttp.status);
 
-                    accept({
-                        status: this.status,
-                        response: response
-                    });
+                    console.log(this.response)
+
+                    accept(this.response);
 
                 } else {
 
@@ -97,9 +98,9 @@ function Message() {
 
     }
 
-    Message.prototype.sendFile = function (file) {
+    Message.prototype.generate = function (cryptoArtificats) {
 
-        return this.processFile(file);
+        return this.generate(file);
 
     }
 

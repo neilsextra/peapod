@@ -3,6 +3,7 @@ from flask import Flask, Blueprint, render_template, request, send_file, Respons
 from os import environ
 from io import StringIO
 
+import io
 import json
 import csv
 import codecs
@@ -17,6 +18,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID, ObjectIdentifier
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.serialization import BestAvailableEncryption, load_pem_private_key, pkcs12
+from cryptography.hazmat.backends import default_backend
 
 import pycouchdb
 
@@ -96,14 +98,12 @@ def keys():
         ),
         critical=False
     )
+    
+    builder = builder.add_extension(x509.UnrecognizedExtension(NameOID.USER_ID, b'b-3434374837483-548984958945894'),
+        critical=False)
+
     builder = builder.add_extension(
         x509.BasicConstraints(ca=False, path_length=None), critical=True,
-    )
-
-    oid = NameOID.USER_ID()
-        
-    builder = builder.add_extension(
-        UnrecognizedExtension(oid, b'foo')
     )
 
     certificate = builder.sign(
@@ -126,7 +126,6 @@ def keys():
     output['subject'] = certificate.subject.rfc4514_string()
     output['key-size'] = private_key.key_size
 
-
     public_numbers = private_key.public_key().public_numbers()
 
     output['private-key-modulus'] = str(public_numbers.n)
@@ -136,18 +135,24 @@ def keys():
 
     return json.dumps(output, sort_keys=True), 200
     
-@app.route("/save", methods=["GET"])
-def save():
+@app.route("/generate", methods=["POST"])
+def generate():
+    password = request.values.get('password')
+    private_key_pem = request.values.get('private-key')
+    certificate_pem = request.values.get('certificate')
 
-    cert = x509.load_pem_x509_certificate(ca_cert)
-    key = load_pem_private_key(ca_key, None)
+    print(certificate_pem)
+    print(private_key_pem)
+
+    certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+
+    key = load_pem_private_key(private_key_pem.encode(), None)
+
     p12 = pkcs12.serialize_key_and_certificates(
-        b"friendlyname", key, cert, None, BestAvailableEncryption(b"password")
+        b"friendlyname", key, certificate, None, BestAvailableEncryption(b"password")
     )
 
-    output = {}
-
-    return json.dumps(output, sort_keys=True), 200
+    return send_file(io.BytesIO(p12), mimetype='application/pdf')
 
 if __name__ == "__main__":
     PORT = int(environ.get('PORT', '8000'))

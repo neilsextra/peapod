@@ -13,17 +13,7 @@ var uploadedFile = null;
 
 var stringUtil = new StringUtil();
 
-/**
- * Get the next ID
- * @returns the next ID
- */
-function getID() {
-
-    id += 1;
-
-    return id;
-
-}
+var cryptoArtificats = null;
 
 /**
  * Capitalize the first letter of a String e.g. "fred" -> "Fred"
@@ -104,7 +94,7 @@ window.onload = function () {
         });
 
     }
-    
+
     setCollapsible();
 
     document.getElementById("new-pod").addEventListener("click", async function (event) {
@@ -119,11 +109,11 @@ window.onload = function () {
         var issuer = document.getElementById("issuer").value;
         var organisation = document.getElementById("organisation").value;
         var cn = document.getElementById("common-name").value;
-        
+
         var keysize = document.getElementById("key-size").value;
         var exponent = document.getElementById("public-exponent").value;
         var validity = document.getElementById("validaty-period").value;
-        
+
         var result = await message.generateKeyPair(issuer, organisation, cn, validity, keysize, exponent)
 
         let template = document.querySelector('script[data-template="certificate-card-item"]').text;
@@ -133,6 +123,8 @@ window.onload = function () {
             "subject": result.response['subject']
         });
 
+        cryptoArtificats = result.response;
+
         let fragment = document.createRange().createContextualFragment(value);
         document.getElementById("artifacts-container").appendChild(fragment);
 
@@ -141,11 +133,27 @@ window.onload = function () {
             "modulus": result.response['private-key-modulus'],
             "exponent": result.response['private-key-exponent']
         });
-   
+
         fragment = document.createRange().createContextualFragment(value);
         document.getElementById("artifacts-container").appendChild(fragment);
+
+        document.getElementById("pod-save-dialog").showModal();
+
+        document.getElementById("")
+
+    });
+
+    document.getElementById("pod-save-dialog-ok").addEventListener("click", async function (event) {
+        var message = new Message();
+
+        var password = document.getElementById("p12-password").value;
+
+        var result = await message.generate(cryptoArtificats, password)
+
+        document.getElementById("pod-save-dialog").close();
         document.getElementById("new-pod-dialog").close();
 
     });
+    
 
 }

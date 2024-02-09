@@ -143,13 +143,14 @@ def generate():
 
     print(certificate_pem)
     print(private_key_pem)
+    print(password)
 
     certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
 
     key = load_pem_private_key(private_key_pem.encode(), None)
 
     p12 = pkcs12.serialize_key_and_certificates(
-        b"friendlyname", key, certificate, None, BestAvailableEncryption(b"password")
+        b"peo-pod-passport", key, certificate, None, BestAvailableEncryption(password.encode())
     )
 
     return send_file(io.BytesIO(p12), mimetype='application/pdf')

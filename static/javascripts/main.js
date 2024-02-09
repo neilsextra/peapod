@@ -137,6 +137,8 @@ window.onload = function () {
         fragment = document.createRange().createContextualFragment(value);
         document.getElementById("artifacts-container").appendChild(fragment);
 
+        document.getElementById("p12-password").value = "";
+
         document.getElementById("pod-save-dialog").showModal();
 
         document.getElementById("")
@@ -149,6 +151,10 @@ window.onload = function () {
         var password = document.getElementById("p12-password").value;
 
         var result = await message.generate(cryptoArtificats, password)
+
+        var fileUtil = new FileUtil(document);
+
+        fileUtil.saveAs(result, "pod.p12");
 
         document.getElementById("pod-save-dialog").close();
         document.getElementById("new-pod-dialog").close();

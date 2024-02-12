@@ -14,6 +14,7 @@ var uploadedFile = null;
 var stringUtil = new StringUtil();
 
 var cryptoArtificats = null;
+var couchdb = null;
 
 /**
  * Capitalize the first letter of a String e.g. "fred" -> "Fred"
@@ -136,12 +137,13 @@ window.onload = function () {
             var result = await message.connect(document.getElementById("couchdb-url").value);
 
             document.getElementById("couchdb-status").innerHTML = `CouchDB Version: ${result['response']['version']} - &#128154;`;
+
+            couchdb = new CouchDB(document.getElementById("couchdb-url").value);
+
             document.getElementById("connect-dialog").close();
             document.getElementById("wait-dialog").close();
 
             document.getElementById("cancel-connect-dialog").style.visibility = "visible";
-
-
 
         } catch (e) {
             document.getElementById("connect-message").innerHTML = e.message;
@@ -163,7 +165,7 @@ window.onload = function () {
         var exponent = document.getElementById("public-exponent").value;
         var validity = document.getElementById("validaty-period").value;
 
-        var result = await message.generateKeyPair(issuer, organisation, cn, validity, keysize, exponent)
+        var result = await message.generateKeyPair(couchdb.getURL(), issuer, organisation, cn, validity, keysize, exponent)
 
         let template = document.querySelector('script[data-template="certificate-card-item"]').text;
         let value = stringUtil.substitute(template, {

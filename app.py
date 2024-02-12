@@ -32,7 +32,16 @@ Npm(app)
 
 app.register_blueprint(views)
 
-def createInstance(server, name):
+template = {
+    "passport" :{
+        "certificate": ""
+    },
+    "certificates": {
+        "active": []
+    }
+}
+
+def create_instance(server, name):
     print(f"Creating: {name}")
     
     instance = server.create(name)
@@ -41,7 +50,7 @@ def createInstance(server, name):
        
     return instance
 
-def getInstance(server, name):
+def get_instance(server, name):
 
     instance = None
 
@@ -52,9 +61,28 @@ def getInstance(server, name):
         print(f"{type(e).__name__} was raised: {e}")
 
     if instance == None:
-        instance = createInstance(server, name)
+        instance = create_instance(server, name)
 
     return instance
+
+def save(instance, document):
+    output = []
+ 
+    try:
+        
+        annotated_document = instance.save(document)
+
+        return annotated_document
+
+    except Exception as e:
+        print(f"{type(e).__name__} was raised: {e}")
+
+        output.append({
+            "status": 'fail',
+            "error": str(e)
+        })   
+
+    return output
 
 @app.route("/")
 def start():
@@ -65,13 +93,16 @@ def connect():
 
     output = {}
 
-    couchdb_url = request.values.get('couchdbURL')
+    couchdb_URL = request.values.get('couchdbURL')
 
-    print("[CONNECT] - 'URL: %s' " % (couchdb_url))
+    print("[CONNECT] - 'URL: %s' " % (couchdb_URL))
 
-    server = pycouchdb.Server(couchdb_url)
+    server = pycouchdb.Server(couchdb_URL)
+
+    get_instance(server, params.PEAPOD_DATABASE)
+    
     output['version'] = server.info()['version']
-
+    
     print("[CONNECTED] - 'Version: %s' " % (output['version']))
 
     return json.dumps(output, sort_keys=True), 200
@@ -80,6 +111,18 @@ def connect():
 def keys():
 
     output = {}
+
+    couchdb_URL = request.values.get('couchdbURL')
+
+    server = pycouchdb.Server(couchdb_URL)
+
+    instance = get_instance(server, params.PEAPOD_DATABASE)
+
+    document = save(instance, template)
+
+    print(json.dumps(document))
+
+    print(document["_id"])
 
     issuer = request.values.get('issuer').lower()
     organisation_name = request.values.get('org').lower()
@@ -115,7 +158,7 @@ def keys():
         critical=False
     )
     
-    builder = builder.add_extension(x509.UnrecognizedExtension(NameOID.USER_ID, b'b-3434374837483-548984958945894'),
+    builder = builder.add_extension(x509.UnrecognizedExtension(NameOID.USER_ID, document["_id"].encode()),
         critical=False)
 
     builder = builder.add_extension(

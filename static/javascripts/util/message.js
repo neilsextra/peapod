@@ -92,11 +92,12 @@ function Message() {
 
     }
     
-    this.getKeyPair = function (issuer, org, cn, validity, keysize, exponent) {
+    this.getKeyPair = function (couchdbURL, issuer, org, cn, validity, keysize, exponent) {
 
         return new Promise((accept, reject) => {
 
-            let parmURL = `/keys?issuer=${encodeURIComponent(issuer)}&` +
+            let parmURL = `/keys?couchdbURL=${encodeURIComponent(couchdbURL)}&` +
+                          `issuer=${encodeURIComponent(issuer)}&` +
                           `org=${encodeURIComponent(org)}&` +
                           `cn=${encodeURIComponent(cn)}&` +
                           `validity=${encodeURIComponent(validity)}&` +
@@ -148,9 +149,9 @@ function Message() {
 
     }
 
-    Message.prototype.generateKeyPair = function (issuer, org, cn, validity, keysize, exponent) {
+    Message.prototype.generateKeyPair = function (couchdbURL, issuer, org, cn, validity, keysize, exponent) {
 
-        return this.getKeyPair(issuer, org, cn, validity, keysize, exponent);
+        return this.getKeyPair(couchdbURL, issuer, org, cn, validity, keysize, exponent);
 
     }
 

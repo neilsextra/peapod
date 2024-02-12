@@ -82,6 +82,15 @@ function setCollapsible() {
 }
 
 /**
+ * Get the Connection
+ */
+async function getConnection() {
+    
+    document.getElementById("connect-dialog").showModal();
+
+}
+
+/**
  * Respond to the Document 'ready' event
  */
 window.onload = function () {
@@ -100,6 +109,46 @@ window.onload = function () {
     document.getElementById("new-pod").addEventListener("click", async function (event) {
         
         document.getElementById("new-pod-dialog").showModal();
+
+    });
+
+    
+    document.getElementById('connect-couchdb').addEventListener('click', (e) => {
+
+        document.getElementById("connect-message").innerHTML = (e != null && e.message != null) ? e.message : "";
+
+        document.getElementById("connect-dialog").showModal();
+
+        return false;
+
+    });
+
+    document.getElementById("ok-connect-dialog").addEventListener("click", async function (event) {
+        var waitDialog = document.getElementById("wait-dialog");
+
+        document.getElementById("details").innerHTML = "";
+
+        try {
+
+            waitDialog.showModal();
+
+            var message = new Message()
+            var result = await message.connect(document.getElementById("couchdb-url").value);
+
+            document.getElementById("couchdb-status").innerHTML = `CouchDB Version: ${result['response']['version']} - &#128154;`;
+            document.getElementById("connect-dialog").close();
+            document.getElementById("wait-dialog").close();
+
+            document.getElementById("cancel-connect-dialog").style.visibility = "visible";
+
+
+
+        } catch (e) {
+            document.getElementById("connect-message").innerHTML = e.message;
+            waitDialog.close();
+        }
+
+        return false;
 
     });
 
@@ -161,5 +210,6 @@ window.onload = function () {
 
     });
     
+    getConnection();
 
 }

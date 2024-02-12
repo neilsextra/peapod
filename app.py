@@ -60,6 +60,22 @@ def getInstance(server, name):
 def start():
     return render_template("index.html")
 
+@app.route("/connect", methods=["GET"])
+def connect():
+
+    output = {}
+
+    couchdb_url = request.values.get('couchdbURL')
+
+    print("[CONNECT] - 'URL: %s' " % (couchdb_url))
+
+    server = pycouchdb.Server(couchdb_url)
+    output['version'] = server.info()['version']
+
+    print("[CONNECTED] - 'Version: %s' " % (output['version']))
+
+    return json.dumps(output, sort_keys=True), 200
+
 @app.route("/keys", methods=["GET"])
 def keys():
 

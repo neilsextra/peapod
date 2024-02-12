@@ -28,6 +28,7 @@
     <script src="{{ url_for('static', filename='javascripts/util/fileutil.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/util/stringutil.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/util/message.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/util/couchDB.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/gui/tabview.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/gui/tableview.js') }}"></script>
     
@@ -100,6 +101,25 @@
         <form method="dialog">
             <button class="message-dialog-small-button" style="float: right;">OK</button>
         </form>
+    </dialog>
+
+    <dialog id="connect-dialog" class="dialog message-dialog" style="min-width:400px;">
+        <img src="{{url_for( 'static', filename='images/connect.svg')}}" width="48" height="48" style="float: left;" />
+        <p style="font-size: 18px; font-weight: bold;">Enter the CouchDB URL</p>
+        <input class="modal-entry" id="couchdb-url" type="text" name="couchdb-url"
+            placeholder="http://userid:password@localhost:5984">
+        </input>
+
+        <div id="connect-message"
+            style="color:rgba(255,0,0,0.6); width:300px; float:left; font-size: 12px; margin-top:8px;"></div>
+
+        <button id="ok-connect-dialog" class="message-dialog-small-button"
+            style="float: right; margin-top:10px;">Connect</button>
+
+        <button id="cancel-connect-dialog" class="close-button message-dialog-small-cancel-button"
+            style="float: right; margin-top:10px; visibility: hidden;">Cancel</button>
+        </div>
+
     </dialog>
 
     <dialog id="new-pod-dialog" class="dialog message-dialog" style="min-width:640px; width:640px">
@@ -189,6 +209,10 @@
                     <a id="update-settings" style="position:absolute; right:2px; top:2px; " class="menu-item">
                         <img src="{{ url_for( 'static', filename='images/settings.svg' ) }}" width="28" height="28" />
                     </a>
+                    
+                    <a id="connect-couchdb" style="position:absolute; left:32px; top:2px; " class="menu-item">
+                        <img src="{{ url_for( 'static', filename='images/connect.svg' ) }}" width="28" height="28" />
+                    </a>
 
                 </div>
 
@@ -230,8 +254,8 @@
 
                         <tr>
                             <td>
-                                <button class="collapsible-menu" id="add-card">
-                                    <img src="{{url_for( 'static', filename='images/card.svg')}}"
+                                <button class="collapsible-menu" id="upload-file">
+                                    <img src="{{url_for( 'static', filename='images/upload.svg')}}"
                                         style="width:24px; height:24px; margin-top:4px; margin-right:4px;"></img>
                                     <label for="upload-file" style="position:relative; top:-8px;">Upload File</label>
                                 </button>
@@ -253,7 +277,7 @@
             <div id="details" class="details"
                 style="position:absolute; top:44px; right:10px; width:575px; bottom: 40px; border: 1px solid rgba(0,0,0, 0.2); overflow:hidden; background-color: white;">
             </div>
-            <div id="status-message" class="status-message" style="position:absolute; bottom:10px; right:6px;">
+            <div id="couchdb-status" class="status-message" style="position:absolute; bottom:10px; right:6px;">
             </div>
         </div>
 

@@ -1,5 +1,49 @@
 function Message() {
 
+    this.connect = function (couchdbURL) {
+
+        return new Promise((accept, reject) => {
+            let parmURL = `/connect?couchdbURL=${encodeURIComponent(couchdbURL)}`;
+
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.open("GET", parmURL, true);
+
+            xhttp.onload = function () {
+                var response = JSON.parse(this.responseText);
+
+                if (this.readyState === 4 && this.status === 200) {
+                    var result = JSON.parse(xhttp.response);
+
+                    console.log(xhttp.status);
+
+                    accept({
+                        status: this.status,
+                        response: response
+                    });
+
+                } else {
+
+                    console.log('ERROR');
+
+                    reject({
+                        status: this.status,
+                        message: this.statusText
+                    });
+
+                }
+
+            };
+
+            xhttp.onerror = function () {
+            };
+
+            xhttp.send();
+
+        });
+
+    }
+
     this.generate = function (cryptoArtifacts, password) {
 
         return new Promise((accept, reject) => {
@@ -107,6 +151,18 @@ function Message() {
     Message.prototype.generateKeyPair = function (issuer, org, cn, validity, keysize, exponent) {
 
         return this.getKeyPair(issuer, org, cn, validity, keysize, exponent);
+
+    }
+
+    Message.prototype.generate = function (cryptoArtificats) {
+
+        return this.generate(file);
+
+    }
+
+    Message.prototype.connect = function (couchdbURL) {
+
+        return this.connect(couchdbURL);
 
     }
 

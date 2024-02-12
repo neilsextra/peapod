@@ -173,6 +173,10 @@ def keys():
 
     output['certificate'] = bytes.decode("UTF-8")
 
+    document["passport"]["certificate"] =  bytes.decode("UTF-8") 
+
+    save(instance, document)
+
     bytes = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.TraditionalOpenSSL,

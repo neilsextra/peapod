@@ -18,6 +18,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID, ObjectIdentifier
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.serialization import BestAvailableEncryption, load_pem_private_key, pkcs12
+from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, NoEncryption
 from cryptography.hazmat.backends import default_backend
 
 import pycouchdb
@@ -204,10 +205,6 @@ def generate():
     private_key_pem = request.values.get('private-key')
     certificate_pem = request.values.get('certificate')
 
-    print(certificate_pem)
-    print(private_key_pem)
-    print(password)
-
     certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
 
     key = load_pem_private_key(private_key_pem.encode(), None)
@@ -217,6 +214,39 @@ def generate():
     )
 
     return send_file(io.BytesIO(p12), mimetype='application/pdf')
+
+@app.route("/open", methods=["POST"])
+def open():
+    output = []
+
+    couchdb_URL = request.values.get('couchdbURL')
+    password = request.values.get('password')
+
+    print("[OPEN] - 'URL: %s' " % (couchdb_URL))
+
+    try:
+
+        files = request.files
+
+        for file in files:
+            passport = request.files.get(file)
+            p12 = pkcs12.load_key_and_certificates(passport, password.encode(), backend=None)
+
+            cert_bytes = p12.get_certificate().to_cryptography().public_bytes(Encoding.DER)
+            pk_bytes = p12.get_privatekey().to_cryptography_key().private_bytes(Encoding.DER, PrivateFormat.PKCS8, NoEncryption())
+
+            
+
+    except Exception as e:
+
+        output = [] 
+
+        output.append({
+            "status": 'fail',
+            "error": str(e)
+        })
+
+    return json.dumps(output, sort_keys=True), 200
 
 if __name__ == "__main__":
     PORT = int(environ.get('PORT', '8000'))

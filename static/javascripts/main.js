@@ -224,12 +224,13 @@ window.onload = function () {
         var fileUtil = new FileUtil(document);
 
         fileUtil.load(async function (files) {
-        
+            passports = [];
+
             for (var file = 0; file < files.length; file++) {
       
                 document.getElementById("upload-passport-file").value = files[file].name;
 
-                passports.append(files[file]);
+                passports.push(files[file]);
 
             }
 
@@ -240,6 +241,11 @@ window.onload = function () {
     });
 
     document.getElementById("upload-passport-dialog-ok").addEventListener("click", async function (event) {
+
+        var password = document.getElementById("passport-password").value;
+
+        var message = new Message();
+        var result = await message.open(couchdb.getURL(), passports[0], password)
 
         document.getElementById("upload-passport-dialog").close();
 

@@ -62,7 +62,7 @@ function Message() {
             xhttp.open("POST", parmURL, true);
 
             xhttp.onload = function () {
-                 if (this.readyState === 4 && this.status === 200) {
+                if (this.readyState === 4 && this.status === 200) {
 
                     console.log(xhttp.status);
 
@@ -91,18 +91,18 @@ function Message() {
         });
 
     }
-    
+
     this.getKeyPair = function (couchdbURL, issuer, org, cn, validity, keysize, exponent) {
 
         return new Promise((accept, reject) => {
 
             let parmURL = `/keys?couchdbURL=${encodeURIComponent(couchdbURL)}&` +
-                          `issuer=${encodeURIComponent(issuer)}&` +
-                          `org=${encodeURIComponent(org)}&` +
-                          `cn=${encodeURIComponent(cn)}&` +
-                          `validity=${encodeURIComponent(validity)}&` +
-                          `keysize=${encodeURIComponent(keysize)}&` +
-                          `exponent=${encodeURIComponent(exponent)}&`;
+                `issuer=${encodeURIComponent(issuer)}&` +
+                `org=${encodeURIComponent(org)}&` +
+                `cn=${encodeURIComponent(cn)}&` +
+                `validity=${encodeURIComponent(validity)}&` +
+                `keysize=${encodeURIComponent(keysize)}&` +
+                `exponent=${encodeURIComponent(exponent)}&`;
 
             var xhttp = new XMLHttpRequest();
 
@@ -141,86 +141,80 @@ function Message() {
 
         });
 
+    }
 
-        this.open = function (file, password) {
+    this.open = function (couchdbURL, file, password) {
 
-            return new Promise((accept, reject) => {
-                let parmURL = `/open`;
-    
-                var xhttp = new XMLHttpRequest();
-                var formData = new FormData();
-    
-                formData.append("password", password);
-                formData.append(file.name, file);
-    
-                xhttp.open("POST", parmURL, true);
-    
-                xhttp.onload = function () {
-                    var response = JSON.parse(this.responseText);
-    
-                    if (this.readyState === 4 && this.status === 200) {
-                        var result = JSON.parse(xhttp.response);
-    
-                        console.log(xhttp.status);
-    
-                        accept({
-                            status: this.status,
-                            response: response
-                        });
-    
-                    } else {
-    
-                        console.log('ERROR');
-    
-                        reject({
-                            status: this.status,
-                            message: this.statusText
-                        });
-    
-                    }
-    
-                };
-    
-                xhttp.onerror = function () {
-                };
-    
-                xhttp.send(formData);
-    
-            });
-    
-        }
+        return new Promise((accept, reject) => {
+            let parmURL = `/open`;
+
+            var xhttp = new XMLHttpRequest();
+            var formData = new FormData();
+
+            formData.append("couchdbURL", couchdbURL);
+            formData.append("password", password);
+            formData.append(file.name, file);
+
+            xhttp.open("POST", parmURL, true);
+
+            xhttp.onload = function () {
+                var response = JSON.parse(this.responseText);
+
+                if (this.readyState === 4 && this.status === 200) {
+                    var result = JSON.parse(xhttp.response);
+
+                    console.log(xhttp.status);
+
+                    accept({
+                        status: this.status,
+                        response: response
+                    });
+
+                } else {
+
+                    console.log('ERROR');
+
+                    reject({
+                        status: this.status,
+                        message: this.statusText
+                    });
+
+                }
+
+            };
+
+            xhttp.onerror = function () {
+            };
+
+            xhttp.send(formData);
+
+        });
 
     }
 
-    Message.prototype.generate = function (cryptoArtificats) {
+}
 
-        return this.generate(file);
+Message.prototype.generate = function (cryptoArtificats) {
 
-    }
+    return this.generate(file);
 
-    Message.prototype.generateKeyPair = function (couchdbURL, issuer, org, cn, validity, keysize, exponent) {
+}
 
-        return this.getKeyPair(couchdbURL, issuer, org, cn, validity, keysize, exponent);
+Message.prototype.generateKeyPair = function (couchdbURL, issuer, org, cn, validity, keysize, exponent) {
 
-    }
+    return this.getKeyPair(couchdbURL, issuer, org, cn, validity, keysize, exponent);
 
-    Message.prototype.generate = function (cryptoArtificats) {
+}
 
-        return this.generate(file);
+Message.prototype.connect = function (couchdbURL) {
 
-    }
+    return this.connect(couchdbURL);
 
-    Message.prototype.connect = function (couchdbURL) {
+}
 
-        return this.connect(couchdbURL);
 
-    }
+Message.prototype.open = function (couchdbURL, file, password) {
 
-    
-    Message.prototype.open = function (file, password) {
-
-        return this.connect(file, password);
-
-    }
+    return this.open(couchdbURL, file, password);
 
 }

@@ -31,7 +31,7 @@
     <script src="{{ url_for('static', filename='javascripts/util/couchDB.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/gui/tabview.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/gui/tableview.js') }}"></script>
-    
+
     <script src="{{ url_for('static', filename='javascripts/gui/guiutil.js') }}"></script>
 
     <!-- templates -->
@@ -80,7 +80,7 @@
 </head>
 
 <body style="overflow: hidden;" oncontextmenu="return false;">
-    
+
     <!-- dialogs -->
 
     <dialog id="wait-dialog" class="dialog"
@@ -125,27 +125,27 @@
     <dialog id="new-pod-dialog" class="dialog message-dialog" style="min-width:640px; width:640px">
         <img src="{{url_for( 'static', filename='images/new.svg')}}" width="32" height="32" style="float: left;" />
 
-        <p style="font-size: 18px; font-weight: bold; text-align: top; float: left; margin-top:6px; width:90%">&nbsp;New POD</p>
+        <p style="font-size: 18px; font-weight: bold; text-align: top; float: left; margin-top:6px; width:90%">&nbsp;New
+            POD</p>
         <div class="modal-body" style="margin-top:12px;">
             <p style="height:-1px"></p>
             <label class="modal-label" value="Issuer">Issuer</label>
-            <input class="modal-entry template-entry" id="issuer" type="text" name="issuer"
-                placeholder="Issuer...">
-            </input>               
+            <input class="modal-entry template-entry" id="issuer" type="text" name="issuer" placeholder="Issuer...">
+            </input>
             <p style="height:-1px"></p>
             <label class="modal-label" value="Organisation">
                 Organisation
             </label>
             <input class="modal-entry template-entry" id="organisation" type="text" name="organisation"
                 placeholder="Organisation...">
-            </input>         
+            </input>
             <p style="height:-1px"></p>
             <label class="modal-label" value="Common Name">
                 Common Name
             </label>
             <input class="modal-entry template-entry" id="common-name" type="text" name="common-name"
                 placeholder="Common Name...">
-            </input>            
+            </input>
             <p style="height:-1px"></p>
             <label class="modal-label" value="Key-Size">
                 Key Size
@@ -166,7 +166,7 @@
             </label>
             <input class="modal-entry template-entry" id="validaty-period" type="number" name="validaty-period"
                 placeholder="Days..." value="366">
-            </input>        
+            </input>
         </div>
         <button id="new-pod-dialog-ok" class="message-dialog-small-ok-button"
             style="float: right; margin-top:10px;">Generate</button>
@@ -177,20 +177,54 @@
     </dialog>
 
     <dialog id="pod-save-dialog" class="dialog message-dialog" style="min-width:700px;">
-        <img src="{{url_for( 'static', filename='images/card.svg')}}" width="24" height="24"
-            style="float: left;" />
+        <img src="{{url_for( 'static', filename='images/card.svg')}}" width="24" height="24" style="float: left;" />
         <p style="font-size: 18px; font-weight: bold; text-align: top; float: left; margin-top:6px; width:90%;">
             &nbsp;Generate P12 File</p>
         <p style="height:5px"></p>
         <label class="modal-label" value="Password">Password</label>
         <input class="modal-entry template-entry" id="p12-password" type="password" name="password"
             placeholder="Password...">
-        </input>      
-        <p style="height:10px"></p>         
+        </input>
+        <p style="height:10px"></p>
         <form method="dialog">
-            <button id="pod-save-dialog-ok" class="message-dialog-small-ok-button" style="float: right;">Download</button>
+            <button id="pod-save-dialog-ok" class="message-dialog-small-ok-button"
+                style="float: right;">Download</button>
         </form>
     </dialog>
+
+    <dialog id="upload-passport-dialog" class="dialog message-dialog" style="min-width:400px;">
+        <img src="{{url_for( 'static', filename='images/upload.svg')}}" width="48" height="48" style="float: left;" />
+        <p style="font-size: 18px; font-weight: bold;">Passport Upload</p>
+        <div>
+            <div>
+                <input class="modal-entry" id="upload-passport-file" style="width:90%;" type="text" name="upload-file-name"
+                    placeholder="Upload Passport..." readonly>
+
+                </input>
+
+                <div style="float:right;padding-top:6px;">
+                    <button id="select-upload-passport" class="message-dialog-small-button">...</button>
+                </div>
+                <input class="modal-entry template-entry" id="passport-password" type="password" name="passport-password"
+                    placeholder="Password...">
+                </input>
+            </div>
+        </div>
+
+        <div id="upload-message"
+            style="color:rgba(255,0,0,0.6); width:300px; float:left; font-size: 12px; margin-top:8px;"></div>
+
+        <div style="margin-top:10px;">
+            <button id="upload-passport-dialog-ok" class="message-dialog-small-ok-button"
+                style="float: right; margin-top:10px;">Upload</button>
+
+            <button id="upload-passport-dialog-close" class="close-button message-dialog-small-cancel-button"
+                style="float: right; margin-top:10px;">Cancel</button>
+        </div>
+
+    </dialog>
+
+
 
     <div style="overflow:hidden; user-select: none;">
         <div style="overflow:hidden;">
@@ -209,7 +243,7 @@
                     <a id="update-settings" style="position:absolute; right:2px; top:2px; " class="menu-item">
                         <img src="{{ url_for( 'static', filename='images/settings.svg' ) }}" width="28" height="28" />
                     </a>
-                    
+
                     <a id="connect-couchdb" style="position:absolute; left:32px; top:2px; " class="menu-item">
                         <img src="{{ url_for( 'static', filename='images/connect.svg' ) }}" width="28" height="28" />
                     </a>
@@ -269,7 +303,8 @@
             <div id="container"
                 style="position:absolute; top:44px; left:460px; right:595px; bottom:40px; border: 1px solid rgba(0,0,0, 0.2); overflow:hidden;">
 
-                <div id="artifacts" style="position:absolute; top:10px; left:10px; right:10px; bottom:10px; font-size:14px; overflow:auto;">
+                <div id="artifacts"
+                    style="position:absolute; top:10px; left:10px; right:10px; bottom:10px; font-size:14px; overflow:auto;">
                     <div id="artifacts-container" class="mainbox">
                     </div>
                 </div>

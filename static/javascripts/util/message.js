@@ -141,6 +141,55 @@ function Message() {
 
         });
 
+
+        this.open = function (file, password) {
+
+            return new Promise((accept, reject) => {
+                let parmURL = `/open`;
+    
+                var xhttp = new XMLHttpRequest();
+                var formData = new FormData();
+    
+                formData.append("password", password);
+                formData.append(file.name, file);
+    
+                xhttp.open("POST", parmURL, true);
+    
+                xhttp.onload = function () {
+                    var response = JSON.parse(this.responseText);
+    
+                    if (this.readyState === 4 && this.status === 200) {
+                        var result = JSON.parse(xhttp.response);
+    
+                        console.log(xhttp.status);
+    
+                        accept({
+                            status: this.status,
+                            response: response
+                        });
+    
+                    } else {
+    
+                        console.log('ERROR');
+    
+                        reject({
+                            status: this.status,
+                            message: this.statusText
+                        });
+    
+                    }
+    
+                };
+    
+                xhttp.onerror = function () {
+                };
+    
+                xhttp.send(formData);
+    
+            });
+    
+        }
+
     }
 
     Message.prototype.generate = function (cryptoArtificats) {
@@ -164,6 +213,13 @@ function Message() {
     Message.prototype.connect = function (couchdbURL) {
 
         return this.connect(couchdbURL);
+
+    }
+
+    
+    Message.prototype.open = function (file, password) {
+
+        return this.connect(file, password);
 
     }
 

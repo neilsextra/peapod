@@ -114,7 +114,6 @@ window.onload = function () {
         document.getElementById("new-pod-dialog").showModal();
 
     });
-
     
     document.getElementById('connect-couchdb').addEventListener('click', (e) => {
 

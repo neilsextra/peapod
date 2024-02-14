@@ -266,6 +266,10 @@ def open():
                     output['issuer'] = artifact.issuer.rfc4514_string()
                     output['subject'] = artifact.subject.rfc4514_string()
 
+                    user_id = artifact.extensions.get_extension_for_oid(NameOID.USER_ID)
+
+                    print(user_id.value)
+
     except Exception as e:
 
         print("[OPEN] - ERROR '%s'" % str(e))

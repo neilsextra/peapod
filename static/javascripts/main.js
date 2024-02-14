@@ -18,6 +18,8 @@ var couchdb = null;
 
 var passports = [];
 
+var id = 0;
+
 /**
  * Capitalize the first letter of a String e.g. "fred" -> "Fred"
  * 
@@ -100,18 +102,23 @@ async function getConnection() {
 function showArtifacts(artifcats) {
     document.getElementById("artifacts-container").innerHTML = "";
 
+    id += 1;
+
     let template = document.querySelector('script[data-template="certificate-card-item"]').text;
     let value = stringUtil.substitute(template, {
+        "id": id,
         "issuer": artifcats['issuer'],
-        "serial": artifcats['serial-number'],
         "subject": artifcats['subject']
     });
+
+    id += 1;
 
     let fragment = document.createRange().createContextualFragment(value);
     document.getElementById("artifacts-container").appendChild(fragment);
 
     template = document.querySelector('script[data-template="key-card-item"]').text;
     value = stringUtil.substitute(template, {
+        "id": id,
         "modulus": artifcats['private-key-modulus'],
         "exponent": artifcats['private-key-exponent']
     });

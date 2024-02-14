@@ -268,7 +268,9 @@ def open():
 
                     user_id = artifact.extensions.get_extension_for_oid(NameOID.USER_ID)
 
-                    print(user_id.value.value)
+                    print(user_id.value.value.decode("utf-8"))
+
+                    output['id'] = user_id.value.value.decode("utf-8")
 
     except Exception as e:
 

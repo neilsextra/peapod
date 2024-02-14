@@ -262,6 +262,10 @@ window.onload = function () {
         var message = new Message();
         var result = await message.open(couchdb.getURL(), passports[0], password)
 
+        cryptoArtificats = result.response;
+
+        showArtifacts(cryptoArtificats)
+
         document.getElementById("upload-passport-dialog").close();
 
         return false;

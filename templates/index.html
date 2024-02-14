@@ -113,7 +113,7 @@
         <div id="connect-message"
             style="color:rgba(255,0,0,0.6); width:300px; float:left; font-size: 12px; margin-top:8px;"></div>
 
-        <button id="ok-connect-dialog" class="message-dialog-small-button"
+        <button id="ok-connect-dialog" class="message-dialog-small-ok-button"
             style="float: right; margin-top:10px;">Connect</button>
 
         <button id="connect-dialog-cancel" class="close-button message-dialog-small-cancel-button"
@@ -123,7 +123,7 @@
     </dialog>
 
     <dialog id="new-pod-dialog" class="dialog message-dialog" style="min-width:640px; width:640px">
-        <img src="{{url_for( 'static', filename='images/new.svg')}}" width="32" height="32" style="float: left;" />
+        <img src="{{url_for( 'static', filename='images/folder.svg')}}" width="32" height="32" style="float: left;" />
 
         <p style="font-size: 18px; font-weight: bold; text-align: top; float: left; margin-top:6px; width:90%">&nbsp;New
             POD</p>
@@ -193,8 +193,8 @@
     </dialog>
 
     <dialog id="upload-passport-dialog" class="dialog message-dialog" style="min-width:400px;">
-        <img src="{{url_for( 'static', filename='images/upload.svg')}}" width="48" height="48" style="float: left;" />
-        <p style="font-size: 18px; font-weight: bold;">Passport Upload</p>
+        <img src="{{url_for( 'static', filename='images/unlock.svg')}}" width="48" height="48" style="float: left;" />
+        <p style="font-size: 18px; font-weight: bold;">Unlock passport</p>
         <div>
             <div>
                 <input class="modal-entry" id="upload-passport-file" style="width:90%;" type="text" name="upload-file-name"
@@ -223,8 +223,6 @@
         </div>
 
     </dialog>
-
-
 
     <div style="overflow:hidden; user-select: none;">
         <div style="overflow:hidden;">
@@ -261,7 +259,7 @@
                         <tr>
                             <td>
                                 <button class="collapsible-menu" id="new-pod">
-                                    <img src="{{url_for( 'static', filename='images/new.svg')}}"
+                                    <img src="{{url_for( 'static', filename='images/folder.svg')}}"
                                         style="width:24px; height:24px; margin-top:2px; margin-right:4px;"></img>
                                     <label for="new-pod" style="position:relative; top:-8px;">New POD</label>
                                 </button>
@@ -270,9 +268,9 @@
                         <tr>
                             <td>
                                 <button class="collapsible-menu" id="open-pod">
-                                    <img src="{{url_for( 'static', filename='images/open.svg')}}"
+                                    <img src="{{url_for( 'static', filename='images/unlock.svg')}}"
                                         style="width:24px; height:24px; margin-top:2px; margin-right:4px;"></img>
-                                    <label for="open-pod" style="position:relative; top:-8px;">Open POD</label>
+                                    <label for="open-pod" style="position:relative; top:-8px;">Unlock Passport</label>
                                 </button>
                             </td>
                         </tr>
@@ -281,7 +279,7 @@
                                 <button class="collapsible-menu" id="save-pod">
                                     <img src="{{url_for( 'static', filename='images/secure-save.svg')}}"
                                         style="width:24px; height:24px; margin-top:2px;margin-right:4px;"></img>
-                                    <label for="save-pod" style="position:relative; top:-6px;">Save POD</label>
+                                    <label for="save-pod" style="position:relative; top:-6px;">Save Passport</label>
                                 </button>
                             </td>
                         </tr>

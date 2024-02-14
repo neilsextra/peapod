@@ -121,10 +121,6 @@ def keys():
 
     document = save(instance, template)
 
-    print(json.dumps(document))
-
-    print(document["_id"])
-
     issuer = request.values.get('issuer').lower()
     organisation_name = request.values.get('org').lower()
     common_name = request.values.get('cn').lower()
@@ -174,7 +170,7 @@ def keys():
 
     output['certificate'] = bytes.decode("UTF-8")
 
-    document["passport"]["certificate"] =  bytes.decode("UTF-8") 
+    document["passport"]["certificate"] = bytes.decode("UTF-8") 
 
     save(instance, document)
 
@@ -184,18 +180,18 @@ def keys():
         encryption_algorithm=serialization.NoEncryption()
     )
     
+    output['id'] =  document["_id"]
     output['private-key'] = bytes.decode("UTF-8")
     output['serial-number'] = '{0:x}'.format(certificate.serial_number)
     output['issuer'] = certificate.issuer.rfc4514_string()
     output['subject'] = certificate.subject.rfc4514_string()
+
     output['key-size'] = private_key.key_size
 
     public_numbers = private_key.public_key().public_numbers()
 
     output['private-key-modulus'] = str(public_numbers.n)
     output['private-key-exponent'] = str(public_numbers.e)
-
-    print("[KEYS] - KEY: %s" % output['private-key-modulus'])
 
     return json.dumps(output, sort_keys=True), 200
     
@@ -217,28 +213,62 @@ def generate():
 
 @app.route("/open", methods=["POST"])
 def open():
-    output = []
+    output = {}
 
     couchdb_URL = request.values.get('couchdbURL')
     password = request.values.get('password')
 
-    print("[OPEN] - 'URL: %s' " % (couchdb_URL))
+    print("[OPEN] Files: %d " % len(request.files))
+
+    print("[OPEN] - URL: '%s' " % (couchdb_URL))
+    print("[OPEN] - Password: '%s' " % (password))
 
     try:
 
         files = request.files
 
         for file in files:
-            passport = request.files.get(file)
-            p12 = pkcs12.load_key_and_certificates(passport, password.encode(), backend=None)
 
-            cert_bytes = p12.get_certificate().to_cryptography().public_bytes(Encoding.DER)
-            pk_bytes = p12.get_privatekey().to_cryptography_key().private_bytes(Encoding.DER, PrivateFormat.PKCS8, NoEncryption())
+            passport = request.files.get(file).stream.read()
+            artifacts = pkcs12.load_key_and_certificates(passport, password.encode(), backend=None)
 
-            
+            print("[OPEN] - Tuples: '%d' " % len(artifacts))
+
+            for artifact in artifacts:
+                print("[OPEN] - Object: '%s' " %  type(artifact).__name__)
+
+                if  type(artifact).__name__ == "_RSAPrivateKey":
+                    print("[OPEN] - Decoding Key")
+
+                    public_numbers = artifact.public_key().public_numbers()
+
+
+                    output['private-key-modulus'] = str(public_numbers.n)
+                    output['private-key-exponent'] = str(public_numbers.e)
+                    
+                    output['key-size'] = artifact.key_size
+
+                    bytes = artifact.private_bytes(
+                                 encoding=serialization.Encoding.PEM,
+                                 format=serialization.PrivateFormat.TraditionalOpenSSL,
+                                 encryption_algorithm=serialization.NoEncryption()
+                    )
+
+                    output['private-key'] = bytes.decode("UTF-8")
+
+                elif type(artifact).__name__ == "Certificate":
+                    print("[OPEN] - Decoding Certifcate")
+
+                    bytes = artifact.public_bytes(serialization.Encoding.PEM)
+
+                    output['certificate'] = bytes.decode("UTF-8")
+                    
+                    output['issuer'] = artifact.issuer.rfc4514_string()
+                    output['subject'] = artifact.subject.rfc4514_string()
 
     except Exception as e:
 
+        print("[OPEN] - ERROR '%s'" % str(e))
         output = [] 
 
         output.append({

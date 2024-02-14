@@ -268,7 +268,7 @@ def open():
 
                     user_id = artifact.extensions.get_extension_for_oid(NameOID.USER_ID)
 
-                    print(user_id.value)
+                    print(user_id.value.value)
 
     except Exception as e:
 

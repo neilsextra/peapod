@@ -193,6 +193,7 @@ window.onload = function () {
     document.getElementById("new-pod-dialog-ok").addEventListener("click", async function (event) {
         var message = new Message();
 
+        var email = document.getElementById("email").value;
         var issuer = document.getElementById("issuer").value;
         var organisation = document.getElementById("organisation").value;
         var cn = document.getElementById("common-name").value;

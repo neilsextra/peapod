@@ -1,5 +1,5 @@
 .card {
-    width: 182px;
+    width: 222px;
     height: 102px;
     font-size: 10px;
     margin: 10px;
@@ -7,10 +7,6 @@
 }
 
 .card:hover {
-    width: 182px;
-    height: 92px;
-    font-size: 10px;
-    margin: 10px;
     background-color: #DCEDFF;
 }
 
@@ -27,7 +23,7 @@
 }
 
 .card-crypto {
-    width: 182px;
+    width: 222px;
     height: 92px;
     font-size: 10px;
     margin: 10px;
@@ -36,7 +32,7 @@
 
 .card-crypto-main {
     position: absolute;
-    width: 160px;
+    width: 200px;
     height: 70px;
     border: 1px solid rgba(0, 0, 0, 0.05);
     font-size: 10px;
@@ -53,7 +49,7 @@
 .card-field {
     font-size: 12px;
     text-overflow: ellipsis;
-    width: 120px;
+    width: 160px;
     border: none;
     outline: none;
     margin-bottom: 5px;

@@ -92,11 +92,12 @@ function Message() {
 
     }
 
-    this.getKeyPair = function (couchdbURL, issuer, org, cn, validity, keysize, exponent) {
+    this.getKeyPair = function (couchdbURL, email, issuer, org, cn, validity, keysize, exponent) {
 
         return new Promise((accept, reject) => {
 
             let parmURL = `/keys?couchdbURL=${encodeURIComponent(couchdbURL)}&` +
+                `email=${encodeURIComponent(email)}&` +
                 `issuer=${encodeURIComponent(issuer)}&` +
                 `org=${encodeURIComponent(org)}&` +
                 `cn=${encodeURIComponent(cn)}&` +
@@ -200,9 +201,9 @@ Message.prototype.generate = function (cryptoArtificats) {
 
 }
 
-Message.prototype.generateKeyPair = function (couchdbURL, issuer, org, cn, validity, keysize, exponent) {
+Message.prototype.generateKeyPair = function (couchdbURL, email, issuer, org, cn, validity, keysize, exponent) {
 
-    return this.getKeyPair(couchdbURL, issuer, org, cn, validity, keysize, exponent);
+    return this.getKeyPair(couchdbURL, email, issuer, org, cn, validity, keysize, exponent);
 
 }
 

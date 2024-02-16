@@ -121,6 +121,7 @@ def keys():
 
     document = save(instance, template)
 
+    email = request.values.get('email').lower()
     issuer = request.values.get('issuer').lower()
     organisation_name = request.values.get('org').lower()
     common_name = request.values.get('cn').lower()
@@ -128,7 +129,7 @@ def keys():
     key_size = int(request.values.get('keysize'))
     exponent = int(request.values.get('exponent'))
 
-    print("[KEYS] - 'CERT: %s - %s - %s - %d - %d - %d" % (issuer, organisation_name, common_name, validity, key_size, exponent))
+    print("[KEYS] - 'CERT: %s - %s - %s - %s - %d - %d - %d" % (email, issuer, organisation_name, common_name, validity, key_size, exponent))
 
     one_day = datetime.timedelta(1, 0, 0)
 
@@ -140,7 +141,8 @@ def keys():
     builder = x509.CertificateBuilder()
     builder = builder.subject_name(x509.Name([
         x509.NameAttribute(NameOID.COMMON_NAME, common_name),
-        x509.NameAttribute(NameOID.ORGANIZATION_NAME, organisation_name)]))
+        x509.NameAttribute(NameOID.ORGANIZATION_NAME, organisation_name),
+        x509.NameAttribute(NameOID.EMAIL_ADDRESS, email)]))
     builder = builder.issuer_name(x509.Name([
         x509.NameAttribute(NameOID.COMMON_NAME, issuer),
     ]))
@@ -185,6 +187,8 @@ def keys():
     output['serial-number'] = '{0:x}'.format(certificate.serial_number)
     output['issuer'] = certificate.issuer.rfc4514_string()
     output['subject'] = certificate.subject.rfc4514_string()
+    output['email'] = certificate.subject.get_attributes_for_oid(NameOID.EMAIL_ADDRESS)[0].value
+    output['id'] = document["_id"]
 
     output['key-size'] = private_key.key_size
 
@@ -192,6 +196,8 @@ def keys():
 
     output['private-key-modulus'] = str(public_numbers.n)
     output['private-key-exponent'] = str(public_numbers.e)
+
+    print(output['subject'])
 
     return json.dumps(output, sort_keys=True), 200
     
@@ -242,7 +248,6 @@ def open():
 
                     public_numbers = artifact.public_key().public_numbers()
 
-
                     output['private-key-modulus'] = str(public_numbers.n)
                     output['private-key-exponent'] = str(public_numbers.e)
                     
@@ -265,6 +270,7 @@ def open():
                     
                     output['issuer'] = artifact.issuer.rfc4514_string()
                     output['subject'] = artifact.subject.rfc4514_string()
+                    output['email'] = artifact.subject.get_attributes_for_oid(NameOID.EMAIL_ADDRESS)[0].value
 
                     user_id = artifact.extensions.get_extension_for_oid(NameOID.USER_ID)
 

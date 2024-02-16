@@ -37,18 +37,17 @@
     <!-- templates -->
 
     <script type="text/template" data-template="certificate-card-item">
-        <div id="card-${id}" class="card-crypto" style="position:relative;" draggable="true" ondragstart="$(this).Drag(event)">
+        <div id="certificate-${id}" class="card-crypto" style="position:relative;" draggable="true" ondragstart="$(this).Drag(event)">
             <div class="card-crypto-main">
                 <div style="position:relative; color:black;">
                     <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="20" height="20" style="float: left;" />
                 </div>
                 <div style="font-size:12px; font-family:Arial, Helvetica, sans-serif; position:absolute; top:5px; bottom:0px; left:30px;">
-                    <label style="font-size:12px; width:100%; margin-top:2px; margin-bottom:5px; border:none; outline: none; background-color: transparent;">
-                        ${issuer}
+                    <label type="text" class="card-field">
+                        ${email}
                     </label>
-                    <p></p>
-                    <label type="text" name="subject" class="card-field"> 
-                        ${subject}
+                    <label type="text" class="card-field"> 
+                        ${id}
                     </label>
                 </div>
             </div>
@@ -56,18 +55,18 @@
     </script>
 
     <script type="text/template" data-template="key-card-item">
-        <div id="card-${id}" class="card-crypto" style="position:relative;" draggable="true" ondragstart="$(this).Drag(event)">
+        <div id="key-${id}" class="card-crypto" style="position:relative;" draggable="true" ondragstart="$(this).Drag(event)">
             <div class="card-crypto-main">
                 <div>
                     <div style="position:relative; color:black;">
                         <img src="{{url_for( 'static', filename='images/keys.svg')}}" width="20" height="20" style="float: left;" />
                     </div>
                     <div style="font-size:12px; font-family:Arial, Helvetica, sans-serif; position:absolute; top:5px; bottom:0px; left:30px;">
-                        <label type="text" name="serial" class="card-field">
-                            ${modulus}
+                        <label type="text" class="card-field">
+                            ${email}
                         </label>
-                        <label type="text" name="serial" class="card-field"> 
-                            ${exponent}
+                        <label type="text" class="card-field"> 
+                            ${id}
                         </label>
                     </div>
                  </div>
@@ -129,7 +128,7 @@
         <div class="modal-body" style="margin-top:12px;">
             <p style="height:-1px"></p>
             <label class="modal-label" value="Email">Email</label>
-            <input class="modal-entry template-entry" id="email" type="text" name="email" placeholder="Email..." value="">
+            <input class="modal-entry template-entry" id="email" type="email" name="email" placeholder="Email..." value="">
             </input>
             <p style="height:-1px"></p>
             <label class="modal-label" value="Issuer">Issuer</label>

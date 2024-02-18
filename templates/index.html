@@ -242,7 +242,7 @@
             &nbsp;Generate P12 File</p>
         <p style="height:5px"></p>
         <label class="modal-label" value="Password">Password</label>
-        <input class="modal-entry template-entry" id="p12-password" type="password" name="password"
+        <input class="modal-entry template-entry" style="width:200px;" id="p12-password" type="password" name="password"
             placeholder="Password...">
         </input>
         <p style="height:10px"></p>
@@ -252,7 +252,7 @@
         </form>
     </dialog>
 
-    <dialog id="upload-passport-dialog" class="dialog message-dialog" style="min-width:400px;">
+    <dialog id="upload-passport-dialog" class="dialog message-dialog" style="min-width:700px;">
         <img src="{{url_for( 'static', filename='images/unlock.svg')}}" width="48" height="48" style="float: left;" />
         <p style="font-size: 18px; font-weight: bold;">Unlock passport</p>
         <div>
@@ -264,7 +264,7 @@
                 <div style="float:right;padding-top:6px;">
                     <button id="select-upload-passport" class="message-dialog-small-button">...</button>
                 </div>
-                <input class="modal-entry template-entry" id="passport-password" type="password"
+                <input class="modal-entry template-entry" style="width:200px;" id="passport-password" type="password"
                     name="passport-password" placeholder="Password...">
                 </input>
             </div>
@@ -283,7 +283,7 @@
 
     </dialog>
 
-    <dialog id="upload-file-dialog" class="dialog message-dialog" style="min-width:400px;">
+    <dialog id="upload-file-dialog" class="dialog message-dialog" syle="min-width:700px;">
         <img src="{{url_for( 'static', filename='images/upload.svg')}}" width="48" height="48" style="float: left;" />
         <p style="font-size: 18px; font-weight: bold;">Upload File</p>
         <div>
@@ -363,7 +363,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <button class="collapsible-menu" id="save-pod">
+                                <button class="collapsible-menu" id="save-passport">
                                     <img src="{{url_for( 'static', filename='images/secure-save.svg')}}"
                                         style="width:20px; height:22px; margin-top:4px;margin-right:4px;"></img>
                                     <label for="save-pod" style="position:relative; top:-5px;">Save Passport</label>

@@ -298,25 +298,47 @@ window.onload = function () {
 
     });
 
-    document.getElementById("select-upload-file").addEventListener("click", async function (event) {
+    
+    document.getElementById("save-passport").addEventListener("click", async function (event) {
 
+        document.getElementById("p12-password").value = "";
+
+        document.getElementById("pod-save-dialog").showModal();
+
+    });
+    
+    document.getElementById("select-upload-file").addEventListener("click", async function (event) {
         var fileUtil = new FileUtil(document);
 
         fileUtil.load(async function (files) {
-            window.artifacts = [];
+            window.files = [];
 
             for (var file = 0; file < files.length; file++) {
 
-                console.log(files[file].name);
-                document.getElementById("upload-file-name").value = files[file].name;
+               document.getElementById("upload-file-name").value = files[file].name;
 
-                window.artifacts.push(files[file]);
+                window.files.push(files[file]);
 
             }
 
         });
 
         return false;
+
+    });
+
+    document.getElementById("upload-file-dialog-ok").addEventListener("click", async function (event) {
+
+        document.getElementById("upload-file-dialog").close();
+        var message = new Message();
+
+        var waitDialog = document.getElementById("wait-dialog");
+
+        waitDialog.showModal();
+
+        var result = await message.upload(couchdb.getURL(), window.cryptoArtificats['private-key'], window.files[0])
+
+        waitDialog.close();
 
     });
 

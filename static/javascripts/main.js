@@ -306,7 +306,7 @@ window.onload = function () {
         document.getElementById("pod-save-dialog").showModal();
 
     });
-    
+
     document.getElementById("select-upload-file").addEventListener("click", async function (event) {
         var fileUtil = new FileUtil(document);
 
@@ -336,7 +336,7 @@ window.onload = function () {
 
         waitDialog.showModal();
 
-        var result = await message.upload(couchdb.getURL(), window.cryptoArtificats['private-key'], window.files[0])
+        var result = await message.upload(couchdb.getURL(), window.cryptoArtificats['certificate'], window.files[0])
 
         waitDialog.close();
 

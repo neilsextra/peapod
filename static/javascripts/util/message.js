@@ -164,6 +164,53 @@ function Message() {
                 if (this.readyState === 4 && this.status === 200) {
                     var result = JSON.parse(xhttp.response);
 
+                    accept({
+                        status: this.status,
+                        response: response
+                    });
+
+                } else {
+
+                    console.log('ERROR');
+
+                    reject({
+                        status: this.status,
+                        message: this.statusText
+                    });
+
+                }
+
+            };
+
+            xhttp.onerror = function () {
+            };
+
+            xhttp.send(formData);
+
+        });
+
+    }
+
+    this.upload = function (couchdbURL, file, certificate) {
+
+        return new Promise((accept, reject) => {
+            let parmURL = `/upload`;
+
+            var xhttp = new XMLHttpRequest();
+            var formData = new FormData();
+
+            formData.append("couchdbURL", couchdbURL);
+            formData.append("certificate", certificate);
+            formData.append(file.name, file);
+
+            xhttp.open("POST", parmURL, true);
+
+            xhttp.onload = function () {
+                var response = JSON.parse(this.responseText);
+
+                if (this.readyState === 4 && this.status === 200) {
+                    var result = JSON.parse(xhttp.response);
+
                     console.log(xhttp.status);
 
                     accept({
@@ -193,29 +240,34 @@ function Message() {
 
     }
 
-}
+    Message.prototype.generate = function (cryptoArtificats) {
 
-Message.prototype.generate = function (cryptoArtificats) {
+        return this.generate(file);
 
-    return this.generate(file);
+    }
 
-}
+    Message.prototype.generateKeyPair = function (couchdbURL, email, issuer, org, cn, validity, keysize, exponent) {
 
-Message.prototype.generateKeyPair = function (couchdbURL, email, issuer, org, cn, validity, keysize, exponent) {
+        return this.getKeyPair(couchdbURL, email, issuer, org, cn, validity, keysize, exponent);
 
-    return this.getKeyPair(couchdbURL, email, issuer, org, cn, validity, keysize, exponent);
+    }
 
-}
+    Message.prototype.connect = function (couchdbURL) {
 
-Message.prototype.connect = function (couchdbURL) {
+        return this.connect(couchdbURL);
 
-    return this.connect(couchdbURL);
+    }
 
-}
+    Message.prototype.open = function (couchdbURL, file, password) {
 
+        return this.open(couchdbURL, file, password);
 
-Message.prototype.open = function (couchdbURL, file, password) {
+    }
 
-    return this.open(couchdbURL, file, password);
+    Message.prototype.upload = function (couchdbURL, file, certificate) {
+
+        return this.upload(couchdbURL, file, certificate);
+
+    }
 
 }

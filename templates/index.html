@@ -37,7 +37,7 @@
     <!-- templates -->
 
     <script type="text/template" data-template="certificate-card-item">
-        <div id="certificate-${id}" class="card-crypto" style="position:relative;" draggable="true" ondragstart="$(this).Drag(event)">
+        <div id="certificate-${id}" class="card-crypto" style="position:relative;" onclick="show('certificate', '${id}');">
             <div class="card-crypto-main">
                 <div style="position:relative; color:black;">
                     <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="20" height="20" style="float: left;" />
@@ -55,7 +55,7 @@
     </script>
 
     <script type="text/template" data-template="key-card-item">
-        <div id="key-${id}" class="card-crypto" style="position:relative;" draggable="true" ondragstart="$(this).Drag(event)">
+        <div id="key-${id}" class="card-crypto" style="position:relative;" onclick="show('key', '${id}');">
             <div class="card-crypto-main">
                 <div>
                     <div style="position:relative; color:black;">
@@ -72,6 +72,63 @@
                  </div>
                 </div>
             </div>
+        </div>
+    </script>
+
+    <script type="text/template" data-template="certificate-details">
+        <div style="margin: 0 auto; margin-top: 6px; text-align:left; padding:10px; overflow:hidden;">
+
+            <div style="position:relative; color:black;">
+                <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="24" height="24" style="float: left; margin:5px;" />
+            </div>
+
+            <h1 style="color:black; font-size:16px; font-weight: bold; margin-top:6px;">Certificate</h1>
+    
+            <p style="height:10px;"></p>
+            <label style="color:navy; font-size:12px; margin-bottom:10px;">ID: ${id}</label>
+            <p style="height:-3px;"></p>
+            <label style="color:navy; font-size:12px; margin-bottom:10px;">Email: ${email}</label>
+            <p style="height:-3px;"></p>
+            <label style="color:navy; font-size:12px; margin-bottom:10px;">Issuer: ${issuer}</label>
+            <p style="height:-3px;"></p>
+            <label style="color:navy; font-size:12px; margin-bottom:10px;">Serial Number: ${serial-number}</label>
+ 
+            <div style="font-size:12px; margin-top:20px;">
+            <h3>Certificate</h3>
+            <hr/>
+            <div style="font-family: monospace; position:relative; margin:5px; height:300px; width:565px;">
+                <p>${certificate}</p>
+            </div>
+            <hr/>
+        </div>
+    </script>
+
+    <script type="text/template" data-template="key-details">
+        <div style="margin: 0 auto; margin-top: 6px; text-align:left; padding:10px; overflow:hidden;">
+            <div style="position:relative; color:black;">
+                <img src="{{url_for( 'static', filename='images/keys.svg')}}" width="24" height="24" style="float: left; margin:5px;" />
+            </div>
+
+            <h1 style="color:black; font-size:16px; font-weight: bold; margin-top:6px;">Private Key</h1>
+            <p style="height:10px;"></p>
+
+            <label style="color:navy; font-size:12px; margin-bottom:10px;">ID: ${id}</label>
+            <p style="height:1px;"></p>
+            <label style="color:navy; font-size:12px; margin-bottom:10px;">Email: ${email}</label>
+            <p style="height:-3px;"></p>
+            <div style="font-size:12px; margin-top:20px;">
+                <h3>Modulus</h3>
+                <hr/>
+                <label style="font-family: monospace; position:relative; margin:5px; height:60px; max-width:175px; word-wrap:break-word;"">
+                    <p style="text-wrap: wrap;">${private-key-modulus}</p>
+                </label>
+            <div style="font-size:12px; margin-top:20px;">
+            <h3>Certificate</h3>
+            <hr/>
+            <div style="font-family: monospace; position:relative; margin:5px; height:300px; width:565px;">
+                <p>${certificate}</p>
+            </div>
+            <hr/>
         </div>
     </script>
 
@@ -128,7 +185,8 @@
         <div class="modal-body" style="margin-top:12px;">
             <p style="height:-1px"></p>
             <label class="modal-label" value="Email">Email</label>
-            <input class="modal-entry template-entry" id="email" type="email" name="email" placeholder="Email..." value="">
+            <input class="modal-entry template-entry" id="email" type="email" name="email" placeholder="Email..."
+                value="">
             </input>
             <p style="height:-1px"></p>
             <label class="modal-label" value="Issuer">Issuer</label>
@@ -199,15 +257,15 @@
         <p style="font-size: 18px; font-weight: bold;">Unlock passport</p>
         <div>
             <div>
-                <input class="modal-entry" id="upload-passport-file" style="width:90%;" type="text" name="upload-passport-name"
-                    placeholder="Upload Passport..." readonly>
+                <input class="modal-entry" id="upload-passport-file" style="width:90%;" type="text"
+                    name="upload-passport-name" placeholder="Upload Passport..." readonly>
                 </input>
 
                 <div style="float:right;padding-top:6px;">
                     <button id="select-upload-passport" class="message-dialog-small-button">...</button>
                 </div>
-                <input class="modal-entry template-entry" id="passport-password" type="password" name="passport-password"
-                    placeholder="Password...">
+                <input class="modal-entry template-entry" id="passport-password" type="password"
+                    name="passport-password" placeholder="Password...">
                 </input>
             </div>
         </div>
@@ -226,11 +284,11 @@
     </dialog>
 
     <dialog id="upload-file-dialog" class="dialog message-dialog" style="min-width:400px;">
-        <img src="{{url_for( 'static', filename='images/unlock.svg')}}" width="48" height="48" style="float: left;" />
+        <img src="{{url_for( 'static', filename='images/upload.svg')}}" width="48" height="48" style="float: left;" />
         <p style="font-size: 18px; font-weight: bold;">Upload File</p>
         <div>
             <div>
-                <input class="modal-entry" id="upload-file" style="width:90%;" type="text" name="upload-file-name"
+                <input class="modal-entry" id="upload-file-name" style="width:90%;" type="text" name="upload-file-name"
                     placeholder="Upload File..." readonly>
                 </input>
 

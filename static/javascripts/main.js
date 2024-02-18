@@ -16,8 +16,6 @@ var stringUtil = new StringUtil();
 var cryptoArtificats = null;
 var couchdb = null;
 
-var passports = [];
-
 /**
  * Capitalize the first letter of a String e.g. "fred" -> "Fred"
  * 
@@ -104,7 +102,7 @@ function showArtifacts(artifcats) {
     let value = stringUtil.substitute(template, {
         "id": artifcats['id'],
         "email": artifcats['email'],
-     });
+    });
 
     let fragment = document.createRange().createContextualFragment(value);
     document.getElementById("artifacts-container").appendChild(fragment);
@@ -113,10 +111,33 @@ function showArtifacts(artifcats) {
     value = stringUtil.substitute(template, {
         "id": artifcats['id'],
         "email": artifcats['email'],
-     });
+    });
 
     fragment = document.createRange().createContextualFragment(value);
     document.getElementById("artifacts-container").appendChild(fragment);
+
+}
+
+
+function show(artificate, id) {
+    document.getElementById("details").innerHTML = "";
+    console.log(JSON.stringify(artificate))
+    console.log(JSON.stringify(window.cryptoArtificats))
+    let template = (artificate == "certificate") ? document.querySelector('script[data-template="certificate-details"]').text
+                                                 : document.querySelector('script[data-template="key-details"]').text;
+
+    let value = stringUtil.substitute(template, {
+        "id": window.cryptoArtificats['id'],
+        "email": window.cryptoArtificats['email'],
+        "private-key-modulus": window.cryptoArtificats['private-key-modulus'],
+        "private-key-exponent": window.cryptoArtificats['private-key-exponent'],
+        "issuer": window.cryptoArtificats['issuer'],
+        "serial-number": window.cryptoArtificats['serial-number'],
+        "certificate": window.cryptoArtificats['certificate']
+    });
+
+    var fragment = document.createRange().createContextualFragment(value);
+    document.getElementById("details").appendChild(fragment);
 
 }
 
@@ -201,7 +222,7 @@ window.onload = function () {
 
         var result = await message.generateKeyPair(couchdb.getURL(), email, issuer, organisation, cn, validity, keysize, exponent)
 
-        cryptoArtificats = result.response;
+        window.cryptoArtificats = result.response;
 
         document.getElementById("p12-password").value = "";
 
@@ -214,7 +235,7 @@ window.onload = function () {
 
         var password = document.getElementById("p12-password").value;
 
-        var result = await message.generate(cryptoArtificats, password)
+        var result = await message.generate(window.cryptoArtificats, password)
 
         var fileUtil = new FileUtil(document);
 
@@ -223,11 +244,13 @@ window.onload = function () {
         document.getElementById("pod-save-dialog").close();
         document.getElementById("new-pod-dialog").close();
 
-        showArtifacts(cryptoArtificats);
+        showArtifacts(window.cryptoArtificats);
 
     });
 
     document.getElementById("open-pod").addEventListener("click", async function (event) {
+
+        document.getElementById("upload-passport-file").value = "";
 
         document.getElementById("upload-passport-dialog").showModal();
 
@@ -237,13 +260,13 @@ window.onload = function () {
         var fileUtil = new FileUtil(document);
 
         fileUtil.load(async function (files) {
-            passports = [];
+            window.passports = [];
 
             for (var file = 0; file < files.length; file++) {
 
                 document.getElementById("upload-passport-file").value = files[file].name;
 
-                passports.push(files[file]);
+                window.passports.push(files[file]);
 
             }
 
@@ -254,17 +277,46 @@ window.onload = function () {
     });
 
     document.getElementById("upload-passport-dialog-ok").addEventListener("click", async function (event) {
-
         var password = document.getElementById("passport-password").value;
 
         var message = new Message();
         var result = await message.open(couchdb.getURL(), passports[0], password)
 
-        cryptoArtificats = result.response;
+        window.cryptoArtificats = result.response;
 
-        showArtifacts(cryptoArtificats)
+        showArtifacts(window.cryptoArtificats)
 
         document.getElementById("upload-passport-dialog").close();
+
+        return false;
+
+    });
+
+    document.getElementById("upload-file").addEventListener("click", async function (event) {
+
+        document.getElementById("upload-file-name").value = "";
+
+        document.getElementById("upload-file-dialog").showModal();
+
+    });
+
+    document.getElementById("select-upload-file").addEventListener("click", async function (event) {
+
+        var fileUtil = new FileUtil(document);
+
+        fileUtil.load(async function (files) {
+            window.artifacts = [];
+
+            for (var file = 0; file < files.length; file++) {
+
+                console.log(files[file].name);
+                document.getElementById("upload-file-name").value = files[file].name;
+
+                window.artifacts.push(files[file]);
+
+            }
+
+        });
 
         return false;
 

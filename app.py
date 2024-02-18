@@ -271,6 +271,7 @@ def open():
                     output['issuer'] = artifact.issuer.rfc4514_string()
                     output['subject'] = artifact.subject.rfc4514_string()
                     output['email'] = artifact.subject.get_attributes_for_oid(NameOID.EMAIL_ADDRESS)[0].value
+                    output['serial-number'] = '{0:x}'.format(artifact.serial_number)
 
                     user_id = artifact.extensions.get_extension_for_oid(NameOID.USER_ID)
 

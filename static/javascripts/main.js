@@ -121,8 +121,6 @@ function showArtifacts(artifcats) {
 
 function show(artificate, id) {
     document.getElementById("details").innerHTML = "";
-    console.log(JSON.stringify(artificate))
-    console.log(JSON.stringify(window.cryptoArtificats))
     let template = (artificate == "certificate") ? document.querySelector('script[data-template="certificate-details"]').text
                                                  : document.querySelector('script[data-template="key-details"]').text;
 

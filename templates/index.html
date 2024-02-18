@@ -236,20 +236,22 @@
         </div>
     </dialog>
 
-    <dialog id="pod-save-dialog" class="dialog message-dialog" style="min-width:700px;">
+    <dialog id="pod-save-dialog" class="dialog message-dialog" style="min-width:500px;">
         <img src="{{url_for( 'static', filename='images/card.svg')}}" width="24" height="24" style="float: left;" />
         <p style="font-size: 18px; font-weight: bold; text-align: top; float: left; margin-top:6px; width:90%;">
             &nbsp;Generate P12 File</p>
         <p style="height:5px"></p>
         <label class="modal-label" value="Password">Password</label>
-        <input class="modal-entry template-entry" style="width:200px;" id="p12-password" type="password" name="password"
+        <input class="modal-entry template-entry" style="width:300px;" id="p12-password" type="password" name="password"
             placeholder="Password...">
         </input>
         <p style="height:10px"></p>
         <form method="dialog">
             <button id="pod-save-dialog-ok" class="message-dialog-small-ok-button"
-                style="float: right;">Download</button>
-        </form>
+                style="float: right; margin-top:10px;">Download</button>
+            <button id="pod-save-dialog-cancel" class="close-button message-dialog-small-cancel-button"
+                style="float: right; margin-top:10px;">Cancel</button>
+         </form>
     </dialog>
 
     <dialog id="upload-passport-dialog" class="dialog message-dialog" style="min-width:700px;">
@@ -283,12 +285,12 @@
 
     </dialog>
 
-    <dialog id="upload-file-dialog" class="dialog message-dialog" syle="min-width:700px;">
+    <dialog id="upload-file-dialog" class="dialog message-dialog" style="min-width:720px;">
         <img src="{{url_for( 'static', filename='images/upload.svg')}}" width="48" height="48" style="float: left;" />
         <p style="font-size: 18px; font-weight: bold;">Upload File</p>
         <div>
             <div>
-                <input class="modal-entry" id="upload-file-name" style="width:90%;" type="text" name="upload-file-name"
+                <input class="modal-entry" id="upload-file-name" style="width:92%;" type="text" name="upload-file-name"
                     placeholder="Upload File..." readonly>
                 </input>
 

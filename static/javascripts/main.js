@@ -68,7 +68,7 @@ function setCollapsible() {
         collapsible[content].addEventListener("click", function () {
 
             this.classList.toggle("collapsible-active");
-
+  
             var content = this.nextElementSibling;
 
             if (content.style.maxHeight) {
@@ -80,6 +80,7 @@ function setCollapsible() {
         });
 
     }
+    
 }
 
 /**

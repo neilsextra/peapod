@@ -315,7 +315,7 @@ window.onload = function () {
 
             for (var file = 0; file < files.length; file++) {
 
-               document.getElementById("upload-file-name").value = files[file].name;
+                document.getElementById("upload-file-name").value = files[file].name;
 
                 window.files.push(files[file]);
 
@@ -336,7 +336,7 @@ window.onload = function () {
 
         waitDialog.showModal();
 
-        var result = await message.upload(couchdb.getURL(), window.cryptoArtificats['certificate'], window.files[0])
+        var result = await message.upload(couchdb.getURL(), window.cryptoArtificats['certificate'], files)
 
         waitDialog.close();
 

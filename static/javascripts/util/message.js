@@ -191,17 +191,20 @@ function Message() {
 
     }
 
-    this.upload = function (couchdbURL, file, certificate) {
+    this.upload = function (couchdbURL, certificate, files) {
 
         return new Promise((accept, reject) => {
             let parmURL = `/upload`;
 
             var xhttp = new XMLHttpRequest();
             var formData = new FormData();
-
+            
             formData.append("couchdbURL", couchdbURL);
             formData.append("certificate", certificate);
-            formData.append(file.name, file);
+
+            for (var file = 0; file < files.length; file++) {
+                formData.append(files[file].name, files[file]);
+            }
 
             xhttp.open("POST", parmURL, true);
 
@@ -264,9 +267,9 @@ function Message() {
 
     }
 
-    Message.prototype.upload = function (couchdbURL, file, certificate) {
+    Message.prototype.upload = function (couchdbURL, certificate, files) {
 
-        return this.upload(couchdbURL, file, certificate);
+        return this.upload(couchdbURL, certificate, files);
 
     }
 

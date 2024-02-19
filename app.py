@@ -20,6 +20,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.serialization import BestAvailableEncryption, load_pem_private_key, pkcs12
 from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, NoEncryption
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.asymmetric import padding
 
 import pycouchdb
 
@@ -84,6 +85,19 @@ def save(instance, document):
         })   
 
     return output
+
+def encrypt_content(certificate, content):
+    message = content
+    ciphertext = certificate.public_key().encrypt(
+       content,
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    )
+
+    return ciphertext
 
 @app.route("/")
 def start():
@@ -291,6 +305,41 @@ def open():
 
     return json.dumps(output, sort_keys=True), 200
 
+@app.route("/upload", methods=["POST"])
+def upload():
+    output = {}
+
+    couchdb_URL = request.values.get('couchdbURL')
+    certificate_pem = request.values.get('certificate')
+
+    print("[UPLOAD] Files: %d " % len(request.files))
+    print("[UPLOAD] - URL: '%s' " % (couchdb_URL))
+    print("[UPLOAD] - Certificate: '%s' " % (certificate_pem))
+
+    try:
+
+        certificate = x509.load_pem_x509_certificate(certificate_pem.encode())        
+        files = request.files
+
+        for file in files:
+
+            content = request.files.get(file).stream.read()
+
+            encrypt_content(certificate, content)
+
+    except Exception as e:
+
+        print("[UPLOAD] - ERROR '%s'" % str(e))
+        output = [] 
+
+        output.append({
+            "status": 'fail',
+            "error": str(e)
+        })
+
+    return json.dumps(output, sort_keys=True), 200
+
+ 
 if __name__ == "__main__":
     PORT = int(environ.get('PORT', '8000'))
     app.run(host='0.0.0.0', port=PORT)

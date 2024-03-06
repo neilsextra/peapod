@@ -12,6 +12,9 @@ from pathlib import Path
 import datetime
 from datetime import timedelta
 from flask_npm import Npm
+
+import base64
+
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import rsa
@@ -21,6 +24,7 @@ from cryptography.hazmat.primitives.serialization import BestAvailableEncryption
 from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, NoEncryption
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import padding
+from  cryptography.fernet import Fernet, MultiFernet
 
 import pycouchdb
 
@@ -86,18 +90,27 @@ def save(instance, document):
 
     return output
 
-def encrypt_content(certificate, content):
-    message = content
+def encrypt_key(certificate, content):
+    message = io.BytesIO(content)
+
     ciphertext = certificate.public_key().encrypt(
-       content,
-        padding.OAEP(
+            message.getvalue(),
+            padding.OAEP(
             mgf=padding.MGF1(algorithm=hashes.SHA256()),
             algorithm=hashes.SHA256(),
             label=None
         )
     )
 
-    return ciphertext
+    return base64.b64encode(ciphertext)
+
+def encrypt_content(certificate, content):
+    key = Fernet.generate_key()
+    f = Fernet(key)
+    token = f.encrypt(content)
+    print(token)
+
+    return token
 
 @app.route("/")
 def start():
@@ -148,7 +161,7 @@ def keys():
     one_day = datetime.timedelta(1, 0, 0)
 
     private_key = rsa.generate_private_key(
-        public_exponent=65537,
+        public_exponent=exponent,
         key_size=key_size,
     )
     public_key = private_key.public_key()
@@ -325,7 +338,8 @@ def upload():
 
             content = request.files.get(file).stream.read()
 
-            encrypt_content(certificate, content)
+            result = encrypt_content(certificate, content)
+           
 
     except Exception as e:
 
@@ -338,7 +352,7 @@ def upload():
         })
 
     return json.dumps(output, sort_keys=True), 200
-
+ 
  
 if __name__ == "__main__":
     PORT = int(environ.get('PORT', '8000'))

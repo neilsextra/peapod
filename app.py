@@ -24,7 +24,7 @@ from cryptography.hazmat.primitives.serialization import BestAvailableEncryption
 from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, NoEncryption
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import padding
-from  cryptography.fernet import Fernet, MultiFernet
+from cryptography.fernet import Fernet, MultiFernet
 
 import pycouchdb
 
@@ -44,7 +44,11 @@ template = {
     },
     "certificates": {
         "active": []
+    },
+    "fernet" : {
+        "key": ""
     }
+
 }
 
 def create_instance(server, name):
@@ -91,10 +95,10 @@ def save(instance, document):
     return output
 
 def encrypt_key(certificate, content):
-    message = io.BytesIO(content)
+    
 
     ciphertext = certificate.public_key().encrypt(
-            message.getvalue(),
+            content,
             padding.OAEP(
             mgf=padding.MGF1(algorithm=hashes.SHA256()),
             algorithm=hashes.SHA256(),
@@ -102,10 +106,11 @@ def encrypt_key(certificate, content):
         )
     )
 
-    return base64.b64encode(ciphertext)
+    return base64.b64encode(ciphertext).decode("UTF-8")
 
 def encrypt_content(certificate, content):
     key = Fernet.generate_key()
+
     f = Fernet(key)
     token = f.encrypt(content)
     print(token)
@@ -200,6 +205,12 @@ def keys():
     output['certificate'] = bytes.decode("UTF-8")
 
     document["passport"]["certificate"] = bytes.decode("UTF-8") 
+
+    key = Fernet.generate_key()
+
+    encrypted_key = encrypt_key(certificate, key)
+
+    document["fernet"]["key"] = encrypted_key 
 
     save(instance, document)
 
@@ -346,15 +357,10 @@ def upload():
         for file in files:
 
             content = request.files.get(file)
+            
+            encrypted_content = encrypt_content(certificate, content)
 
-<<<<<<< HEAD
-            instance.put_attachment(document, content.stream.read(), filename=content.filename, content_type=content.mimetype)
-
-        #    encrypt_content(certificate, content)
-=======
-            result = encrypt_content(certificate, content)
-           
->>>>>>> 976b30783bcbdb5947090a8ec44ddf414dc59b3b
+            instance.put_attachment(document, encrypted_content , filename=content.filename, content_type=content.mimetype)
 
     except Exception as e:
 

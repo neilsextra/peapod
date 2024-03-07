@@ -211,8 +211,6 @@ def keys():
     output['private-key-modulus'] = str(public_numbers.n)
     output['private-key-exponent'] = str(public_numbers.e)
 
-    print(output['subject'])
-
     return json.dumps(output, sort_keys=True), 200
     
 @app.route("/generate", methods=["POST"])
@@ -316,16 +314,29 @@ def upload():
     print("[UPLOAD] - URL: '%s' " % (couchdb_URL))
     print("[UPLOAD] - Certificate: '%s' " % (certificate_pem))
 
+    server = pycouchdb.Server(couchdb_URL)
+
+    instance = get_instance(server, params.PEAPOD_DATABASE)
+
     try:
 
+        certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+
+        user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+
+        print(user_id)
+
+        document = instance.get(user_id)
         certificate = x509.load_pem_x509_certificate(certificate_pem.encode())        
         files = request.files
 
         for file in files:
 
-            content = request.files.get(file).stream.read()
+            content = request.files.get(file)
 
-            encrypt_content(certificate, content)
+            instance.put_attachment(document, content.stream.read(), filename=content.filename, content_type=content.mimetype)
+
+        #    encrypt_content(certificate, content)
 
     except Exception as e:
 

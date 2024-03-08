@@ -45,7 +45,8 @@ template = {
     "certificates": {
         "active": []
     },
-    "keys" : {
+    "fernet" : {
+        "key": ""
     }
 
 }
@@ -94,6 +95,7 @@ def save(instance, document):
     return output
 
 def encrypt_key(certificate, content):
+    
 
     ciphertext = certificate.public_key().encrypt(
             content,
@@ -105,18 +107,6 @@ def encrypt_key(certificate, content):
     )
 
     return base64.b64encode(ciphertext).decode("UTF-8")
-
-def dencrypt_key(private_key, content):
-
-    plaintext = private_key.decrypt(
-        content,
-        padding.OAEP(
-            mgf=padding.MGF1(algorithm=hashes.SHA256()),
-            algorithm=hashes.SHA256(),
-            label=None
-        )
-    )
-
 
 def encrypt_content(certificate, content):
     key = Fernet.generate_key()
@@ -231,7 +221,6 @@ def keys():
     output['subject'] = certificate.subject.rfc4514_string()
     output['email'] = certificate.subject.get_attributes_for_oid(NameOID.EMAIL_ADDRESS)[0].value
     output['id'] = document["_id"]
-    output['token'] = key.decode("utf-8")
 
     output['key-size'] = private_key.key_size
 
@@ -285,6 +274,7 @@ def open():
                 print("[OPEN] - Object: '%s' " %  type(artifact).__name__)
 
                 if  type(artifact).__name__ == "_RSAPrivateKey":
+                    print("[OPEN] - Decoding Key")
 
                     public_numbers = artifact.public_key().public_numbers()
 
@@ -318,14 +308,6 @@ def open():
                     print(user_id.value.value.decode("utf-8"))
 
                     output['id'] = user_id.value.value.decode("utf-8")
-
-                    server = pycouchdb.Server(couchdb_URL)
-
-                    instance = get_instance(server, params.PEAPOD_DATABASE)
-
-                    user_id = artifact.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
-
-                    document = instance.get(user_id)
 
     except Exception as e:
 
@@ -361,13 +343,6 @@ def upload():
         user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
 
         document = instance.get(user_id)
- 
-        key = Fernet.generate_key()
-
-        encrypted_key = encrypt_key(certificate, key)
-
-        document["fernet"]["key"] = encrypted_key 
-        
         certificate = x509.load_pem_x509_certificate(certificate_pem.encode())        
         files = request.files
 
@@ -375,9 +350,18 @@ def upload():
 
             content = request.files.get(file)
             
+            key = Fernet.generate_key()
+
+            encrypted_key = encrypt_key(certificate, key)
+
+            document["key"][content.filename] = encrypted_key 
+
             encrypted_content = encrypt_content(certificate, content)
 
             instance.put_attachment(document, encrypted_content , filename=content.filename, content_type=content.mimetype)
+
+            save(instance, document)
+
 
     except Exception as e:
 

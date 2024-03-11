@@ -132,6 +132,38 @@
         </div>
     </script>
 
+    <script type="text/template" data-template="file-details">
+        <div style="margin: 0 auto; margin-top: 6px; text-align:left; padding:10px; overflow:hidden;">
+
+            <div style="position:relative; color:black;">
+                <img src="{{url_for( 'static', filename='images/file.svg')}}" width="24" height="24" style="float: left; margin:5px;" />
+            </div>
+
+        </div>
+    </script>
+
+
+
+    <script type="text/template" data-template="attachment-card-item">
+        <div id="attachment-${id}" class="card-crypto" style="position:relative;" onclick="show('file', '${filename}');">
+            <div class="card-crypto-main">
+                <div>
+                    <div style="position:relative; color:black;">
+                        <img src="{{url_for( 'static', filename='images/file.svg')}}" width="20" height="20" style="float: left;" />
+                    </div>
+                    <div style="font-size:12px; font-family:Arial, Helvetica, sans-serif; position:absolute; top:5px; bottom:0px; left:30px;">
+                        <label type="text" class="card-field">
+                            ${filename}
+                        </label>
+                        <label type="text" class="card-field"> 
+                            ${mime-type}
+                        </label>
+                    </div>
+                 </div>
+                </div>
+            </div>
+        </div>
+    </script>
 </head>
 
 <body style="overflow: hidden;" oncontextmenu="return false;">

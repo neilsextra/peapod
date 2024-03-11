@@ -45,8 +45,7 @@ template = {
     "certificates": {
         "active": []
     },
-    "fernet" : {
-        "key": ""
+    "keys" : {
     }
 
 }
@@ -75,6 +74,15 @@ def get_instance(server, name):
 
     return instance
 
+def get_document(couchdb_URL, id):
+    server = pycouchdb.Server(couchdb_URL)
+
+    instance = get_instance(server, params.PEAPOD_DATABASE)
+
+    document = instance.get(id)
+
+    return document
+
 def save(instance, document):
     output = []
  
@@ -95,7 +103,6 @@ def save(instance, document):
     return output
 
 def encrypt_key(certificate, content):
-    
 
     ciphertext = certificate.public_key().encrypt(
             content,
@@ -108,9 +115,7 @@ def encrypt_key(certificate, content):
 
     return base64.b64encode(ciphertext).decode("UTF-8")
 
-def encrypt_content(certificate, content):
-    key = Fernet.generate_key()
-
+def encrypt_content(key, content):
     f = Fernet(key)
     token = f.encrypt(content)
     print(token)
@@ -228,6 +233,7 @@ def keys():
 
     output['private-key-modulus'] = str(public_numbers.n)
     output['private-key-exponent'] = str(public_numbers.e)
+    output['document'] = document
 
     return json.dumps(output, sort_keys=True), 200
     
@@ -309,6 +315,10 @@ def open():
 
                     output['id'] = user_id.value.value.decode("utf-8")
 
+                    output['document'] = get_document(couchdb_URL, output['id'])
+
+                    print(output['document'])
+
     except Exception as e:
 
         print("[OPEN] - ERROR '%s'" % str(e))
@@ -354,14 +364,15 @@ def upload():
 
             encrypted_key = encrypt_key(certificate, key)
 
-            document["key"][content.filename] = encrypted_key 
+            document["keys"][content.filename] = encrypted_key 
+            
+            document = save(instance, document)
 
-            encrypted_content = encrypt_content(certificate, content)
+            encrypted_content = encrypt_content(key, content.stream.read())
 
-            instance.put_attachment(document, encrypted_content , filename=content.filename, content_type=content.mimetype)
+            document = instance.put_attachment(document, encrypted_content , filename=content.filename, content_type=content.mimetype)
 
-            save(instance, document)
-
+            output['document'] = document
 
     except Exception as e:
 
@@ -377,5 +388,6 @@ def upload():
  
  
 if __name__ == "__main__":
+    print("Listening: "  + environ.get('PORT', '8000'))
     PORT = int(environ.get('PORT', '8000'))
     app.run(host='0.0.0.0', port=PORT)

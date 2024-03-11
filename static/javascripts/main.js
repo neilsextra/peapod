@@ -117,6 +117,21 @@ function showArtifacts(artifcats) {
     fragment = document.createRange().createContextualFragment(value);
     document.getElementById("artifacts-container").appendChild(fragment);
 
+    var attachments = Object.keys(artifcats.document['_attachments']);
+
+    for(var attachment in attachments) {
+        template = document.querySelector('script[data-template="attachment-card-item"]').text;
+
+        value = stringUtil.substitute(template, {
+            "filename": attachments[attachment],
+            "mime-type": artifcats.document['_attachments'][attachments[attachment]]['content_type']
+        });
+    
+        fragment = document.createRange().createContextualFragment(value);
+        document.getElementById("artifacts-container").appendChild(fragment);
+        
+    }    
+
 }
 
 
@@ -298,7 +313,6 @@ window.onload = function () {
         document.getElementById("upload-file-dialog").showModal();
 
     });
-
     
     document.getElementById("save-passport").addEventListener("click", async function (event) {
 

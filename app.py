@@ -118,7 +118,6 @@ def encrypt_key(certificate, content):
 def encrypt_content(key, content):
     f = Fernet(key)
     token = f.encrypt(content)
-    print(token)
 
     return token
 
@@ -311,13 +310,9 @@ def open():
 
                     user_id = artifact.extensions.get_extension_for_oid(NameOID.USER_ID)
 
-                    print(user_id.value.value.decode("utf-8"))
-
                     output['id'] = user_id.value.value.decode("utf-8")
-
                     output['document'] = get_document(couchdb_URL, output['id'])
 
-                    print(output['document'])
 
     except Exception as e:
 
@@ -373,6 +368,8 @@ def upload():
             document = instance.put_attachment(document, encrypted_content , filename=content.filename, content_type=content.mimetype)
 
             output['document'] = document
+
+            print(output)
 
     except Exception as e:
 

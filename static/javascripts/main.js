@@ -68,7 +68,7 @@ function setCollapsible() {
         collapsible[content].addEventListener("click", function () {
 
             this.classList.toggle("collapsible-active");
-  
+
             var content = this.nextElementSibling;
 
             if (content.style.maxHeight) {
@@ -80,7 +80,7 @@ function setCollapsible() {
         });
 
     }
-    
+
 }
 
 /**
@@ -119,39 +119,54 @@ function showArtifacts(artifcats) {
 
     var attachments = Object.keys(artifcats.document['_attachments']);
 
-    for(var attachment in attachments) {
+    for (var attachment in attachments) {
+
+        console.log(attachments[attachment]);
+
         template = document.querySelector('script[data-template="attachment-card-item"]').text;
 
         value = stringUtil.substitute(template, {
             "filename": attachments[attachment],
             "mime-type": artifcats.document['_attachments'][attachments[attachment]]['content_type']
         });
-    
+
         fragment = document.createRange().createContextualFragment(value);
         document.getElementById("artifacts-container").appendChild(fragment);
-        
-    }    
+
+    }
 
 }
 
-
 function show(artificate, id) {
     document.getElementById("details").innerHTML = "";
-    let template = (artificate == "certificate") ? document.querySelector('script[data-template="certificate-details"]').text
-                                                 : document.querySelector('script[data-template="key-details"]').text;
 
-    let value = stringUtil.substitute(template, {
-        "id": window.cryptoArtificats['id'],
-        "email": window.cryptoArtificats['email'],
-        "private-key-modulus": window.cryptoArtificats['private-key-modulus'],
-        "private-key-exponent": window.cryptoArtificats['private-key-exponent'],
-        "issuer": window.cryptoArtificats['issuer'],
-        "serial-number": window.cryptoArtificats['serial-number'],
-        "certificate": window.cryptoArtificats['certificate']
-    });
+    if (artificate == 'attachment') {
+        let template =  document.querySelector('script[data-template="attachment-details"]').text
+        let value = stringUtil.substitute(template, {
+            "filename": id
+        });
 
-    var fragment = document.createRange().createContextualFragment(value);
-    document.getElementById("details").appendChild(fragment);
+        var fragment = document.createRange().createContextualFragment(value);
+        document.getElementById("details").appendChild(fragment);
+
+    } else {
+        let template = (artificate == "certificate") ? document.querySelector('script[data-template="certificate-details"]').text
+        : document.querySelector('script[data-template="key-details"]').text;
+
+        let value = stringUtil.substitute(template, {
+            "id": window.cryptoArtificats['id'],
+            "email": window.cryptoArtificats['email'],
+            "private-key-modulus": window.cryptoArtificats['private-key-modulus'],
+            "private-key-exponent": window.cryptoArtificats['private-key-exponent'],
+            "issuer": window.cryptoArtificats['issuer'],
+            "serial-number": window.cryptoArtificats['serial-number'],
+            "certificate": window.cryptoArtificats['certificate']
+        });
+
+        var fragment = document.createRange().createContextualFragment(value);
+        document.getElementById("details").appendChild(fragment);
+
+    }
 
 }
 
@@ -313,7 +328,7 @@ window.onload = function () {
         document.getElementById("upload-file-dialog").showModal();
 
     });
-    
+
     document.getElementById("save-passport").addEventListener("click", async function (event) {
 
         document.getElementById("p12-password").value = "";
@@ -352,6 +367,10 @@ window.onload = function () {
         waitDialog.showModal();
 
         var result = await message.upload(couchdb.getURL(), window.cryptoArtificats['certificate'], files)
+
+        window.cryptoArtificats['document'] = result.response['document'];
+
+        showArtifacts(window.cryptoArtificats);
 
         waitDialog.close();
 

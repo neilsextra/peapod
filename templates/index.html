@@ -75,6 +75,27 @@
         </div>
     </script>
 
+    <script type="text/template" data-template="attachment-card-item">
+        <div id="attachment-${id}" class="card-crypto" style="position:relative;" onclick="show('attachment', '${filename}');">
+            <div class="card-crypto-main">
+                <div>
+                    <div style="position:relative; color:black;">
+                        <img src="{{url_for( 'static', filename='images/file.svg')}}" width="20" height="20" style="float: left;" />
+                    </div>
+                    <div style="font-size:12px; font-family:Arial, Helvetica, sans-serif; position:absolute; top:5px; bottom:0px; left:30px;">
+                        <label type="text" class="card-field">
+                            ${filename}
+                        </label>
+                        <label type="text" class="card-field"> 
+                            ${mime-type}
+                        </label>
+                    </div>
+                 </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
     <script type="text/template" data-template="certificate-details">
         <div style="margin: 0 auto; margin-top: 6px; text-align:left; padding:10px; overflow:hidden;">
 
@@ -95,11 +116,11 @@
  
             <div style="font-size:12px; margin-top:20px;">
             <h3>Certificate</h3>
-            <hr/>
-            <div style="font-family: monospace; position:relative; margin:5px; height:300px; width:565px;">
-                <p>${certificate}</p>
+            <div style="font-family: monospace; position:relative; margin:5px; width:445px; height:360px; overflow-y:auto;">
+                <div>
+                    ${certificate}
+                </div>
             </div>
-            <hr/>
         </div>
     </script>
 
@@ -118,52 +139,38 @@
             <p style="height:-3px;"></p>
             <div style="font-size:12px; margin-top:20px;">
                 <h3>Modulus</h3>
-                <hr/>
-                <label style="font-family: monospace; position:relative; margin:5px; height:60px; max-width:175px; word-wrap:break-word;"">
+                <label style="font-family: monospace; position:relative; height:60px; max-width:175px; word-wrap:break-word;"">
                     <p style="text-wrap: wrap;">${private-key-modulus}</p>
                 </label>
             <div style="font-size:12px; margin-top:20px;">
+            <p style="height:3px;"></p>
             <h3>Certificate</h3>
-            <hr/>
-            <div style="font-family: monospace; position:relative; margin:5px; height:300px; width:565px;">
-                <p>${certificate}</p>
+            <div style="font-family: monospace; position:relative; margin:5px; width:445px; height:360px; overflow-y:auto;">
+                <div>
+                    ${certificate}
+                </div
             </div>
-            <hr/>
         </div>
     </script>
 
-    <script type="text/template" data-template="file-details">
+    <script type="text/template" data-template="attachment-details">
         <div style="margin: 0 auto; margin-top: 6px; text-align:left; padding:10px; overflow:hidden;">
 
             <div style="position:relative; color:black;">
                 <img src="{{url_for( 'static', filename='images/file.svg')}}" width="24" height="24" style="float: left; margin:5px;" />
             </div>
-
-        </div>
-    </script>
-
-
-
-    <script type="text/template" data-template="attachment-card-item">
-        <div id="attachment-${id}" class="card-crypto" style="position:relative;" onclick="show('file', '${filename}');">
-            <div class="card-crypto-main">
-                <div>
-                    <div style="position:relative; color:black;">
-                        <img src="{{url_for( 'static', filename='images/file.svg')}}" width="20" height="20" style="float: left;" />
-                    </div>
-                    <div style="font-size:12px; font-family:Arial, Helvetica, sans-serif; position:absolute; top:5px; bottom:0px; left:30px;">
-                        <label type="text" class="card-field">
-                            ${filename}
-                        </label>
-                        <label type="text" class="card-field"> 
-                            ${mime-type}
-                        </label>
-                    </div>
-                 </div>
-                </div>
+            <h1 style="color:black; font-size:16px; font-weight: bold; margin-top:6px;">${filename}</h1>
+ 
+            <div style="position:absolute; bottom:10px; height:36px; left:10px; right:10px;">
+                <span style="float:right; border:1px solid rgb(230,230,230); background-color:rgba(255,255,255,0.8); margin:3px; padding:3px; ">
+                    <img id="view-attachment" class="menu-item" style="margin-right:5px; margin-top:-1;" src="{{url_for( 'static', filename='images/expand.svg')}}" width="24" height="24" />
+                    <img id="delete-document" class="menu-item" style="margin-top:2px;" src="{{url_for( 'static', filename='images/trash.svg')}}" width="24" height="24" /> 
+               </span>
             </div>
         </div>
+        </div>
     </script>
+
 </head>
 
 <body style="overflow: hidden;" oncontextmenu="return false;">

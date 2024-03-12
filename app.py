@@ -132,7 +132,7 @@ def connect():
 
     couchdb_URL = request.values.get('couchdbURL')
 
-    print("[CONNECT] - 'URL: %s' " % (couchdb_URL))
+    print("[CONNECT] 'URL: %s' " % (couchdb_URL))
 
     server = pycouchdb.Server(couchdb_URL)
 
@@ -140,7 +140,7 @@ def connect():
     
     output['version'] = server.info()['version']
     
-    print("[CONNECTED] - 'Version: %s' " % (output['version']))
+    print("[CONNECTED] 'Version: %s' " % (output['version']))
 
     return json.dumps(output, sort_keys=True), 200
 
@@ -261,8 +261,8 @@ def open():
 
     print("[OPEN] Files: %d " % len(request.files))
 
-    print("[OPEN] - URL: '%s' " % (couchdb_URL))
-    print("[OPEN] - Password: '%s' " % (password))
+    print("[OPEN] URL: '%s' " % (couchdb_URL))
+    print("[OPEN] Password: '%s' " % (password))
 
     try:
 
@@ -273,7 +273,7 @@ def open():
             passport = request.files.get(file).stream.read()
             artifacts = pkcs12.load_key_and_certificates(passport, password.encode(), backend=None)
 
-            print("[OPEN] - Tuples: '%d' " % len(artifacts))
+            print("[OPEN] Tuples: '%d' " % len(artifacts))
 
             for artifact in artifacts:
                 print("[OPEN] - Object: '%s' " %  type(artifact).__name__)
@@ -334,14 +334,15 @@ def upload():
     certificate_pem = request.values.get('certificate')
 
     print("[UPLOAD] Files: %d " % len(request.files))
-    print("[UPLOAD] - URL: '%s' " % (couchdb_URL))
-    print("[UPLOAD] - Certificate: '%s' " % (certificate_pem))
+    print("[UPLOAD] URL: '%s' " % (couchdb_URL))
+    print("[UPLOAD] Certificate: '%s' " % (certificate_pem))
 
-    server = pycouchdb.Server(couchdb_URL)
-
-    instance = get_instance(server, params.PEAPOD_DATABASE)
-
+ 
     try:
+
+        server = pycouchdb.Server(couchdb_URL)
+
+        instance = get_instance(server, params.PEAPOD_DATABASE)
 
         certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
 
@@ -383,7 +384,39 @@ def upload():
 
     return json.dumps(output, sort_keys=True), 200
  
- 
+@app.route("/download", methods=["POST"])
+def download():
+    output = {}
+
+    couchdb_URL = request.values.get('couchdbURL')
+    certificate_pem = request.values.get('certificate')
+    private_key_pem = request.values.get('key')
+    attachment = request.values.get('attachment')
+
+    print("[DOWNLOAD] CouchDB URL: %s " % (couchdb_URL))
+    print("[DOWNLOAD] Certificate: %s " % (certificate_pem))
+    print("[DOWNLOAD] Private Key: %s " % (private_key_pem))
+    print("[DOWNLOAD] Attachment: '%s' " % (attachment))
+
+    server = pycouchdb.Server(couchdb_URL)
+
+    instance = get_instance(server, params.PEAPOD_DATABASE)
+
+    certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+
+    user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+
+    document = instance.get(user_id)
+    
+    private_key = serialization.load_pem_private_key(
+        private_key_pem.encode('utf-8'),
+        password=None,
+    )
+
+    server = pycouchdb.Server(couchdb_URL)
+
+    return json.dumps(output, sort_keys=True), 200
+
 if __name__ == "__main__":
     print("Listening: "  + environ.get('PORT', '8000'))
     PORT = int(environ.get('PORT', '8000'))

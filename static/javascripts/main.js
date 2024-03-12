@@ -137,11 +137,16 @@ function showArtifacts(artifcats) {
 
 }
 
+/**
+ * Show the details about the Artifcat in the Detail's Pane
+ * @param {*} artificate the type of artifact, certificate, key, file, etc
+ * @param {*} id the identifier of the artifact
+ */
 function show(artificate, id) {
     document.getElementById("details").innerHTML = "";
 
     if (artificate == 'attachment') {
-        let template =  document.querySelector('script[data-template="attachment-details"]').text
+        let template = document.querySelector('script[data-template="attachment-details"]').text
         let value = stringUtil.substitute(template, {
             "filename": id
         });
@@ -151,7 +156,7 @@ function show(artificate, id) {
 
     } else {
         let template = (artificate == "certificate") ? document.querySelector('script[data-template="certificate-details"]').text
-        : document.querySelector('script[data-template="key-details"]').text;
+            : document.querySelector('script[data-template="key-details"]').text;
 
         let value = stringUtil.substitute(template, {
             "id": window.cryptoArtificats['id'],
@@ -167,6 +172,13 @@ function show(artificate, id) {
         document.getElementById("details").appendChild(fragment);
 
     }
+
+}
+
+async function view(artificate, id) {
+    var message = new Message()
+    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id)
+
 
 }
 

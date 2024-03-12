@@ -243,6 +243,56 @@ function Message() {
 
     }
 
+    this.download = function (couchdbURL, certificate, key, attachment) {
+
+        return new Promise((accept, reject) => {
+            let parmURL = `/download`;
+
+            var xhttp = new XMLHttpRequest();
+            var formData = new FormData();
+            
+            formData.append("couchdbURL", couchdbURL);
+            formData.append("certificate", certificate);
+            formData.append("key", key);
+            formData.append("attachment", attachment);
+
+            xhttp.open("POST", parmURL, true);
+
+            xhttp.onload = function () {
+                var response = JSON.parse(this.responseText);
+
+                if (this.readyState === 4 && this.status === 200) {
+                    var result = JSON.parse(xhttp.response);
+
+                    console.log(xhttp.status);
+
+                    accept({
+                        status: this.status,
+                        response: response
+                    });
+
+                } else {
+
+                    console.log('ERROR');
+
+                    reject({
+                        status: this.status,
+                        message: this.statusText
+                    });
+
+                }
+
+            };
+
+            xhttp.onerror = function () {
+            };
+
+            xhttp.send(formData);
+
+        });
+
+    }
+
     Message.prototype.generate = function (cryptoArtificats) {
 
         return this.generate(file);
@@ -270,6 +320,12 @@ function Message() {
     Message.prototype.upload = function (couchdbURL, certificate, files) {
 
         return this.upload(couchdbURL, certificate, files);
+
+    }
+    
+    Message.prototype.download = function (couchdbURL, certificate, key, filename) {
+
+        return this.download(couchdbURL, certificate, key, filename);
 
     }
 

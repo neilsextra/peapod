@@ -121,6 +121,27 @@ def encrypt_content(key, content):
 
     return token
 
+def decrypt_content(key, content):
+    f = Fernet(key)
+    decrypted_content = f.decrypt(content)
+
+    print("Decrypted Content")
+    print(decrypted_content)
+
+    return decrypted_content
+
+def decrypt_key(private_key, ciphertext):
+    plaintext = private_key.decrypt(
+        ciphertext,
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    )
+
+    return plaintext
+
 @app.route("/")
 def start():
     return render_template("index.html")
@@ -349,6 +370,7 @@ def upload():
         user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
 
         document = instance.get(user_id)
+
         certificate = x509.load_pem_x509_certificate(certificate_pem.encode())        
         files = request.files
 
@@ -386,36 +408,66 @@ def upload():
  
 @app.route("/download", methods=["POST"])
 def download():
-    output = {}
 
-    couchdb_URL = request.values.get('couchdbURL')
-    certificate_pem = request.values.get('certificate')
-    private_key_pem = request.values.get('key')
-    attachment = request.values.get('attachment')
+    try:
+        couchdb_URL = request.values.get('couchdbURL')
+        certificate_pem = request.values.get('certificate')
+        private_key_pem = request.values.get('key')
+        attachment_name = request.values.get('attachment')
 
-    print("[DOWNLOAD] CouchDB URL: %s " % (couchdb_URL))
-    print("[DOWNLOAD] Certificate: %s " % (certificate_pem))
-    print("[DOWNLOAD] Private Key: %s " % (private_key_pem))
-    print("[DOWNLOAD] Attachment: '%s' " % (attachment))
+        print("[DOWNLOAD] CouchDB URL: %s " % (couchdb_URL))
+        print("[DOWNLOAD] Certificate: %s " % (certificate_pem))
+        print("[DOWNLOAD] Private Key: %s " % (private_key_pem))
+        print("[DOWNLOAD] Attachment: '%s' " % (attachment_name))
 
-    server = pycouchdb.Server(couchdb_URL)
+        server = pycouchdb.Server(couchdb_URL)
 
-    instance = get_instance(server, params.PEAPOD_DATABASE)
+        instance = get_instance(server, params.PEAPOD_DATABASE)
 
-    certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+        certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
 
-    user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+        user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
 
-    document = instance.get(user_id)
-    
-    private_key = serialization.load_pem_private_key(
-        private_key_pem.encode('utf-8'),
-        password=None,
-    )
+        document = instance.get(user_id)
+        
+        private_key = serialization.load_pem_private_key(
+            private_key_pem.encode('utf-8'),
+            password=None,
+        )
 
-    server = pycouchdb.Server(couchdb_URL)
+        server = pycouchdb.Server(couchdb_URL)
 
-    return json.dumps(output, sort_keys=True), 200
+        certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+
+        user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+
+        document = instance.get(user_id)
+
+        encoded_key = document['keys'][attachment_name]
+
+        session_key = decrypt_key(private_key, base64.b64decode(encoded_key))
+
+        print("key")
+        print(session_key.decode("utf-8"))
+
+        attachment_bytes = instance.get_attachment(document, attachment_name, False)
+
+        decrypted_bytes = decrypt_content(session_key.decode("utf-8"), attachment_bytes)
+
+        return send_file(io.BytesIO(decrypted_bytes), mimetype=document['_attachments'][attachment_name]['content_type'])
+
+    except Exception as e:
+
+        print("[UPLOAD] - ERROR '%s'" % str(e))
+        output = [] 
+
+        output.append({
+            "status": 'fail',
+            "error": str(e)
+        })
+
+    return json.dumps(output, sort_keys=True), 500
+ 
 
 if __name__ == "__main__":
     print("Listening: "  + environ.get('PORT', '8000'))

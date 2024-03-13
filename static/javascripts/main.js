@@ -16,6 +16,42 @@ var stringUtil = new StringUtil();
 var cryptoArtificats = null;
 var couchdb = null;
 
+var tableView = null;
+
+class DataView extends SyncTableModel {
+
+    constructor(columns, data) {
+        super();
+
+        this.__columns = columns;
+        this.__data = data;
+        this.__records = data.length;
+    }
+
+    get Length() {
+        return this.__records;
+    }
+
+    getCellSync(i, j, cb) {
+
+        return this.__data[i][j];
+
+    }
+
+    getHeaderSync(j) {
+
+        return this.__columns[j];
+
+    };
+
+    hasCell(i, j) {
+
+        return i < this.__data.length && j < this.__columns.length;
+
+    }
+
+}
+
 /**
  * Capitalize the first letter of a String e.g. "fred" -> "Fred"
  * 
@@ -179,6 +215,50 @@ async function view(artificate, id) {
     var message = new Message()
     var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id)
 
+    let results = Papa.parse(result);
+    let lines = results.data;
+    rows = [];
+    columns = null;
+    let widths = [];
+
+    loop: for (var line in lines) {
+
+        if (!columns) {
+            columns = lines[line];
+            for (var iColumn in columns) {
+
+                widths.push(300);
+
+            }
+
+        } else {
+
+            if (lines[line].length == columns.length) {
+                rows.push(lines[line]);
+            }
+
+        }
+
+    }
+
+    alert(JSON.stringify(rows));
+
+    let dataview = new DataView(columns, rows);
+    let painter = new Painter();
+
+    tableView = new TableView({
+        "container": "#table",
+        "model": dataview,
+        "nbRows": dataview.Length,
+        "rowHeight": 20,
+        "headerHeight": 20,
+        "painter": painter,
+        "columnWidths": widths
+    });
+
+    document.getElementById('table').style.display = "inline-block";
+
+    document.getElementById("display-csv-dialog").showModal();
 
 }
 

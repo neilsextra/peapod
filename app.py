@@ -417,7 +417,6 @@ def download():
 
         print("[DOWNLOAD] CouchDB URL: %s " % (couchdb_URL))
         print("[DOWNLOAD] Certificate: %s " % (certificate_pem))
-        print("[DOWNLOAD] Private Key: %s " % (private_key_pem))
         print("[DOWNLOAD] Attachment: '%s' " % (attachment_name))
 
         server = pycouchdb.Server(couchdb_URL)
@@ -446,9 +445,6 @@ def download():
         encoded_key = document['keys'][attachment_name]
 
         session_key = decrypt_key(private_key, base64.b64decode(encoded_key))
-
-        print("key")
-        print(session_key.decode("utf-8"))
 
         attachment_bytes = instance.get_attachment(document, attachment_name, False)
 

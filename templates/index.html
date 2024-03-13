@@ -34,6 +34,8 @@
 
     <script src="{{ url_for('static', filename='javascripts/gui/guiutil.js') }}"></script>
 
+    <script src="{{ npm_url_for(component='papaparse', filename='papaparse.min.js') }}"></script>
+
     <!-- templates -->
 
     <script type="text/template" data-template="certificate-card-item">
@@ -350,6 +352,17 @@
                 style="float: right; margin-top:10px;">Cancel</button>
         </div>
 
+    </dialog>
+
+    <dialog id="display-csv-dialog" class="dialog message-dialog" style="min-width:840px; width:840px; height:700px; overflow:hidden">
+        <div class="modal-header" style="background-color: black">
+            <span id="display-csv-dialog-close" class="close close-button">&times;</span>
+            <h2>Display CSV</h2>
+        </div>
+        <div class="modal-body">
+            <div id="table" style="position:absolute; display:inline-block; width:760px; height:600px; overflow:none; border:1px solid bisque;">
+            </div>                  
+        </div>
     </dialog>
 
     <div style="overflow:hidden; user-select: none;">

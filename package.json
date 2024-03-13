@@ -4,5 +4,8 @@
   "private": true,
   "scripts": {
     "start": "python app.py"
+  },
+  "dependencies": {
+    "papaparse": "5.4.1"
   }
 }

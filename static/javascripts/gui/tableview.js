@@ -886,6 +886,16 @@ class TableView {
 
         this.eventRegister = new EventRegister();
 
+        this.eventRegister.bind(window, 'resize', (function(__this) {
+
+            return function(event) {
+
+                __this.resize();
+
+            };
+
+        })(this));
+
         this.eventRegister.bind(document, 'mouseup', (function(__this) {
 
             return function(event) {
@@ -929,15 +939,12 @@ class TableView {
     };
 
     getContainerDimension() {
-    //    this.w = this.container.offsetWidth;
-    //    this.h = this.container.offsetHeight - this.headerHeight;
 
-        this.w = 700;
-        this.h = 600;
+        console.log(this.container.offsetWidth, this.container.offsetHeight)
+        this.w = this.container.offsetWidth;
+        this.h = this.container.offsetHeight - this.headerHeight;
         this.nbColsVisible = Math.min(smallest_diff_subsequence(this.columnOffset, this.w) + 2, this.columnWidths.length);
         this.nbRowsVisible = Math.min((this.h / this.rowHeight | 0) + 2, this.nbRows);
-
-        console.log(this.w, this.h, this.nbColsVisible, this.nbRowsVisible);
 
     };
 
@@ -1250,6 +1257,32 @@ class TableView {
         this.scroll.onScroll = onScroll;
 
         return onScroll(0, 0);
+
+    }
+
+    show() {
+
+        var last_i = this.firstVisibleRow;
+        var last_j = 0;
+
+        this.setup();
+
+        var targetY = this.rowHeight * last_i;
+
+        return this.scroll.setScrollXY(last_j, targetY);
+
+    }
+
+    resize() {
+
+        var last_i = this.firstVisibleRow;
+        var last_j = this.scroll.scrollLeft;
+
+        this.setup();
+
+        var targetY = this.rowHeight * last_i;
+
+        return this.scroll.setScrollXY(last_j, targetY);
 
     }
 

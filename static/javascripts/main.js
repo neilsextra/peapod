@@ -153,22 +153,26 @@ function showArtifacts(artifcats) {
     fragment = document.createRange().createContextualFragment(value);
     document.getElementById("artifacts-container").appendChild(fragment);
 
-    var attachments = Object.keys(artifcats.document['_attachments']);
+    if ('_attachments' in artifcats.document) {
 
-    for (var attachment in attachments) {
+        var attachments = Object.keys(artifcats.document['_attachments']);
 
-        console.log(attachments[attachment]);
+        for (var attachment in attachments) {
 
-        template = document.querySelector('script[data-template="attachment-card-item"]').text;
+            console.log(attachments[attachment]);
 
-        value = stringUtil.substitute(template, {
-            "filename": attachments[attachment],
-            "mime-type": artifcats.document['_attachments'][attachments[attachment]]['content_type']
-        });
+            template = document.querySelector('script[data-template="attachment-card-item"]').text;
 
-        fragment = document.createRange().createContextualFragment(value);
-        document.getElementById("artifacts-container").appendChild(fragment);
+            value = stringUtil.substitute(template, {
+                "filename": attachments[attachment],
+                "mime-type": artifcats.document['_attachments'][attachments[attachment]]['content_type']
+            });
 
+            fragment = document.createRange().createContextualFragment(value);
+            document.getElementById("artifacts-container").appendChild(fragment);
+
+        }
+        
     }
 
 }
@@ -226,9 +230,7 @@ async function view(artificate, id) {
         if (!columns) {
             columns = lines[line];
             for (var iColumn in columns) {
-
-                widths.push(300);
-
+                widths.push(200);
             }
 
         } else {
@@ -241,7 +243,7 @@ async function view(artificate, id) {
 
     }
 
-    alert(JSON.stringify(rows));
+    console.log(JSON.stringify(columns));
 
     let dataview = new DataView(columns, rows);
     let painter = new Painter();
@@ -256,7 +258,9 @@ async function view(artificate, id) {
         "columnWidths": widths
     });
 
-    document.getElementById('table').style.display = "inline-block";
+    window.setTimeout(function() {
+        tableView.show();
+    }, 100);
 
     document.getElementById("display-csv-dialog").showModal();
 

@@ -1,7 +1,5 @@
 /* The Modal (background) */
 .modal {
-    position: fixed; /* Stay in place */
-    padding-top: 60px; /* Location of the box */
     left: 0;
     top: 0;
     width: 100%; /* Full width */

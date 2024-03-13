@@ -1,4 +1,4 @@
-.fattable-h-scrollbar {
+fattable-h-scrollbar {
     padding: 0;
     background-color: transparent;
     position: absolute;
@@ -59,4 +59,57 @@
 
 .fattable ::-webkit-scrollbar-thumb:hover {
     background: rgba(0, 0, 0, 0.4);
+}
+
+.fattable ::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.fattable-moving {
+    cursor: move;
+}
+
+.fattable-viewport {
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.fattable-viewport > div {
+    padding: 2px;
+    position: absolute;
+    font-size: 10px;
+    font-family: sans-serif;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fattable-body-container {
+    position: absolute;
+    overflow: hidden;
+    bottom: 0px;
+    width: 100%;
+}
+
+.fattable-header-container {
+    position: absolute;
+    overflow: hidden;
+    width: 100%;
+    height: 100px;
+}
+
+.fattable-header-container .fattable-viewport {
+    height: 100%;
+}
+
+.fattable-header-container .fattable-viewport > div {
+    height: 100%;
+}
+
+.fattable-header-container > .fattable-viewport > div {
+   font-weight: bold;
+   padding-top: 5px;
 }

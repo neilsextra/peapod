@@ -78,8 +78,8 @@
     </script>
 
     <script type="text/template" data-template="attachment-card-item">
-        <div id="attachment-${id}" class="card-crypto" style="position:relative;" onclick="show('attachment', '${filename}');">
-            <div class="card-crypto-main">
+        <div id="attachment-${id}" class="card-attachment" style="position:relative;" onclick="show('attachment', '${filename}', '${mimetype}');">
+            <div class="card-attachment-main">
                 <div>
                     <div style="position:relative; color:black;">
                         <img src="{{url_for( 'static', filename='images/file.svg')}}" width="20" height="20" style="float: left;" />
@@ -89,7 +89,7 @@
                             ${filename}
                         </label>
                         <label type="text" class="card-field"> 
-                            ${mime-type}
+                            ${mimetype}
                         </label>
                     </div>
                  </div>
@@ -163,6 +163,8 @@
                 <img src="{{url_for( 'static', filename='images/file.svg')}}" width="24" height="24" style="float: left; margin:5px;" />
             </div>
             <h1 style="color:black; font-size:16px; font-weight: bold; margin-top:6px;">${filename}</h1>
+            <p></p>
+            <p style="color:black; font-size:12px; margin-top:6px;">Mime-type: ${mimetype}</p>
  
             <div style="position:absolute; bottom:10px; height:36px; left:10px; right:10px;">
                 <span style="float:right; border:1px solid rgb(230,230,230); background-color:rgba(255,255,255,0.8); margin:3px; padding:3px; ">

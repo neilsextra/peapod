@@ -125,9 +125,6 @@ def decrypt_content(key, content):
     f = Fernet(key)
     decrypted_content = f.decrypt(content)
 
-    print("Decrypted Content")
-    print(decrypted_content)
-
     return decrypted_content
 
 def decrypt_key(private_key, ciphertext):

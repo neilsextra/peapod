@@ -165,7 +165,7 @@ function showArtifacts(artifcats) {
 
             value = stringUtil.substitute(template, {
                 "filename": attachments[attachment],
-                "mime-type": artifcats.document['_attachments'][attachments[attachment]]['content_type']
+                "mimetype": artifcats.document['_attachments'][attachments[attachment]]['content_type']
             });
 
             fragment = document.createRange().createContextualFragment(value);
@@ -182,13 +182,14 @@ function showArtifacts(artifcats) {
  * @param {*} artificate the type of artifact, certificate, key, file, etc
  * @param {*} id the identifier of the artifact
  */
-function show(artificate, id) {
+function show(artificate, id, mimetype) {
     document.getElementById("details").innerHTML = "";
 
     if (artificate == 'attachment') {
         let template = document.querySelector('script[data-template="attachment-details"]').text
         let value = stringUtil.substitute(template, {
-            "filename": id
+            "filename": id,
+            "mimetype": mimetype
         });
 
         var fragment = document.createRange().createContextualFragment(value);
@@ -215,7 +216,12 @@ function show(artificate, id) {
 
 }
 
-async function view(artificate, id) {
+async function view(artificate, id, mimetype) {
+
+    var waitDialog = document.getElementById("wait-dialog");
+
+    waitDialog.showModal();
+
     var message = new Message()
     var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id)
 
@@ -243,8 +249,6 @@ async function view(artificate, id) {
 
     }
 
-    console.log(JSON.stringify(columns));
-
     let dataview = new DataView(columns, rows);
     let painter = new Painter();
 
@@ -261,6 +265,8 @@ async function view(artificate, id) {
     window.setTimeout(function() {
         tableView.show();
     }, 100);
+
+    waitDialog.close();
 
     document.getElementById("display-csv-dialog").showModal();
 

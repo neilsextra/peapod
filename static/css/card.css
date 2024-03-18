@@ -38,10 +38,32 @@
     margin: 5px;
     color: rgba(0, 0, 0, 1.0);
     padding: 5px;
-    background-color:rgba(0,255,0,0.05);
+    background-color:rgba(243, 169, 169, 0.05);
 }
 
 .card-crypto-main:hover {
+    background-color: #f88383;
+}
+.card-attachment {
+    width: 222px;
+    height: 92px;
+    font-size: 10px;
+    color: rgba(0, 0, 0, 1.0);
+}
+
+.card-attachment-main {
+    position: absolute;
+    width: 200px;
+    height: 70px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 10px;
+    margin: 5px;
+    color: rgba(0, 0, 0, 1.0);
+    padding: 5px;
+    background-color:rgba(0,255,0,0.05);
+}
+
+.card-attachment-main:hover {
     background-color: #b3ffb3;
 }
 

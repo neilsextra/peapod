@@ -465,7 +465,7 @@ class ScrollBarProxy {
 
             return function() {
 
-                if (!__this.dragging) {
+               if (!__this.dragging) {
                     if (__this.scrollLeft !== __this.horizontalScrollbar.scrollLeft) {
                         __this.scrollLeft = __this.horizontalScrollbar.scrollLeft;
 
@@ -1129,30 +1129,31 @@ class TableView {
         onScroll = (function(__this) {
 
             return function(x, y) {
-                var _, cell, col, ref6, ref7, cellRef;
+                var cell, col, _xyPos, _columns, cellRef;
 
-                ref6 = __this.leftTopCornerFromXY(x, y), row = ref6[0], column = ref6[1];
+                _xyPos = __this.leftTopCornerFromXY(x, y), row = _xyPos[0], column = _xyPos[1];
 
                 __this.display(row, column);
 
-                ref7 = __this.columns;
+                _columns = __this.columns;
 
-                for (_ in ref7) {
+                for (var ref in _columns) {
 
-                    col = ref7[_];
+                    col = _columns[ref];
                     col.style[prefixedTransformCssKey] = "translate(" + (col.left - x) + "px, 0px)";
 
                 }
 
                 cellRef = __this.cells;
 
-                for (_ in cellRef) {
-                    cell = cellRef[_];
+                for (var ref in cellRef) {
+                    cell = cellRef[ref];
                     cell.style[prefixedTransformCssKey] = "translate(" + (cell.left - x) + "px," + (cell.top - y) + "px)";
 
                 }
 
                 clearTimeout(__this.scrollEndTimer);
+
                 __this.scrollEndTimer = setTimeout(__this.refreshAllContent.bind(__this), 200);
 
                 return __this.onScroll(x, y);
@@ -1262,10 +1263,10 @@ class TableView {
 
     show() {
 
-        var last_i = this.firstVisibleRow;
-        var last_j = 0;
+        this.setup()
 
-        this.setup();
+        var last_i = this.firstVisibleRow;
+        var last_j = this.scroll.scrollLeft;
 
         var targetY = this.rowHeight * last_i;
 

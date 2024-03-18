@@ -37,6 +37,7 @@
 
 .fattable {
     overflow: hidden;
+    user-select: none;
 }
 
 .fattable ::-webkit-scrollbar {

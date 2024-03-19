@@ -290,6 +290,46 @@ function Message() {
 
     }
 
+    CouchDB.prototype.deleteAttachment = function (certificate, attachmentName) {
+
+        return new Promise((accept, reject) => {
+            let parmURL = "/delete/attachment";
+    
+            var xhttp = new XMLHttpRequest();
+            var formData = new FormData();
+    
+            formData.append('couchdb-url', this.__url);
+            formData.append('certificate', certificate);
+            formData.append('attachment-name', attachmentName);
+    
+            xhttp.open("POST", parmURL, true);
+    
+            xhttp.onload = function () {
+                if (this.readyState === 4 && this.status === 200) {
+    
+                    accept(this.response);
+    
+                } else {
+                    console.log('ERROR');
+    
+                    reject({
+                        status: this.status,
+                        message: this.statusText
+                    });
+    
+                }
+    
+            };
+    
+            xhttp.onerror = function () {
+            };
+    
+            xhttp.send(formData);
+    
+        });
+    
+    }
+
     Message.prototype.generate = function (cryptoArtificats) {
 
         return this.generate(file);

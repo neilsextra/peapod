@@ -272,7 +272,7 @@ function showArtifacts(artifcats) {
         }
 
     }
-    document.getElementById("pod-status").innerHTML = `Pod ID: ${artifcats['id']} &#128275;`;
+    document.getElementById("pod-status").innerHTML = `Pod ID: ${artifcats['id']} - &#128275;`;
 
 }
 

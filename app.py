@@ -387,8 +387,6 @@ def upload():
 
             output['document'] = document
 
-            print(output)
-
     except Exception as e:
 
         print("[UPLOAD] - ERROR '%s'" % str(e))
@@ -443,9 +441,6 @@ def download():
         attachment_bytes = instance.get_attachment(document, attachment_name, False)
 
         decrypted_bytes = decrypt_content(session_key.decode("utf-8"), attachment_bytes)
- 
-        with open("test.pdf", "wb") as binary_file:
-            binary_file.write(decrypted_bytes)
 
         return send_file(io.BytesIO(decrypted_bytes), mimetype=document['_attachments'][attachment_name]['content_type'])
 
@@ -461,7 +456,48 @@ def download():
 
     return json.dumps(output, sort_keys=True), 500
  
+@app.route("/delete/attachment", methods=["POST"])
+def download():
 
+    couchdb_URL = request.values.get('couchdbURL')
+    certificate_pem = request.values.get('certificate')
+    attachment_name = request.values.get('attachment')
+
+    try:        
+        output = [] 
+
+        server = pycouchdb.Server(couchdb_URL)
+                
+        instance = get_instance(server, params.PEAPOD_DATABASE)
+        
+        certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+
+        user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+
+        document = instance.get(user_id)
+
+        result = instance.delete_attachment(document, attachment_name)
+
+        output.append({
+            "status": 'success',
+            "id": user_id,
+            "attachment": attachment_name
+        })
+    
+        return json.dumps(output, sort_keys=True), 200
+
+    except Exception as e:
+
+        print("[UPLOAD] - ERROR '%s'" % str(e))
+        output = [] 
+
+        output.append({
+            "status": 'fail',
+            "error": str(e)
+        })
+
+        return json.dumps(output, sort_keys=True), 500
+ 
 if __name__ == "__main__":
     print("Listening: "  + environ.get('PORT', '8000'))
     PORT = int(environ.get('PORT', '8000'))

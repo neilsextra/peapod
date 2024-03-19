@@ -290,7 +290,7 @@ function Message() {
 
     }
 
-    CouchDB.prototype.deleteAttachment = function (certificate, attachmentName) {
+    CouchDB.prototype.remove = function (couchdbURL, certificate, attachmentName) {
 
         return new Promise((accept, reject) => {
             let parmURL = "/delete/attachment";
@@ -363,6 +363,12 @@ function Message() {
     Message.prototype.download = function (couchdbURL, certificate, key, filename, mimetype) {
 
         return this.download(couchdbURL, certificate, key, filename, mimetype);
+
+    }
+       
+    Message.prototype.remove = function (couchdbURL, certificate, filename) {
+
+        return this.remove(couchdbURL, certificate, filename);
 
     }
 

@@ -325,6 +325,14 @@ async function view(artificate, id, mimetype) {
 
 }
 
+async function remove(artificate, attachmentName) {
+    var message = new Message()
+    var result = await message.remove(couchdb.getURL(), window.cryptoArtificats['certificate'], attachmentName);
+ 
+    showArtifacts(window.cryptoArtificats);
+
+}
+
 /**
  * Respond to the Document 'ready' event
  */

@@ -456,8 +456,8 @@ def download():
 
     return json.dumps(output, sort_keys=True), 500
  
-@app.route("/delete/attachment", methods=["POST"])
-def download():
+@app.route("/remove", methods=["POST"])
+def remove():
 
     couchdb_URL = request.values.get('couchdbURL')
     certificate_pem = request.values.get('certificate')

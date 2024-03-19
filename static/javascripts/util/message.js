@@ -243,7 +243,7 @@ function Message() {
 
     }
 
-    this.download = function (couchdbURL, certificate, key, attachment) {
+    this.download = function (couchdbURL, certificate, key, attachment, mimetype) {
 
         return new Promise((accept, reject) => {
             let parmURL = `/download`;
@@ -255,6 +255,10 @@ function Message() {
             formData.append("certificate", certificate);
             formData.append("key", key);
             formData.append("attachment", attachment);
+
+            if (mimetype == "application/pdf") {
+                xhttp.responseType = "arraybuffer";
+            }
 
             xhttp.open("POST", parmURL, true);
 
@@ -316,9 +320,9 @@ function Message() {
 
     }
     
-    Message.prototype.download = function (couchdbURL, certificate, key, filename) {
+    Message.prototype.download = function (couchdbURL, certificate, key, filename, mimetype) {
 
-        return this.download(couchdbURL, certificate, key, filename);
+        return this.download(couchdbURL, certificate, key, filename, mimetype);
 
     }
 

@@ -96,7 +96,7 @@ function removeAllEventListeners(id) {
 }
 
 /**
- * Set the Collapsibe Handler
+ * Set the Collapsible Handler
  */
 function setCollapsible() {
     var collapsible = document.getElementsByClassName("collapsible");
@@ -131,7 +131,7 @@ async function getConnection() {
 /**
  * Show the CSV File in a noice table display
  * 
- * @param {*} id the attachment identifier   
+ * @param {string} id the attachment identifier   
  */
 async function showCSV(id) {
     var waitDialog = document.getElementById("wait-dialog");
@@ -190,11 +190,12 @@ async function showCSV(id) {
 
 /**
  * Show the PDF
- * @param {*} id the Attachment Name
+ * @param {string} id the Attachment Name
+ * @param {string} mimetype always "application/pdf"
  */
-async function showPDF(id) {
+async function showPDF(id, mimetype) {
     var message = new Message()
-    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id);
+    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id, mimetype);
 
     var pdfView = new PDFView(result, "attachment-view", 1.0);
 
@@ -227,7 +228,7 @@ async function showPDF(id) {
 
 /**
  * Show the Cryptographic Artifacts - Certificate Information
- * @param {*} artifcats 
+ * @param {json} artifcats 
  */
 function showArtifacts(artifcats) {
     document.getElementById("artifacts-container").innerHTML = "";
@@ -272,12 +273,14 @@ function showArtifacts(artifcats) {
 
     }
 
+    document.getElementById("couchdb-status").innerHTML = `Pod ID: ${artifcats['id']} &#128275;&nbsp;&nbsp; - &nbsp;&nbsp;${document.getElementById("couchdb-status").innerHTML}`;
+
 }
 
 /**
  * Show the details about the Artifcat in the Detail's Pane
- * @param {*} artificate the type of artifact, certificate, key, file, etc
- * @param {*} id the identifier of the artifact
+ * @param {json} artificate the type of artifact, certificate, key, file, etc
+ * @param {id} id the identifier of the artifact
  */
 function show(artificate, id, mimetype) {
     document.getElementById("details").innerHTML = "";
@@ -318,7 +321,7 @@ async function view(artificate, id, mimetype) {
     if (mimetype == "text/csv") {
         showCSV(id);
     } else if (mimetype == "application/pdf") {
-        showPDF(id);
+        showPDF(id, mimetype);
     }
 
 }

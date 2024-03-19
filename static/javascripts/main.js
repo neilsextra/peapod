@@ -129,6 +129,40 @@ async function getConnection() {
 }
 
 /**
+ * Show the PDF
+ * @param {*} content the PDF content to display
+ */
+function showPDF(content) {
+    var pdfView = new PDFView(content,"attachment-view", 1.0);
+
+    pdfView.render();
+
+    document.getElementById('pagne-no').textContent = "1";
+
+    var attachmentDialog = document.getElementById("attachment-dialog");
+
+    attachmentDialog.showModal();
+
+    removeAllEventListeners("page-left");
+    removeAllEventListeners("page-right");
+
+    document.getElementById('page-left').addEventListener('click', (e) => {
+
+        pdfView.previous();
+        document.getElementById('pagne-no').textContent = pdfView.currentPage;
+
+    });
+
+    document.getElementById('page-right').addEventListener('click', (e) => {
+
+        pdfView.next();
+        document.getElementById('pagne-no').textContent = pdfView.currentPage;
+
+    });
+
+}
+
+/**
  * Show the Cryptographic Artifacts - Certificate Information
  * @param {*} artifcats 
  */
@@ -153,7 +187,7 @@ function showArtifacts(artifcats) {
     fragment = document.createRange().createContextualFragment(value);
     document.getElementById("artifacts-container").appendChild(fragment);
 
-    if ('_attachments' in artifcats.document) {
+    if ('document' in artifcats && '_attachments' in artifcats.document) {
 
         var attachments = Object.keys(artifcats.document['_attachments']);
 

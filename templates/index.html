@@ -31,10 +31,21 @@
     <script src="{{ url_for('static', filename='javascripts/util/couchDB.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/gui/tabview.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/gui/tableview.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/gui/pdfview.js') }}"></script>
 
     <script src="{{ url_for('static', filename='javascripts/gui/guiutil.js') }}"></script>
 
     <script src="{{ npm_url_for(component='papaparse', filename='papaparse.min.js') }}"></script>
+
+    <script type="text/javascript"
+    src="{{ npm_url_for(component='pdfjs-dist', filename='build/pdf.min.js') }}"></script>
+
+    <script type="text/javascript" id="pdf-js-worker"
+    src="{{ npm_url_for(component='pdfjs-dist', filename='build/pdf.worker.min.js') }}"></script>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = document.getElementById("pdf-js-worker").getAttribute("src");
+    </script>
 
     <!-- templates -->
 
@@ -364,6 +375,33 @@
         <div>
             <div id="table" style="position:absolute; display:inline-block; width:800px; height:600px; overflow:auto; border:1px solid rgb(230,230,230)">
             </div>                  
+        </div>
+    </dialog>
+
+    <dialog id="attachment-dialog" class="modal dialog" tabindex="-1">
+        <div style="position:absolute; top:0px; bottom:0px; left:0px; right:0px;">
+            <div class="modal-content" style="width:1040px; height:860px; background-color: rgb(255, 255, 255);">
+                <div class="modal-header" style="background-color: black">
+                    <span id="close-attachment-dialog" class="close close-button">&times;</span>
+                    <h2>Attachment View</h2>
+                </div>
+                <div class="modal-body">
+                    <div
+                        style="text-align: center; overflow: auto; height:740px; width:1000px; border: 1px solid rgba(0,0,0, 0.2)">
+                        <canvas id="attachment-view"></canvas>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <img id="page-left" class="menu-item" style="margin-right:5px;"
+                        src="{{url_for( 'static', filename='images/page-left.svg')}}" width="32" height="32" />
+                    <span style="position:relative; text-align: center; top:-10px;">
+                        <label id="pagne-no" style="display: inline-block; width:40px;">1</label>
+                    </span>
+                    <img id="page-right" class="menu-item"
+                        src="{{url_for( 'static', filename='images/page-right.svg')}}" width="32" height="32" />
+                </div>
+            </div>
         </div>
     </dialog>
 

@@ -6,6 +6,7 @@
     "start": "python app.py"
   },
   "dependencies": {
-    "papaparse": "5.4.1"
+    "papaparse": "5.4.1",
+    "pdfjs-dist": "^3.9.179"
   }
 }

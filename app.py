@@ -353,8 +353,6 @@ def upload():
 
     print("[UPLOAD] Files: %d " % len(request.files))
     print("[UPLOAD] URL: '%s' " % (couchdb_URL))
-    print("[UPLOAD] Certificate: '%s' " % (certificate_pem))
-
  
     try:
 

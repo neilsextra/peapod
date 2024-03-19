@@ -271,7 +271,7 @@ def generate():
     return send_file(io.BytesIO(p12), mimetype='application/pdf')
 
 @app.route("/open", methods=["POST"])
-def open():
+def open_pod():
     output = {}
 
     couchdb_URL = request.values.get('couchdbURL')
@@ -411,7 +411,6 @@ def download():
         attachment_name = request.values.get('attachment')
 
         print("[DOWNLOAD] CouchDB URL: %s " % (couchdb_URL))
-        print("[DOWNLOAD] Certificate: %s " % (certificate_pem))
         print("[DOWNLOAD] Attachment: '%s' " % (attachment_name))
 
         server = pycouchdb.Server(couchdb_URL)
@@ -444,6 +443,9 @@ def download():
         attachment_bytes = instance.get_attachment(document, attachment_name, False)
 
         decrypted_bytes = decrypt_content(session_key.decode("utf-8"), attachment_bytes)
+ 
+        with open("test.pdf", "wb") as binary_file:
+            binary_file.write(decrypted_bytes)
 
         return send_file(io.BytesIO(decrypted_bytes), mimetype=document['_attachments'][attachment_name]['content_type'])
 

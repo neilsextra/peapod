@@ -129,13 +129,76 @@ async function getConnection() {
 }
 
 /**
- * Show the PDF
- * @param {*} content the PDF content to display
+ * Show the CSV File in a noice table display
+ * 
+ * @param {*} id the attachment identifier   
  */
-function showPDF(content) {
-    var pdfView = new PDFView(content,"attachment-view", 1.0);
+async function showCSV(id) {
+    var waitDialog = document.getElementById("wait-dialog");
 
-    pdfView.render();
+    waitDialog.showModal();
+
+    var message = new Message()
+    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id)
+
+    let results = Papa.parse(result);
+    let lines = results.data;
+    rows = [];
+    columns = null;
+    let widths = [];
+
+    loop: for (var line in lines) {
+
+        if (!columns) {
+            columns = lines[line];
+            for (var iColumn in columns) {
+                widths.push(200);
+            }
+
+        } else {
+
+            if (lines[line].length == columns.length) {
+                rows.push(lines[line]);
+            }
+
+        }
+
+    }
+
+    let dataview = new DataView(columns, rows);
+    let painter = new Painter();
+
+    tableView = new TableView({
+        "container": "#table",
+        "model": dataview,
+        "nbRows": dataview.Length,
+        "rowHeight": 20,
+        "headerHeight": 20,
+        "painter": painter,
+        "columnWidths": widths
+    });
+
+    window.setTimeout(function () {
+        tableView.show();
+    }, 100);
+
+    waitDialog.close();
+
+    document.getElementById("display-csv-dialog").showModal();
+
+}
+
+/**
+ * Show the PDF
+ * @param {*} id the Attachment Name
+ */
+async function showPDF(id) {
+    var message = new Message()
+    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id);
+
+    var pdfView = new PDFView(result, "attachment-view", 1.0);
+
+    pdfView.view();
 
     document.getElementById('pagne-no').textContent = "1";
 
@@ -206,7 +269,7 @@ function showArtifacts(artifcats) {
             document.getElementById("artifacts-container").appendChild(fragment);
 
         }
-        
+
     }
 
 }
@@ -252,57 +315,11 @@ function show(artificate, id, mimetype) {
 
 async function view(artificate, id, mimetype) {
 
-    var waitDialog = document.getElementById("wait-dialog");
-
-    waitDialog.showModal();
-
-    var message = new Message()
-    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id)
-
-    let results = Papa.parse(result);
-    let lines = results.data;
-    rows = [];
-    columns = null;
-    let widths = [];
-
-    loop: for (var line in lines) {
-
-        if (!columns) {
-            columns = lines[line];
-            for (var iColumn in columns) {
-                widths.push(200);
-            }
-
-        } else {
-
-            if (lines[line].length == columns.length) {
-                rows.push(lines[line]);
-            }
-
-        }
-
+    if (mimetype == "text/csv") {
+        showCSV(id);
+    } else if (mimetype == "application/pdf") {
+        showPDF(id);
     }
-
-    let dataview = new DataView(columns, rows);
-    let painter = new Painter();
-
-    tableView = new TableView({
-        "container": "#table",
-        "model": dataview,
-        "nbRows": dataview.Length,
-        "rowHeight": 20,
-        "headerHeight": 20,
-        "painter": painter,
-        "columnWidths": widths
-    });
-
-    window.setTimeout(function() {
-        tableView.show();
-    }, 100);
-
-    waitDialog.close();
-
-    document.getElementById("display-csv-dialog").showModal();
 
 }
 

@@ -1,5 +1,5 @@
 {
-  "name": "bongo",
+  "name": "peapod",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -7,6 +7,6 @@
   },
   "dependencies": {
     "papaparse": "5.4.1",
-    "pdfjs-dist": "^3.9.179"
+    "pdfjs-dist": "^4.0.379"
   }
 }

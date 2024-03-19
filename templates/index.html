@@ -179,7 +179,7 @@
  
             <div style="position:absolute; bottom:10px; height:36px; left:10px; right:10px;">
                 <span style="float:right; border:1px solid rgb(230,230,230); background-color:rgba(255,255,255,0.8); margin:3px; padding:3px; ">
-                    <img id="view-attachment" class="menu-item" style="margin-right:5px; margin-top:-1;" src="{{url_for( 'static', filename='images/expand.svg')}}" width="24" height="24" onclick="view('attachment', '${filename}');"/>
+                    <img id="view-attachment" class="menu-item" style="margin-right:5px; margin-top:-1;" src="{{url_for( 'static', filename='images/expand.svg')}}" width="24" height="24" onclick="view('attachment', '${filename}', '${mimetype}');"/>
                     <img id="delete-document" class="menu-item" style="margin-top:2px;" src="{{url_for( 'static', filename='images/trash.svg')}}" width="24" height="24" onclick="remove('attachment', '${filename}');"/> 
                </span>
             </div>
@@ -382,7 +382,7 @@
         <div style="position:absolute; top:0px; bottom:0px; left:0px; right:0px;">
             <div class="modal-content" style="width:1040px; height:860px; background-color: rgb(255, 255, 255);">
                 <div class="modal-header" style="background-color: black">
-                    <span id="close-attachment-dialog" class="close close-button">&times;</span>
+                    <span id="attachment-dialog-close" class="close close-button">&times;</span>
                     <h2>Attachment View</h2>
                 </div>
                 <div class="modal-body">

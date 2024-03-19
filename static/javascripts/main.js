@@ -228,7 +228,7 @@ async function showPDF(id, mimetype) {
 
 /**
  * Show the Cryptographic Artifacts - Certificate Information
- * @param {json} artifcats 
+ * @param {json} artifcats the Artifacts to show
  */
 function showArtifacts(artifcats) {
     document.getElementById("artifacts-container").innerHTML = "";
@@ -272,8 +272,7 @@ function showArtifacts(artifcats) {
         }
 
     }
-
-    document.getElementById("couchdb-status").innerHTML = `Pod ID: ${artifcats['id']} &#128309;&nbsp;&nbsp; - &nbsp;&nbsp;${document.getElementById("couchdb-status").innerHTML}`;
+    document.getElementById("pod-status").innerHTML = `Pod ID: ${artifcats['id']} &#128275;`;
 
 }
 
@@ -375,14 +374,14 @@ window.onload = function () {
             var message = new Message()
             var result = await message.connect(document.getElementById("couchdb-url").value);
 
-            document.getElementById("couchdb-status").innerHTML = `CouchDB Version: ${result['response']['version']} - &#128154;`;
-
-            couchdb = new CouchDB(document.getElementById("couchdb-url").value);
+            couchdb = new CouchDB(document.getElementById("couchdb-url").value, result['response']['version']);
+            
+            document.getElementById("couchdb-status").innerHTML = `CouchDB Version: ${couchdb.getVersion()} - &#128154;`;
 
             document.getElementById("connect-dialog").close();
             document.getElementById("wait-dialog").close();
 
-            document.getElementById("cancel-connect-dialog").style.visibility = "visible";
+            document.getElementById("connect-dialog-cancel").style.visibility = "visible";
 
         } catch (e) {
             document.getElementById("connect-message").innerHTML = e.message;
@@ -469,7 +468,10 @@ window.onload = function () {
 
         window.cryptoArtificats = result.response;
 
-        showArtifacts(window.cryptoArtificats)
+        showArtifacts(window.cryptoArtificats);
+
+        document.getElementById("actions-button").style.visibility = "visible";
+        document.getElementById("actions-button-content").style.visibility = "visible";
 
         document.getElementById("upload-passport-dialog").close();
 

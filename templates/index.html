@@ -414,7 +414,7 @@
                     <img src="{{ url_for( 'static', filename='images/peapod.png' ) }}" width="32" height="32" />
                 </div>
                 <div style="position: absolute; top:-4px; left:36px; padding-right:0px;">
-                    <h1>PEAPOD - POD Management Console</h1>
+                    <h1>PEA-POD : POD Management Console</h1>
                 </div>
 
                 <div style="position:absolute; top:5px; right:2px; width:96px;">
@@ -457,9 +457,9 @@
                         </tr>
                     </table>
                 </div>
-                <button class="collapsible">Actions</button>
-                <div class="collapsible-content"
-                    style="margin-top:4px; margin-bottom:12px; margin-bottom:12px;">
+                <button id="actions-button" class="collapsible" style="visibility:hidden;">Actions</button>
+                <div id="actions-button-content" class="collapsible-content"
+                    style="margin-top:4px; margin-bottom:12px; margin-bottom:12px; visibility:hidden;">
                     <table class="selection" style="margin-top: 4px;">
                         <tr>
                             <td>
@@ -495,6 +495,8 @@
             </div>
             <div id="details" class="details"
                 style="position:absolute; top:44px; right:10px; width:475px; bottom: 40px; border: 1px solid rgba(0,0,0, 0.2); overflow:hidden; background-color: white;">
+            </div>
+            <div id="pod-status" class="status-message" style="position:absolute; bottom:10px; left:6px;">
             </div>
             <div id="couchdb-status" class="status-message" style="position:absolute; bottom:10px; right:6px;">
             </div>

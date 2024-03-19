@@ -273,7 +273,7 @@ function showArtifacts(artifcats) {
 
     }
 
-    document.getElementById("couchdb-status").innerHTML = `Pod ID: ${artifcats['id']} &#128275;&nbsp;&nbsp; - &nbsp;&nbsp;${document.getElementById("couchdb-status").innerHTML}`;
+    document.getElementById("couchdb-status").innerHTML = `Pod ID: ${artifcats['id']} &#128309;&nbsp;&nbsp; - &nbsp;&nbsp;${document.getElementById("couchdb-status").innerHTML}`;
 
 }
 
@@ -318,7 +318,7 @@ function show(artificate, id, mimetype) {
 
 async function view(artificate, id, mimetype) {
 
-    if (mimetype == "text/csv") {
+    if (mimetype == "text/csv" || id.endsWith("csv")) {
         showCSV(id);
     } else if (mimetype == "application/pdf") {
         showPDF(id, mimetype);

@@ -459,10 +459,13 @@ def download():
 @app.route("/remove", methods=["POST"])
 def remove():
 
-    couchdb_URL = request.values.get('couchdbURL')
+    couchdb_URL = request.values.get('couchdb-url')
     certificate_pem = request.values.get('certificate')
-    attachment_name = request.values.get('attachment')
+    attachment_name = request.values.get('attachment-name')
 
+    print("[REMOVE] CouchDB URL: %s " % (couchdb_URL))
+    print("[REMOVE] Attachment: '%s' " % (attachment_name))
+    
     try:        
         output = [] 
 

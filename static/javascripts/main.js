@@ -331,6 +331,12 @@ async function remove(artificate, attachmentName) {
  
     showArtifacts(window.cryptoArtificats);
 
+    document.getElementById("details").innerHTML = "";
+
+    document.getElementById("error-message").innerHTML = `'${attachmentName}' : removed successfully`;
+    
+    document.getElementById("error-dialog").showModal();
+
 }
 
 /**
@@ -443,7 +449,7 @@ window.onload = function () {
     document.getElementById("open-pod").addEventListener("click", async function (event) {
 
         document.getElementById("upload-passport-file").value = "";
-
+        document.getElementById("p12-password").value = "";
         document.getElementById("upload-passport-dialog").showModal();
 
     });

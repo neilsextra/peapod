@@ -290,15 +290,15 @@ function Message() {
 
     }
 
-    CouchDB.prototype.remove = function (couchdbURL, certificate, attachmentName) {
+    this.remove = function (couchdbURL, certificate, attachmentName) {
 
         return new Promise((accept, reject) => {
-            let parmURL = "/delete/attachment";
+            let parmURL = "/remove";
     
             var xhttp = new XMLHttpRequest();
             var formData = new FormData();
     
-            formData.append('couchdb-url', this.__url);
+            formData.append('couchdb-url', couchdbURL);
             formData.append('certificate', certificate);
             formData.append('attachment-name', attachmentName);
     

@@ -491,7 +491,7 @@ def remove():
 
     except Exception as e:
 
-        print("[UPLOAD] - ERROR '%s'" % str(e))
+        print("[DOWNLOAD] - ERROR '%s'" % str(e))
         output = [] 
 
         output.append({
@@ -500,7 +500,46 @@ def remove():
         })
 
         return json.dumps(output, sort_keys=True), 500
- 
+
+@app.route("/delete", methods=["POST"])
+def delete():
+
+    couchdb_URL = request.values.get('couchdb-url')
+    certificate_pem = request.values.get('certificate')
+
+    try:        
+        output = [] 
+
+        server = pycouchdb.Server(couchdb_URL)
+                
+        instance = get_instance(server, params.PEAPOD_DATABASE)
+
+        certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+
+        user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+
+        instance.delete(user_id)
+
+        output.append({
+            "status": 'success',
+            "id": user_id
+        })
+
+        return json.dumps(output, sort_keys=True), 200
+    
+    except Exception as e:
+
+        print("[DOWNLOAD] - ERROR '%s'" % str(e))
+        output = [] 
+
+        output.append({
+            "status": 'fail',
+            "error": str(e)
+        })
+
+        return json.dumps(output, sort_keys=True), 500
+        
+
 if __name__ == "__main__":
     print("Listening: "  + environ.get('PORT', '8000'))
     PORT = int(environ.get('PORT', '8000'))

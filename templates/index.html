@@ -434,6 +434,15 @@
         </div>
     </dialog>
 
+    <dialog id="delete-dialog" class="dialog message-dialog" style="min-width:400px;">
+        <img src="{{url_for( 'static', filename='images/exclamation.svg')}}" width="48" height="48"
+            style="float: left;" />
+        <p id="error-message" style="font-size: 18px; font-weight: bold;">/p>
+        <form method="dialog">
+            <button class="message-dialog-small-button" style="float: right;">OK</button>
+        </form>
+    </dialog>
+
     <div style="overflow:hidden; user-select: none;">
         <div style="overflow:hidden;">
 

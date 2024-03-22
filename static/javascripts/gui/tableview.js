@@ -940,7 +940,6 @@ class TableView {
 
     getContainerDimension() {
 
-        console.log(this.container.offsetWidth, this.container.offsetHeight)
         this.w = this.container.offsetWidth;
         this.h = this.container.offsetHeight - this.headerHeight;
         this.nbColsVisible = Math.min(smallest_diff_subsequence(this.columnOffset, this.w) + 2, this.columnWidths.length);

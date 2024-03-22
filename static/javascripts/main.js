@@ -52,6 +52,12 @@ class DataView extends SyncTableModel {
 
 }
 
+var settings = {
+    view_certificates: false,
+    view_keys: false,
+    view_files: true
+}
+
 /**
  * Capitalize the first letter of a String e.g. "fred" -> "Fred"
  * 
@@ -233,45 +239,53 @@ async function showPDF(id, mimetype) {
 function showArtifacts(artifcats) {
     document.getElementById("artifacts-container").innerHTML = "";
 
-    let template = document.querySelector('script[data-template="certificate-card-item"]').text;
-    let value = stringUtil.substitute(template, {
-        "id": artifcats['id'],
-        "email": artifcats['email'],
-    });
+    if (settings.view_certificates) {
+        let template = document.querySelector('script[data-template="certificate-card-item"]').text;
+        let value = stringUtil.substitute(template, {
+            "id": artifcats['id'],
+            "email": artifcats['email'],
+        });
 
-    let fragment = document.createRange().createContextualFragment(value);
-    document.getElementById("artifacts-container").appendChild(fragment);
 
-    template = document.querySelector('script[data-template="key-card-item"]').text;
-    value = stringUtil.substitute(template, {
-        "id": artifcats['id'],
-        "email": artifcats['email'],
-    });
+        let fragment = document.createRange().createContextualFragment(value);
+        document.getElementById("artifacts-container").appendChild(fragment);
+    }
 
-    fragment = document.createRange().createContextualFragment(value);
-    document.getElementById("artifacts-container").appendChild(fragment);
+    if (settings.view_keys) {
+        var template = document.querySelector('script[data-template="key-card-item"]').text;
+        var value = stringUtil.substitute(template, {
+            "id": artifcats['id'],
+            "email": artifcats['email'],
+        });
 
-    if ('document' in artifcats && '_attachments' in artifcats.document) {
+        let fragment = document.createRange().createContextualFragment(value);
 
-        var attachments = Object.keys(artifcats.document['_attachments']);
+        document.getElementById("artifacts-container").appendChild(fragment);
 
-        for (var attachment in attachments) {
+    }
 
-            console.log(attachments[attachment]);
+    if (settings.view_files) {
+        if ('document' in artifcats && '_attachments' in artifcats.document) {
+            let attachments = Object.keys(artifcats.document['_attachments']);
 
-            template = document.querySelector('script[data-template="attachment-card-item"]').text;
+            for (var attachment in attachments) {
+                var template = document.querySelector('script[data-template="attachment-card-item"]').text;
 
-            value = stringUtil.substitute(template, {
-                "filename": attachments[attachment],
-                "mimetype": artifcats.document['_attachments'][attachments[attachment]]['content_type']
-            });
+                value = stringUtil.substitute(template, {
+                    "filename": attachments[attachment],
+                    "mimetype": artifcats.document['_attachments'][attachments[attachment]]['content_type']
+                });
 
-            fragment = document.createRange().createContextualFragment(value);
-            document.getElementById("artifacts-container").appendChild(fragment);
+                let fragment = document.createRange().createContextualFragment(value);
+
+                document.getElementById("artifacts-container").appendChild(fragment);
+
+            }
 
         }
 
     }
+
     document.getElementById("pod-status").innerHTML = `Pod ID: ${artifcats['id']} - &#128275;`;
 
 }
@@ -328,13 +342,13 @@ async function view(artificate, id, mimetype) {
 async function remove(artificate, attachmentName) {
     var message = new Message()
     var result = await message.remove(couchdb.getURL(), window.cryptoArtificats['certificate'], attachmentName);
- 
+
     showArtifacts(window.cryptoArtificats);
 
     document.getElementById("details").innerHTML = "";
 
     document.getElementById("error-message").innerHTML = `'${attachmentName}' : removed successfully`;
-    
+
     document.getElementById("error-dialog").showModal();
 
 }
@@ -380,6 +394,8 @@ window.onload = function () {
         var waitDialog = document.getElementById("wait-dialog");
 
         document.getElementById("details").innerHTML = "";
+        document.getElementById("artifacts-container").innerHTML = "";
+        window.artifcats = null;
 
         try {
 
@@ -389,7 +405,7 @@ window.onload = function () {
             var result = await message.connect(document.getElementById("couchdb-url").value);
 
             couchdb = new CouchDB(document.getElementById("couchdb-url").value, result['response']['version']);
-            
+
             document.getElementById("couchdb-status").innerHTML = `CouchDB Version: ${couchdb.getVersion()} - &#128154;`;
 
             document.getElementById("connect-dialog").close();
@@ -549,5 +565,27 @@ window.onload = function () {
     });
 
     getConnection();
+
+    document.getElementById("update-settings").addEventListener("click", async function (event) {
+
+        document.getElementById("view-certificates").checked = settings.view_certificates;
+        document.getElementById("view-keys").checked = settings.view_keys ;
+        document.getElementById("view-files").checked = settings.view_files;
+        
+        document.getElementById("settings-dialog").showModal();
+
+    });
+
+    document.getElementById("settings-dialog-ok").addEventListener("click", async function (event) {
+
+        settings.view_certificates = document.getElementById("view-certificates").checked;
+        settings.view_keys = document.getElementById("view-keys").checked;
+        settings.view_files = document.getElementById("view-files").checked;
+
+        showArtifacts(window.cryptoArtificats);
+
+        document.getElementById("settings-dialog").close();
+
+    });
 
 }

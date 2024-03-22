@@ -339,6 +339,34 @@
 
     </dialog>
 
+    <dialog id="settings-dialog" class="dialog message-dialog" style="min-width:400px;">
+        <img src="{{url_for( 'static', filename='images/settings.svg')}}" width="48" height="48" style="float: left;" />
+        <div style="font-size:14px; vertical-align: center;">
+            <fieldset>
+                <legend style="font-size:16px; font-weight: bold;">View Artifact Selection</legend>
+                <div style="margin-top: 4px;">
+                    <input id="view-certificates" type="checkbox" name="view-certificates"></input>
+                    <label for="view-certificates" style="font-size:14px;">Certificates</label>
+                </div>
+                <div style="margin-top: 4px;">
+                    <input id="view-keys" type="checkbox" name="view-keys"></input>
+                    <label for="view-keys" style="font-size:14px;">Keys</label>
+                </div>
+                <div style="margin-top: 4px;">
+                    <input id="view-files" type="checkbox" name="view-files"></input>
+                    <label for="view-files" style="font-size:14px;">Files</label>
+                </div>
+            </fieldset>
+        </div>
+
+        <button id="settings-dialog-cancel" class="close-button message-dialog-small-cancel-button"
+            style="float: right; margin-top:10px;">Cancel</button>
+        </div>
+        <button id="settings-dialog-ok" class="message-dialog-small-button"
+            style="float: right; margin-top:10px;">Apply</button>
+
+    </dialog>
+
     <dialog id="upload-file-dialog" class="dialog message-dialog" style="min-width:720px;">
         <img src="{{url_for( 'static', filename='images/upload.svg')}}" width="48" height="48" style="float: left;" />
         <p style="font-size: 18px; font-weight: bold;">Upload File</p>

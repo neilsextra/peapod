@@ -435,12 +435,16 @@
     </dialog>
 
     <dialog id="delete-dialog" class="dialog message-dialog" style="min-width:400px;">
-        <img src="{{url_for( 'static', filename='images/exclamation.svg')}}" width="48" height="48"
+        <img src="{{url_for( 'static', filename='images/delete.svg')}}" width="48" height="48"
             style="float: left;" />
-        <p id="error-message" style="font-size: 18px; font-weight: bold;">/p>
-        <form method="dialog">
-            <button class="message-dialog-small-button" style="float: right;">OK</button>
-        </form>
+        <p id="delete-message" style="font-size: 18px; font-weight: bold;">/p>
+        <div style="margin-top:10px;">
+            <button id="delete-dialog-ok" class="message-dialog-small-ok-button"
+                style="float: right; margin-top:10px;">Delete</button>
+
+            <button id="delete-dialog-close" class="close-button message-dialog-small-cancel-button"
+                style="float: right; margin-top:10px;">Cancel</button>
+        </div>
     </dialog>
 
     <div style="overflow:hidden; user-select: none;">

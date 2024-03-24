@@ -442,6 +442,9 @@ window.onload = function () {
 
         document.getElementById("pod-save-dialog").showModal();
 
+        document.getElementById("actions-button").style.visibility = "visible";
+        document.getElementById("actions-button-content").style.visibility = "visible";
+
     });
 
     document.getElementById("pod-save-dialog-ok").addEventListener("click", async function (event) {
@@ -585,6 +588,10 @@ window.onload = function () {
         showArtifacts(window.cryptoArtificats);
 
         document.getElementById("settings-dialog").close();
+
+    });
+
+    document.getElementById("backup-pod").addEventListener("click", async function (event) {
 
     });
 

@@ -331,6 +331,7 @@ def open_pod():
                     output['id'] = user_id.value.value.decode("utf-8")
                     output['document'] = get_document(couchdb_URL, output['id'])
 
+        return json.dumps(output, sort_keys=True), 200
 
     except Exception as e:
 
@@ -342,7 +343,7 @@ def open_pod():
             "error": str(e)
         })
 
-    return json.dumps(output, sort_keys=True), 200
+        return json.dumps(output, sort_keys=True), 500
 
 @app.route("/upload", methods=["POST"])
 def upload():

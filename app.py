@@ -42,10 +42,8 @@ template = {
     "passport" :{
         "certificate": ""
     },
-    "certificates": {
-        "active": []
-    },
-    "keys" : {
+    "tokens": [],
+    "key" : {
     }
 
 }
@@ -162,8 +160,8 @@ def connect():
 
     return json.dumps(output, sort_keys=True), 200
 
-@app.route("/keys", methods=["GET"])
-def keys():
+@app.route("/create", methods=["GET"])
+def create():
 
     output = {}
 
@@ -191,6 +189,7 @@ def keys():
         public_exponent=exponent,
         key_size=key_size,
     )
+
     public_key = private_key.public_key()
     builder = x509.CertificateBuilder()
     builder = builder.subject_name(x509.Name([
@@ -226,7 +225,13 @@ def keys():
 
     output['certificate'] = bytes.decode("UTF-8")
 
+
     document["passport"]["certificate"] = bytes.decode("UTF-8") 
+
+    fernet_key = Fernet.generate_key()
+
+    encrypted_key = encrypt_key(certificate, fernet_key)
+    document["key"] = encrypted_key 
 
     save(instance, document)
 
@@ -351,6 +356,7 @@ def upload():
 
     couchdb_URL = request.values.get('couchdbURL')
     certificate_pem = request.values.get('certificate')
+    private_key_pem = request.values.get('key')
 
     print("[UPLOAD] Files: %d " % len(request.files))
     print("[UPLOAD] URL: '%s' " % (couchdb_URL))
@@ -367,24 +373,25 @@ def upload():
 
         document = instance.get(user_id)
 
-        certificate = x509.load_pem_x509_certificate(certificate_pem.encode())        
+        certificate = x509.load_pem_x509_certificate(certificate_pem.encode())     
+
+        private_key = serialization.load_pem_private_key(
+            private_key_pem.encode('utf-8'),
+            password=None,
+        )
+
+        encoded_key = document['key']
+        session_key = decrypt_key(private_key, base64.b64decode(encoded_key))
+ 
         files = request.files
 
         for file in files:
 
             content = request.files.get(file)
-            
-            key = Fernet.generate_key()
 
-            encrypted_key = encrypt_key(certificate, key)
+            encrypted_content = encrypt_content(session_key, content.stream.read())
 
-            document["keys"][content.filename] = encrypted_key 
-            
-            document = save(instance, document)
-
-            encrypted_content = encrypt_content(key, content.stream.read())
-
-            document = instance.put_attachment(document, encrypted_content , filename=content.filename, content_type=content.mimetype)
+            document = instance.put_attachment(document, encrypted_content, filename=content.filename, content_type=content.mimetype)
 
             output['document'] = document
 
@@ -433,9 +440,12 @@ def download():
 
         user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
 
+        print("[DOWNLOAD] Document ID: '%s' " % (user_id))
+
+
         document = instance.get(user_id)
 
-        encoded_key = document['keys'][attachment_name]
+        encoded_key = document['key']
 
         session_key = decrypt_key(private_key, base64.b64decode(encoded_key))
 

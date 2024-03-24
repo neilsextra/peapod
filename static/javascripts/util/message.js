@@ -15,16 +15,12 @@ function Message() {
                 if (this.readyState === 4 && this.status === 200) {
                     var result = JSON.parse(xhttp.response);
 
-                    console.log(xhttp.status);
-
                     accept({
                         status: this.status,
                         response: response
                     });
 
                 } else {
-
-                    console.log('ERROR');
 
                     reject({
                         status: this.status,
@@ -64,15 +60,9 @@ function Message() {
             xhttp.onload = function () {
                 if (this.readyState === 4 && this.status === 200) {
 
-                    console.log(xhttp.status);
-
-                    console.log(this.response)
-
                     accept(this.response);
 
                 } else {
-
-                    console.log('ERROR');
 
                     reject({
                         status: this.status,
@@ -96,7 +86,7 @@ function Message() {
 
         return new Promise((accept, reject) => {
 
-            let parmURL = `/keys?couchdbURL=${encodeURIComponent(couchdbURL)}&` +
+            let parmURL = `/create?couchdbURL=${encodeURIComponent(couchdbURL)}&` +
                 `email=${encodeURIComponent(email)}&` +
                 `issuer=${encodeURIComponent(issuer)}&` +
                 `org=${encodeURIComponent(org)}&` +
@@ -115,7 +105,6 @@ function Message() {
                 if (this.readyState === 4 && this.status === 200) {
                     var result = JSON.parse(xhttp.response);
 
-                    console.log(xhttp.status);
 
                     accept({
                         status: this.status,
@@ -123,8 +112,6 @@ function Message() {
                     });
 
                 } else {
-
-                    console.log('ERROR');
 
                     reject({
                         status: this.status,
@@ -171,8 +158,6 @@ function Message() {
 
                 } else {
 
-                    console.log('ERROR');
-
                     reject({
                         status: this.status,
                         message: this.statusText
@@ -191,7 +176,7 @@ function Message() {
 
     }
 
-    this.upload = function (couchdbURL, certificate, files) {
+    this.upload = function (couchdbURL, certificate, key, files) {
 
         return new Promise((accept, reject) => {
             let parmURL = `/upload`;
@@ -201,6 +186,7 @@ function Message() {
             
             formData.append("couchdbURL", couchdbURL);
             formData.append("certificate", certificate);
+            formData.append("key", key);
 
             for (var file = 0; file < files.length; file++) {
                 formData.append(files[file].name, files[file]);
@@ -214,16 +200,12 @@ function Message() {
                 if (this.readyState === 4 && this.status === 200) {
                     var result = JSON.parse(xhttp.response);
 
-                    console.log(xhttp.status);
-
                     accept({
                         status: this.status,
                         response: response
                     });
 
                 } else {
-
-                    console.log('ERROR');
 
                     reject({
                         status: this.status,
@@ -264,13 +246,10 @@ function Message() {
 
             xhttp.onload = function () {
                 if (this.readyState === 4 && this.status === 200) {
-                    console.log(xhttp.status);
 
                     accept(this.response);
 
                 } else {
-
-                    console.log('ERROR');
 
                     reject({
                         status: this.status,
@@ -310,7 +289,6 @@ function Message() {
                     accept(this.response);
     
                 } else {
-                    console.log('ERROR');
     
                     reject({
                         status: this.status,
@@ -354,9 +332,9 @@ function Message() {
 
     }
 
-    Message.prototype.upload = function (couchdbURL, certificate, files) {
+    Message.prototype.upload = function (couchdbURL, certificate, key, files) {
 
-        return this.upload(couchdbURL, certificate, files);
+        return this.upload(couchdbURL, certificate, key, files);
 
     }
     

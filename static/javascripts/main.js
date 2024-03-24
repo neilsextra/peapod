@@ -557,7 +557,8 @@ window.onload = function () {
 
         waitDialog.showModal();
 
-        var result = await message.upload(couchdb.getURL(), window.cryptoArtificats['certificate'], files)
+        var result = await message.upload(couchdb.getURL(), window.cryptoArtificats['certificate'], 
+                                                            window.cryptoArtificats['private-key'], files);
 
         window.cryptoArtificats['document'] = result.response['document'];
 
@@ -572,9 +573,9 @@ window.onload = function () {
     document.getElementById("update-settings").addEventListener("click", async function (event) {
 
         document.getElementById("view-certificates").checked = settings.view_certificates;
-        document.getElementById("view-keys").checked = settings.view_keys ;
+        document.getElementById("view-keys").checked = settings.view_keys;
         document.getElementById("view-files").checked = settings.view_files;
-        
+
         document.getElementById("settings-dialog").showModal();
 
     });

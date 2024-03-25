@@ -32,6 +32,7 @@
     <script src="{{ url_for('static', filename='javascripts/gui/tabview.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/gui/tableview.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/gui/pdfview.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/gui/hexview.js') }}"></script>
 
     <script src="{{ url_for('static', filename='javascripts/gui/guiutil.js') }}"></script>
 
@@ -403,6 +404,17 @@
         </div>
         <div>
             <div id="table" style="position:absolute; display:inline-block; width:800px; height:600px; overflow:auto; border:1px solid rgb(230,230,230)">
+            </div>                  
+        </div>
+    </dialog>
+
+    <dialog id="display-hex-dialog" class="dialog message-dialog" style="min-width:840px; width:840px; height:700px;">
+        <div class="modal-header" style="background-color: black">
+            <span id="display-hex-dialog-close" class="close close-button">&times;</span>
+            <h2>CSV View</h2>
+        </div>
+        <div>
+            <div id="hex-view" style="position:absolute; display:inline-block; width:800px; height:600px; overflow:auto; border:1px solid rgb(230,230,230)">
             </div>                  
         </div>
     </dialog>

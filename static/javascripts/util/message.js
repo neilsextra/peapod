@@ -225,7 +225,7 @@ function Message() {
 
     }
 
-    this.download = function (couchdbURL, certificate, key, attachment, mimetype) {
+    this.download = function (couchdbURL, certificate, key, attachment, binary) {
 
         return new Promise((accept, reject) => {
             let parmURL = `/download`;
@@ -238,7 +238,7 @@ function Message() {
             formData.append("key", key);
             formData.append("attachment", attachment);
 
-            if (mimetype == "application/pdf") {
+            if (binary) {
                 xhttp.responseType = "arraybuffer";
             }
 
@@ -384,9 +384,9 @@ function Message() {
 
     }
     
-    Message.prototype.download = function (couchdbURL, certificate, key, filename, mimetype) {
+    Message.prototype.download = function (couchdbURL, certificate, key, filename, binary = false) {
 
-        return this.download(couchdbURL, certificate, key, filename, mimetype);
+        return this.download(couchdbURL, certificate, key, filename, binary);
 
     }
        
@@ -395,7 +395,6 @@ function Message() {
         return this.remove(couchdbURL, certificate, filename);
 
     }
-
            
     Message.prototype.backup = function (couchdbURL, cryptoArtifacts) {
 

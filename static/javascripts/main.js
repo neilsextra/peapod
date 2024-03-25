@@ -135,7 +135,7 @@ async function getConnection() {
 }
 
 /**
- * Show the CSV File in a noice table display
+ * Show the CSV File in a scrollable table display
  * 
  * @param {string} id the attachment identifier   
  */
@@ -145,7 +145,7 @@ async function showCSV(id) {
     waitDialog.showModal();
 
     var message = new Message()
-    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id)
+    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id, false)
 
     let results = Papa.parse(result);
     let lines = results.data;
@@ -195,6 +195,21 @@ async function showCSV(id) {
 }
 
 /**
+ * Show the File as Hex in a pageable display
+ * 
+ * @param {string} id the attachment identifier   
+ */
+async function showHex(id) {
+    var waitDialog = document.getElementById("wait-dialog");
+
+    waitDialog.showModal();
+
+    var message = new Message()
+    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id, true)
+
+}
+
+/**
  * Show the PDF
  * @param {string} id the Attachment Name
  * @param {string} mimetype always "application/pdf"
@@ -205,7 +220,7 @@ async function showPDF(id, mimetype) {
     waitDialog.showModal();
 
     var message = new Message()
-    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id, mimetype);
+    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id, true);
 
     var pdfView = new PDFView(result, "attachment-view", 1.0);
 
@@ -341,6 +356,8 @@ async function view(artificate, id, mimetype) {
         showCSV(id);
     } else if (mimetype == "application/pdf") {
         showPDF(id, mimetype);
+    } else {
+        showHex(id)
     }
 
 }

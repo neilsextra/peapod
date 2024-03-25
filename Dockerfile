@@ -1,29 +1,25 @@
-FROM mcr.microsoft.com/devcontainers/anaconda:0-3
+FROM python:3.10-bookworm
 
-# Copy environment.yml (if found) to a temp location so we update the environment. Also
-# copy "noop.txt" so the COPY instruction does not fail if no environment.yml exists.
-COPY environment.yml* .devcontainer/noop.txt /tmp/conda-tmp/
-RUN if [ -f "/tmp/conda-tmp/environment.yml" ]; then umask 0002 && /opt/conda/bin/conda env update -n base -f /tmp/conda-tmp/environment.yml; fi \
-    && rm -rf /tmp/conda-tmp
+RUN apt-get update --fix-missing
+RUN apt-get install -y nodejs npm
+RUN apt-get install -y git
 
-# python packages
-RUN python3 -m pip install --no-cache-dir --upgrade pip && \
-    python3 -m pip install -r requirements.txt
-    
-# [Optional] Uncomment this section to install additional OS packages.
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends \
-    build-essential \
-    curl \
-    ca-certificates \
-    apt-utils \
-    dialog \
-    git \
-    vim \
-    && apt-get autoremove -y \
-    && apt-get clean -y
+WORKDIR /app
 
-# run the web app
-WORKDIR /python-docker
-COPY . .
-CMD ["python3", "main.py" ]]
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --upgrade pip
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
+
+RUN npm install 
+
+# Make port 80 available to the world outside this container
+EXPOSE 8080
+
+# Define environment variable
+ENV NAME peapod
+
+# Run app.py when the container launches
+CMD ["python", "app.py"]

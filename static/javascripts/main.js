@@ -200,6 +200,10 @@ async function showCSV(id) {
  * @param {string} mimetype always "application/pdf"
  */
 async function showPDF(id, mimetype) {
+    var waitDialog = document.getElementById("wait-dialog");
+    
+    waitDialog.showModal();
+
     var message = new Message()
     var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id, mimetype);
 
@@ -208,6 +212,8 @@ async function showPDF(id, mimetype) {
     pdfView.view();
 
     document.getElementById('pagne-no').textContent = "1";
+
+    waitDialog.close();
 
     var attachmentDialog = document.getElementById("attachment-dialog");
 
@@ -342,13 +348,10 @@ async function view(artificate, id, mimetype) {
 async function remove(artificate, attachmentName) {
     var message = new Message()
     var result = await message.remove(couchdb.getURL(), window.cryptoArtificats['certificate'], attachmentName);
-    
 
-    alert(JSON.stringify(result));
-    
-    window.cryptoArtificats['document'] = result['document'];
+    window.cryptoArtificats['document'] = result.response['document'];
 
-    showArtifacts(window.cryptoArtificats)
+    showArtifacts(window.cryptoArtificats);
 
     document.getElementById("details").innerHTML = "";
     document.getElementById("error-message").innerHTML = `'${attachmentName}' : removed successfully`;

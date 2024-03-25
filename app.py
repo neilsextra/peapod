@@ -399,12 +399,12 @@ def upload():
     except Exception as e:
 
         print("[UPLOAD] - ERROR '%s'" % str(e))
-        output = [] 
+        output = {} 
 
-        output.append({
+        output = {
             "status": 'fail',
             "error": str(e)
-        })
+        }
 
     return json.dumps(output, sort_keys=True), 200
  
@@ -458,15 +458,14 @@ def download():
     except Exception as e:
 
         print("[UPLOAD] - ERROR '%s'" % str(e))
-        output = [] 
 
-        output.append({
+        output = {
             "status": 'fail',
             "error": str(e)
-        })
+        }
 
-    return json.dumps(output, sort_keys=True), 500
- 
+        return json.dumps(output, sort_keys=True), 500
+
 @app.route("/remove", methods=["POST"])
 def remove():
 
@@ -478,7 +477,6 @@ def remove():
     print("[REMOVE] Attachment: '%s' " % (attachment_name))
     
     try:        
-        output = [] 
 
         server = pycouchdb.Server(couchdb_URL)
                 
@@ -492,24 +490,22 @@ def remove():
 
         result = instance.delete_attachment(document, attachment_name)
 
-        output.append({
+        output = {
             "status": 'success',
             "id": user_id,
-            "document": document,
+            "document": result,
             "attachment": attachment_name
-        })
+        }
     
         return json.dumps(output, sort_keys=True), 200
 
     except Exception as e:
 
-        print("[DOWNLOAD] - ERROR '%s'" % str(e))
-        output = [] 
-
-        output.append({
+        print("[REMOVE] - ERROR '%s'" % str(e))
+        output = {
             "status": 'fail',
             "error": str(e)
-        })
+        }
 
         return json.dumps(output, sort_keys=True), 500
 
@@ -520,7 +516,6 @@ def delete():
     certificate_pem = request.values.get('certificate')
 
     try:        
-        output = [] 
 
         server = pycouchdb.Server(couchdb_URL)
                 
@@ -532,22 +527,22 @@ def delete():
 
         instance.delete(user_id)
 
-        output.append({
+        output = {
             "status": 'success',
             "id": user_id
-        })
+        }
 
         return json.dumps(output, sort_keys=True), 200
     
     except Exception as e:
 
         print("[DOWNLOAD] - ERROR '%s'" % str(e))
-        output = [] 
+        output
 
-        output.append({
+        output = {
             "status": 'fail',
             "error": str(e)
-        })
+        }
 
         return json.dumps(output, sort_keys=True), 500
         
@@ -601,10 +596,10 @@ def backup():
 
                 zip_archive.writestr(file, decrypted_bytes)
 
-                print("[BACKUP] Attachment: '%s' " % (attachment_bytes))
+                print("[BACKUP] Attachment: '%s' " % (attachment_name))
 
         with open('out.zip', 'wb') as f:
-            f.write(archive)
+            f.write(archive.getvalue())
 
         return send_file(archive, "application/x-zip")
 

@@ -598,10 +598,7 @@ def backup():
 
                 print("[BACKUP] Attachment: '%s' " % (attachment_name))
 
-        with open('out.zip', 'wb') as f:
-            f.write(archive.getvalue())
-
-        return send_file(archive, "application/x-zip")
+        return send_file(io.BytesIO(archive.getvalue()), "application/x-zip")
 
 if __name__ == "__main__":
     print("Listening: "  + environ.get('PORT', '8000'))

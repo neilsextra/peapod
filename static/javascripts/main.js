@@ -201,7 +201,7 @@ async function showCSV(id) {
  */
 async function showPDF(id, mimetype) {
     var waitDialog = document.getElementById("wait-dialog");
-    
+
     waitDialog.showModal();
 
     var message = new Message()
@@ -601,13 +601,20 @@ window.onload = function () {
     });
 
     document.getElementById("backup-pod").addEventListener("click", async function (event) {
+
+        var waitDialog = document.getElementById("wait-dialog");
+
+        waitDialog.showModal();
+
         var message = new Message();
 
         var result = await message.backup(couchdb.getURL(), window.cryptoArtificats)
 
         var fileUtil = new FileUtil(document);
 
-        fileUtil.saveAs(result, "pod.zip");
+        fileUtil.saveAs(result, `pod-${window.cryptoArtificats['id']}.zip`);
+
+        waitDialog.close();
 
     });
 

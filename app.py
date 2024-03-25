@@ -14,6 +14,7 @@ from datetime import timedelta
 from flask_npm import Npm
 
 import base64
+from zipfile import ZipFile, ZipInfo
 
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes
@@ -442,7 +443,6 @@ def download():
 
         print("[DOWNLOAD] Document ID: '%s' " % (user_id))
 
-
         document = instance.get(user_id)
 
         encoded_key = document['key']
@@ -550,6 +550,56 @@ def delete():
 
         return json.dumps(output, sort_keys=True), 500
         
+@app.route("/backup", methods=["POST"])
+def backup():
+        couchdb_URL = request.values.get('couchdbURL')
+        certificate_pem = request.values.get('certificate')
+        private_key_pem = request.values.get('key')
+        
+        print("[BACKUP] CouchDB URL: %s " % (couchdb_URL))
+
+        server = pycouchdb.Server(couchdb_URL)
+
+        instance = get_instance(server, params.PEAPOD_DATABASE)
+
+        certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+
+        user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+
+        document = instance.get(user_id)
+        
+        private_key = serialization.load_pem_private_key(
+            private_key_pem.encode('utf-8'),
+            password=None,
+        )
+
+        server = pycouchdb.Server(couchdb_URL)
+
+        certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+
+        user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+
+        print("[BACKUP] Document ID: '%s' " % (user_id))
+
+        document = instance.get(user_id)
+
+        encoded_key = document['key']
+
+        session_key = decrypt_key(private_key, base64.b64decode(encoded_key))
+
+        archive = io.BytesIO()
+
+        with ZipFile(archive, 'w') as zip_archive:
+            for attachment_name in document["_attachments"]:
+
+                attachment_bytes = instance.get_attachment(document, attachment_name, False)
+                decrypted_bytes = decrypt_content(session_key.decode("utf-8"), attachment_bytes)
+
+                file = ZipInfo(attachment_name)
+
+                zip_archive.writestr(file, decrypted_bytes)
+
+        return send_file(archive, "application/x-zip")
 
 if __name__ == "__main__":
     print("Listening: "  + environ.get('PORT', '8000'))

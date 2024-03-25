@@ -434,7 +434,7 @@ window.onload = function () {
         var exponent = document.getElementById("public-exponent").value;
         var validity = document.getElementById("validaty-period").value;
 
-        var result = await message.generateKeyPair(couchdb.getURL(), email, issuer, organisation, cn, validity, keysize, exponent)
+        var result = await message.create(couchdb.getURL(), email, issuer, organisation, cn, validity, keysize, exponent)
 
         window.cryptoArtificats = result.response;
 
@@ -505,7 +505,6 @@ window.onload = function () {
 
         document.getElementById("actions-button").style.visibility = "visible";
         document.getElementById("actions-button-content").style.visibility = "visible";
-
         document.getElementById("upload-passport-dialog").close();
 
         return false;
@@ -515,7 +514,6 @@ window.onload = function () {
     document.getElementById("upload-file").addEventListener("click", async function (event) {
 
         document.getElementById("upload-file-name").value = "";
-
         document.getElementById("upload-file-dialog").showModal();
 
     });
@@ -523,7 +521,6 @@ window.onload = function () {
     document.getElementById("save-passport").addEventListener("click", async function (event) {
 
         document.getElementById("p12-password").value = "";
-
         document.getElementById("pod-save-dialog").showModal();
 
     });
@@ -593,6 +590,13 @@ window.onload = function () {
     });
 
     document.getElementById("backup-pod").addEventListener("click", async function (event) {
+        var message = new Message();
+
+        var result = await message.backup(window.cryptoArtificats)
+
+        var fileUtil = new FileUtil(document);
+
+        fileUtil.saveAs(result, "pod.zip");
 
     });
 

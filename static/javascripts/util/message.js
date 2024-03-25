@@ -82,46 +82,6 @@ function Message() {
 
     }
 
-    this.generate = function (cryptoArtifacts, password) {
-
-        return new Promise((accept, reject) => {
-            let parmURL = `/backup`;
-
-            var xhttp = new XMLHttpRequest();
-            var formData = new FormData();
-
-            formData.append('private-key', cryptoArtifacts['private-key']);
-            formData.append('certificate', cryptoArtifacts['certificate']);
-
-            xhttp.responseType = "arraybuffer";
-
-            xhttp.open("POST", parmURL, true);
-
-            xhttp.onload = function () {
-                if (this.readyState === 4 && this.status === 200) {
-
-                    accept(this.response);
-
-                } else {
-
-                    reject({
-                        status: this.status,
-                        message: this.statusText
-                    });
-
-                }
-
-            };
-
-            xhttp.onerror = function () {
-            };
-
-            xhttp.send(formData);
-
-        });
-
-    }
-
     this.create = function (couchdbURL, email, issuer, org, cn, validity, keysize, exponent) {
 
         return new Promise((accept, reject) => {
@@ -348,6 +308,47 @@ function Message() {
     
     }
 
+    this.backup = function (couchdbURL, cryptoArtifacts) {
+
+        return new Promise((accept, reject) => {
+            let parmURL = `/backup`;
+
+            var xhttp = new XMLHttpRequest();
+            var formData = new FormData();
+
+            formData.append("couchdbURL", couchdbURL);
+            formData.append("key", cryptoArtifacts['private-key']);
+            formData.append("certificate", cryptoArtifacts['certificate']);
+
+            xhttp.responseType = "arraybuffer";
+
+            xhttp.open("POST", parmURL, true);
+
+            xhttp.onload = function () {
+                if (this.readyState === 4 && this.status === 200) {
+
+                    accept(this.response);
+
+                } else {
+
+                    reject({
+                        status: this.status,
+                        message: this.statusText
+                    });
+
+                }
+
+            };
+
+            xhttp.onerror = function () {
+            };
+
+            xhttp.send(formData);
+
+        });
+
+    }
+
     Message.prototype.generate = function (cryptoArtificats) {
 
         return this.generate(file);
@@ -387,6 +388,13 @@ function Message() {
     Message.prototype.remove = function (couchdbURL, certificate, filename) {
 
         return this.remove(couchdbURL, certificate, filename);
+
+    }
+
+           
+    Message.prototype.backup = function (couchdbURL, cryptoArtifacts) {
+
+        return this.backup(couchdbURL, cryptoArtifacts);
 
     }
 

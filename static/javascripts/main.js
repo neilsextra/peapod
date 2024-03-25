@@ -342,13 +342,16 @@ async function view(artificate, id, mimetype) {
 async function remove(artificate, attachmentName) {
     var message = new Message()
     var result = await message.remove(couchdb.getURL(), window.cryptoArtificats['certificate'], attachmentName);
+    
 
-    showArtifacts(window.cryptoArtificats);
+    alert(JSON.stringify(result));
+    
+    window.cryptoArtificats['document'] = result['document'];
+
+    showArtifacts(window.cryptoArtificats)
 
     document.getElementById("details").innerHTML = "";
-
     document.getElementById("error-message").innerHTML = `'${attachmentName}' : removed successfully`;
-
     document.getElementById("error-dialog").showModal();
 
 }
@@ -450,18 +453,23 @@ window.onload = function () {
     document.getElementById("pod-save-dialog-ok").addEventListener("click", async function (event) {
         var message = new Message();
 
-        var password = document.getElementById("p12-password").value;
+        try {
+            var password = document.getElementById("p12-password").value;
 
-        var result = await message.generate(window.cryptoArtificats, password)
+            var result = await message.generate(window.cryptoArtificats, password)
 
-        var fileUtil = new FileUtil(document);
+            var fileUtil = new FileUtil(document);
 
-        fileUtil.saveAs(result, "pod.p12");
+            fileUtil.saveAs(result, "pod.p12");
 
-        document.getElementById("pod-save-dialog").close();
-        document.getElementById("new-pod-dialog").close();
+            document.getElementById("pod-save-dialog").close();
+            document.getElementById("new-pod-dialog").close();
 
-        showArtifacts(window.cryptoArtificats);
+            showArtifacts(window.cryptoArtificats);
+
+        } catch (e) {
+            alert("ERROR: " + e);
+        }
 
     });
 
@@ -592,7 +600,7 @@ window.onload = function () {
     document.getElementById("backup-pod").addEventListener("click", async function (event) {
         var message = new Message();
 
-        var result = await message.backup(window.cryptoArtificats)
+        var result = await message.backup(couchdb.getURL(), window.cryptoArtificats)
 
         var fileUtil = new FileUtil(document);
 

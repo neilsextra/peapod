@@ -495,6 +495,7 @@ def remove():
         output.append({
             "status": 'success',
             "id": user_id,
+            "document": document,
             "attachment": attachment_name
         })
     
@@ -590,6 +591,7 @@ def backup():
         archive = io.BytesIO()
 
         with ZipFile(archive, 'w') as zip_archive:
+
             for attachment_name in document["_attachments"]:
 
                 attachment_bytes = instance.get_attachment(document, attachment_name, False)
@@ -598,6 +600,11 @@ def backup():
                 file = ZipInfo(attachment_name)
 
                 zip_archive.writestr(file, decrypted_bytes)
+
+                print("[BACKUP] Attachment: '%s' " % (attachment_bytes))
+
+        with open('out.zip', 'wb') as f:
+            f.write(archive)
 
         return send_file(archive, "application/x-zip")
 

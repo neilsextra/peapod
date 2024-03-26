@@ -126,6 +126,26 @@ function setCollapsible() {
 }
 
 /**
+ * Expand the Collapsible
+ * @param {string} id the Element Identifier to expand
+ */
+function expandCollapsible(id) {
+
+    var collapsible = document.getElementById(id);
+
+    collapsible.classList.toggle("collapsible-active");
+
+    var content = collapsible.nextElementSibling;
+
+    if (content.style.maxHeight) {
+        content.style.maxHeight = null;
+    } else {
+        content.style.maxHeight = content.scrollHeight + "px";
+    }
+
+}
+
+/**
  * Get the Connection
  */
 async function getConnection() {
@@ -145,7 +165,9 @@ async function showCSV(id) {
     waitDialog.showModal();
 
     var message = new Message()
-    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id, false)
+    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], 
+                                                          window.cryptoArtificats['private-key'], 
+                                                          id, false);
 
     let results = Papa.parse(result);
     let lines = results.data;
@@ -204,9 +226,18 @@ async function showHex(id) {
 
     waitDialog.showModal();
 
-    var message = new Message()
-    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id, true)
+    var result = await (new Message()).download(couchdb.getURL(), window.cryptoArtificats['certificate'], 
+                                                          window.cryptoArtificats['private-key'], 
+                                                          id, true)
 
+    var hex = hexview(result);
+
+    document.getElementById("hex-view").innerHTML = hex;
+
+    waitDialog.close();
+
+    document.getElementById("display-hex-dialog").showModal();
+    
 }
 
 /**
@@ -220,7 +251,8 @@ async function showPDF(id, mimetype) {
     waitDialog.showModal();
 
     var message = new Message()
-    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], window.cryptoArtificats['private-key'], id, true);
+    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], 
+                                                          window.cryptoArtificats['private-key'], id, true);
 
     var pdfView = new PDFView(result, "attachment-view", 1.0);
 
@@ -462,11 +494,11 @@ window.onload = function () {
         window.cryptoArtificats = result.response;
 
         document.getElementById("p12-password").value = "";
-
         document.getElementById("pod-save-dialog").showModal();
-
         document.getElementById("actions-button").style.visibility = "visible";
         document.getElementById("actions-button-content").style.visibility = "visible";
+
+        expandCollapsible("actions-button");
 
     });
 
@@ -533,6 +565,9 @@ window.onload = function () {
 
         document.getElementById("actions-button").style.visibility = "visible";
         document.getElementById("actions-button-content").style.visibility = "visible";
+
+        expandCollapsible("actions-button");
+
         document.getElementById("upload-passport-dialog").close();
 
         return false;
@@ -582,8 +617,8 @@ window.onload = function () {
 
         waitDialog.showModal();
 
-        var result = await message.upload(couchdb.getURL(), window.cryptoArtificats['certificate'], 
-                                                            window.cryptoArtificats['private-key'], files);
+        var result = await message.upload(couchdb.getURL(), window.cryptoArtificats['certificate'],
+            window.cryptoArtificats['private-key'], files);
 
         window.cryptoArtificats['document'] = result.response['document'];
 

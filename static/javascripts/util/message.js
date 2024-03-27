@@ -10,9 +10,10 @@ function Message() {
             xhttp.open("GET", parmURL, true);
 
             xhttp.onload = function () {
-                var response = JSON.parse(this.responseText);
-
+                
                 if (this.readyState === 4 && this.status === 200) {
+                    var response = JSON.parse(this.responseText);
+     
                     var result = JSON.parse(xhttp.response);
 
                     accept({
@@ -24,7 +25,8 @@ function Message() {
 
                     reject({
                         status: this.status,
-                        message: this.statusText
+                        error: this.statusText,
+                        message: this.responseText
                     });
 
                 }
@@ -32,6 +34,10 @@ function Message() {
             };
 
             xhttp.onerror = function () {
+                console.log("im here d");
+     
+                alert(this.statusText);
+
             };
 
             xhttp.send();

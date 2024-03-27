@@ -470,7 +470,7 @@ window.onload = function () {
             document.getElementById("connect-dialog").close();
             document.getElementById("wait-dialog").close();
 
-            document.getElementById("connect-dialog-cancel").style.visibility = "visible";
+            document.getElementById("connect-dialog-cancel").style.display = "inline-block";
 
         } catch (e) {
             document.getElementById("connect-message").innerHTML = e.message;

@@ -147,19 +147,27 @@ def connect():
 
     output = {}
 
-    couchdb_URL = request.values.get('couchdbURL')
+    try:
+        output = {}
+        couchdb_URL = request.values.get('couchdbURL')
 
-    print("[CONNECT] 'URL: %s' " % (couchdb_URL))
+        print("[CONNECT] 'URL: %s' " % (couchdb_URL))
 
-    server = pycouchdb.Server(couchdb_URL)
+        server = pycouchdb.Server(couchdb_URL)
 
-    get_instance(server, params.PEAPOD_DATABASE)
+        get_instance(server, params.PEAPOD_DATABASE)
+        
+        output['version'] = server.info()['version']
+        
+        print("[CONNECTED] 'Version: %s' " % (output['version']))
+
+        return json.dumps(output, sort_keys=True), 200
     
-    output['version'] = server.info()['version']
-    
-    print("[CONNECTED] 'Version: %s' " % (output['version']))
+    except Exception as e:
+        print(f"{type(e).__name__} was raised: {e}")
 
-    return json.dumps(output, sort_keys=True), 200
+        return str(e), 500
+
 
 @app.route("/create", methods=["GET"])
 def create():

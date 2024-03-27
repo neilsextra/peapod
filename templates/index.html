@@ -511,7 +511,7 @@
                         </tr>
                     </table>
                 </div>
-                <button id="actions-button" class="collapsible" style="visibility:hidden;">Actions</button>
+                <button id="actions-button" class="collapsible" style="visibility:hidden;">Action</button>
                 <div id="actions-button-content" class="collapsible-content"
                     style="margin-top:4px; margin-bottom:12px; margin-bottom:12px; visibility:hidden;">
                     <table class="selection" style="margin-top: 4px;">
@@ -556,8 +556,23 @@
 
                     </table>
                 </div>
-            </div>
 
+                <button id="edit-button" class="collapsible" style="visibility:hidden;">Edit</button>
+                <div id="edit-button-content" class="collapsible-content"
+                    style="margin-top:4px; margin-bottom:12px; margin-bottom:12px; visibility:hidden;">
+                    <table class="selection" style="margin-top: 4px;">
+                        <tr>
+                            <td>
+                                <button class="collapsible-menu" id="edit-readme">
+                                    <img src="{{url_for( 'static', filename='images/readme-editor.svg')}}"
+                                        style="width:20px; height:22px; margin-top:4px;margin-right:4px;"></img>
+                                    <label for="edit-readme" style="position:relative; top:-5px;">Edit Readme</label>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>          
+            </div>
             <div id="container"
                 style="position:absolute; top:44px; left:460px; right:495px; bottom:40px; border: 1px solid rgba(0,0,0, 0.2); overflow:hidden;">
 

@@ -133,14 +133,18 @@ function expandCollapsible(id) {
 
     var collapsible = document.getElementById(id);
 
-    collapsible.classList.toggle("collapsible-active");
+    if (!collapsible.classList.contains("collapsible-active")) {
+       
+        collapsible.classList.toggle("collapsible-active");
 
-    var content = collapsible.nextElementSibling;
+        var content = collapsible.nextElementSibling;
 
-    if (content.style.maxHeight) {
-        content.style.maxHeight = null;
-    } else {
-        content.style.maxHeight = content.scrollHeight + "px";
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+
     }
 
 }
@@ -497,6 +501,8 @@ window.onload = function () {
         document.getElementById("pod-save-dialog").showModal();
         document.getElementById("actions-button").style.visibility = "visible";
         document.getElementById("actions-button-content").style.visibility = "visible";
+        document.getElementById("edit-button").style.visibility = "visible";
+        document.getElementById("edit-button-content").style.visibility = "visible";
 
         expandCollapsible("actions-button");
 
@@ -565,6 +571,9 @@ window.onload = function () {
 
         document.getElementById("actions-button").style.visibility = "visible";
         document.getElementById("actions-button-content").style.visibility = "visible";
+        document.getElementById("edit-button").style.visibility = "visible";
+        document.getElementById("edit-button-content").style.visibility = "visible";
+
 
         expandCollapsible("actions-button");
 

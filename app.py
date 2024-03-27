@@ -348,16 +348,7 @@ def open_pod():
         return json.dumps(output, sort_keys=True), 200
 
     except Exception as e:
-
-        print("[OPEN] - ERROR '%s'" % str(e))
-        output = [] 
-
-        output.append({
-            "status": 'fail',
-            "error": str(e)
-        })
-
-        return json.dumps(output, sort_keys=True), 500
+        return str(e), 500
 
 @app.route("/upload", methods=["POST"])
 def upload():

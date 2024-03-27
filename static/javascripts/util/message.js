@@ -72,7 +72,8 @@ function Message() {
 
                     reject({
                         status: this.status,
-                        message: this.statusText
+                        error: this.statusText,
+                        message: this.response
                     });
 
                 }
@@ -166,9 +167,9 @@ function Message() {
 
                     reject({
                         status: this.status,
-                        message: this.statusText
+                        error: this.statusText,
+                        message: this.response
                     });
-
                 }
 
             };

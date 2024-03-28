@@ -352,7 +352,7 @@ function showArtifacts(artifcats) {
  * @param {json} artificate the type of artifact, certificate, key, file, etc
  * @param {id} id the identifier of the artifact
  */
-function show(artificate, id, mimetype) {
+function view(artificate, id, mimetype) {
     document.getElementById("details").innerHTML = "";
 
     if (artificate == 'attachment') {
@@ -386,7 +386,7 @@ function show(artificate, id, mimetype) {
 
 }
 
-async function view(artificate, id, mimetype) {
+async function details(artificate, id, mimetype) {
 
     if (mimetype == "text/csv" || id.endsWith("csv")) {
         showCSV(id);
@@ -427,6 +427,14 @@ window.onload = function () {
     }
 
     setCollapsible();
+
+    window.details = details;
+    window.simplemde = new SimpleMDE({ element: document.getElementById("readme-editor"),
+                                       toolbar: ["bold", "italic", "heading", "|", 
+                                       "quote", "ordered-list", "unordered-list", "|",
+                                       "table", "horizontal-rule", "|",
+                                       "preview"
+                                    ]});
 
     document.getElementById("new-pod").addEventListener("click", async function (event) {
 
@@ -662,7 +670,6 @@ window.onload = function () {
     });
 
     document.getElementById("backup-pod").addEventListener("click", async function (event) {
-
         var waitDialog = document.getElementById("wait-dialog");
 
         waitDialog.showModal();
@@ -678,5 +685,14 @@ window.onload = function () {
         waitDialog.close();
 
     });
+
+    
+    document.getElementById("edit-readme").addEventListener("click", async function (event) {
+        var editDialog = document.getElementById("edit-dialog");
+
+        editDialog.showModal();
+
+    });
+
 
 }

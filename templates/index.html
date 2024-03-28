@@ -18,6 +18,9 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/card.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/content.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/collapsible.css') }}" />
+
+    <link rel="stylesheet" type="text/css" href="{{ npm_url_for(component='simplemde', filename='dist/simplemde.min.css') }}" />
+
     <style>
         textarea {
             resize: none;
@@ -37,6 +40,7 @@
     <script src="{{ url_for('static', filename='javascripts/gui/guiutil.js') }}"></script>
 
     <script src="{{ npm_url_for(component='papaparse', filename='papaparse.min.js') }}"></script>
+    <script type="module" src="{{ npm_url_for(component='simplemde', filename='dist/simplemde.min.js') }}"></script>
 
     <script type="text/javascript"
     src="{{ npm_url_for(component='pdfjs-dist', filename='build/pdf.min.js') }}"></script>
@@ -51,7 +55,7 @@
     <!-- templates -->
 
     <script type="text/template" data-template="certificate-card-item">
-        <div id="certificate-${id}" class="card-crypto" style="position:relative;" onclick="show('certificate', '${id}');">
+        <div id="certificate-${id}" class="card-crypto" style="position:relative;" onclick="window.details('certificate', '${id}');">
             <div class="card-crypto-main">
                 <div style="position:relative; color:black;">
                     <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="20" height="20" style="float: left;" />
@@ -69,7 +73,7 @@
     </script>
 
     <script type="text/template" data-template="key-card-item">
-        <div id="key-${id}" class="card-crypto" style="position:relative;" onclick="show('key', '${id}');">
+        <div id="key-${id}" class="card-crypto" style="position:relative;" onclick="window.details('key', '${id}');">
             <div class="card-crypto-main">
                 <div>
                     <div style="position:relative; color:black;">
@@ -90,7 +94,7 @@
     </script>
 
     <script type="text/template" data-template="attachment-card-item">
-        <div id="attachment-${id}" class="card-attachment" style="position:relative;" onclick="show('attachment', '${filename}', '${mimetype}');">
+        <div id="attachment-${id}" class="card-attachment" style="position:relative;" onclick="window.details('attachment', '${filename}', '${mimetype}');">
             <div class="card-attachment-main">
                 <div>
                     <div style="position:relative; color:black;">
@@ -180,7 +184,7 @@
  
             <div style="position:absolute; bottom:10px; height:36px; left:10px; right:10px;">
                 <span style="float:right; border:1px solid rgb(230,230,230); background-color:rgba(255,255,255,0.9); margin:3px; padding:3px; ">
-                    <img id="view-attachment" class="menu-item" style="margin-right:5px; margin-top:-1;" src="{{url_for( 'static', filename='images/view.svg')}}" width="24" height="24" onclick="view('attachment', '${filename}', '${mimetype}');"/>
+                    <img id="view-attachment" class="menu-item" style="margin-right:5px; margin-top:-1;" src="{{url_for( 'static', filename='images/view.svg')}}" width="24" height="24" onclick="details('attachment', '${filename}', '${mimetype}');"/>
                     <img id="delete-document" class="menu-item" style="margin-top:2px;" src="{{url_for( 'static', filename='images/trash.svg')}}" width="24" height="24" onclick="remove('attachment', '${filename}');"/> 
                </span>
             </div>
@@ -454,11 +458,31 @@
             style="float: left;" />
         <p id="delete-message" style="font-size: 18px; font-weight: bold;">/p>
         <div style="margin-top:10px;">
+            
+            <button id="delete-dialog-close" class="close-button message-dialog-small-cancel-button"
+                style="float: right; margin-top:10px;">Cancel</button>
+
             <button id="delete-dialog-ok" class="message-dialog-small-ok-button"
                 style="float: right; margin-top:10px;">Delete</button>
 
-            <button id="delete-dialog-close" class="close-button message-dialog-small-cancel-button"
-                style="float: right; margin-top:10px;">Cancel</button>
+        </div>
+    </dialog>
+
+    <dialog id="edit-dialog" class="dialog message-dialog" style="min-width:840px; width:840px; height:540px;">
+        <div class="modal-header" style="background-color: black">
+            <span id="edit-dialog-close" class="close close-button">&times;</span>
+            <h2>Readme Editor</h2>
+        </div>
+        <div>
+            <textarea id="readme-editor" style="position:absolute; display:inline-block; width:800px; overflow:auto; border:1px solid rgb(230,230,230)"></textarea>                  
+        </div>
+        <div style="margin-top:10px;">
+            <button id="edit-dialog-close" class="close-button message-dialog-small-cancel-button"
+            style="float: right; margin-top:10px;">Cancel</button>
+
+            <button id="edit-dialog-ok" class="message-dialog-small-ok-button"
+                style="float: right; margin-top:10px;">Save</button>
+
         </div>
     </dialog>
 
@@ -598,6 +622,6 @@
 
 </body>
 
-<script src="{{ url_for('static', filename='javascripts/main.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='javascripts/main.js') }}"></script>
 
 </html

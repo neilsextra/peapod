@@ -398,6 +398,17 @@ async function details(artificate, id, mimetype) {
 
 }
 
+async function download(artifact) {
+
+    if (artifact == "certificate") {
+        var fileUtil = new FileUtil(document);
+
+        fileUtil.saveAs(window.cryptoArtificats['certificate'], `pod-${window.cryptoArtificats['id']}.cer`);
+    
+    }
+
+}
+
 async function remove(artificate, attachmentName) {
     var message = new Message()
     var result = await message.remove(couchdb.getURL(), window.cryptoArtificats['certificate'], attachmentName);
@@ -428,7 +439,12 @@ window.onload = function () {
 
     setCollapsible();
 
+    // Setting Global Variables
     window.details = details;
+    window.view = view;
+    window.remove = remove;
+    window.download = download;
+
     window.simplemde = new SimpleMDE({ element: document.getElementById("readme-editor"),
                                        toolbar: ["bold", "italic", "heading", "|", 
                                        "quote", "ordered-list", "unordered-list", "|",
@@ -436,6 +452,7 @@ window.onload = function () {
                                        "preview"
                                     ]});
 
+    //Global Variables
     document.getElementById("new-pod").addEventListener("click", async function (event) {
 
         document.getElementById("email").value = "";
@@ -693,6 +710,5 @@ window.onload = function () {
         editDialog.showModal();
 
     });
-
 
 }

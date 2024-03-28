@@ -55,7 +55,7 @@
     <!-- templates -->
 
     <script type="text/template" data-template="certificate-card-item">
-        <div id="certificate-${id}" class="card-crypto" style="position:relative;" onclick="window.details('certificate', '${id}');">
+        <div id="certificate-${id}" class="card-crypto" style="position:relative;" onclick="window.view('certificate', '${id}');">
             <div class="card-crypto-main">
                 <div style="position:relative; color:black;">
                     <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="20" height="20" style="float: left;" />
@@ -73,7 +73,7 @@
     </script>
 
     <script type="text/template" data-template="key-card-item">
-        <div id="key-${id}" class="card-crypto" style="position:relative;" onclick="window.details('key', '${id}');">
+        <div id="key-${id}" class="card-crypto" style="position:relative;" onclick="window.attachment-view('key', '${id}');">
             <div class="card-crypto-main">
                 <div>
                     <div style="position:relative; color:black;">
@@ -94,7 +94,7 @@
     </script>
 
     <script type="text/template" data-template="attachment-card-item">
-        <div id="attachment-${id}" class="card-attachment" style="position:relative;" onclick="window.details('attachment', '${filename}', '${mimetype}');">
+        <div id="attachment-${id}" class="card-attachment" style="position:relative;" onclick="window.view('attachment', '${filename}', '${mimetype}');">
             <div class="card-attachment-main">
                 <div>
                     <div style="position:relative; color:black;">
@@ -139,6 +139,11 @@
                     ${certificate}
                 </div>
             </div>
+            <div style="position:absolute; bottom:10px; height:36px; left:10px; right:10px;">
+                <span style="float:right; border:1px solid rgb(230,230,230); background-color:rgba(255,255,255,0.9); margin:3px; padding:3px; ">
+                    <img id="download-certificate" class="menu-item" style="margin-left:5px; margin-right:5px; margin-top:-1;" src="{{url_for( 'static', filename='images/download.svg')}}" width="24" height="24" onclick="window.download('certificate');"/>
+                </span>
+            </div>
         </div>
     </script>
 
@@ -169,6 +174,12 @@
                     </div>
                 </div>
             </div>
+            <div style="position:absolute; bottom:10px; height:36px; left:10px; right:10px;">
+                <span style="float:right; border:1px solid rgb(230,230,230); background-color:rgba(255,255,255,0.9); margin:3px; padding:3px; ">
+                    <img id="download-certificate" class="menu-item" style="margin-right:5px; margin-top:-1;" src="{{url_for( 'static', filename='images/view.svg')}}" width="24" height="24" onclick="download('certificate');"/>
+                </span>
+            </div>
+  
         </div>
     </script>
 
@@ -184,8 +195,8 @@
  
             <div style="position:absolute; bottom:10px; height:36px; left:10px; right:10px;">
                 <span style="float:right; border:1px solid rgb(230,230,230); background-color:rgba(255,255,255,0.9); margin:3px; padding:3px; ">
-                    <img id="view-attachment" class="menu-item" style="margin-right:5px; margin-top:-1;" src="{{url_for( 'static', filename='images/view.svg')}}" width="24" height="24" onclick="details('attachment', '${filename}', '${mimetype}');"/>
-                    <img id="delete-document" class="menu-item" style="margin-top:2px;" src="{{url_for( 'static', filename='images/trash.svg')}}" width="24" height="24" onclick="remove('attachment', '${filename}');"/> 
+                    <img id="view-attachment" class="menu-item" style="margin-right:5px; margin-top:-1;" src="{{url_for( 'static', filename='images/view.svg')}}" width="24" height="24" onclick="window.details('attachment', '${filename}', '${mimetype}');"/>
+                    <img id="delete-document" class="menu-item" style="margin-top:2px;" src="{{url_for( 'static', filename='images/trash.svg')}}" width="24" height="24" onclick="window.remove('attachment', '${filename}');"/> 
                </span>
             </div>
         </div>

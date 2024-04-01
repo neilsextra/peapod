@@ -174,12 +174,6 @@
                     </div>
                 </div>
             </div>
-            <div style="position:absolute; bottom:10px; height:36px; left:10px; right:10px;">
-                <span style="float:right; border:1px solid rgb(230,230,230); background-color:rgba(255,255,255,0.9); margin:3px; padding:3px; ">
-                    <img id="download-certificate" class="menu-item" style="margin-right:5px; margin-top:-1;" src="{{url_for( 'static', filename='images/download.svg')}}" width="24" height="24" onclick="download('certificate');"/>
-                </span>
-            </div>
-  
         </div>
     </script>
 
@@ -509,16 +503,15 @@
                     <h1>PEA-POD : POD Management Console</h1>
                 </div>
 
-                <div style="position:absolute; top:5px; right:2px; width:96px;">
+                <div style="position:absolute; top:5px; right:2px; width:126px;">
 
                     <a id="update-settings" style="position:absolute; right:2px; top:2px; " class="menu-item">
                         <img src="{{ url_for( 'static', filename='images/settings.svg' ) }}" width="28" height="28" />
                     </a>
 
-                    <a id="connect-couchdb" style="position:absolute; left:32px; top:2px; " class="menu-item">
+                    <a id="connect-couchdb" style="position:absolute; left:64px; top:2px; " class="menu-item">
                         <img src="{{ url_for( 'static', filename='images/connect.svg' ) }}" width="28" height="28" />
                     </a>
-
                 </div>
 
             </div>
@@ -547,6 +540,15 @@
                                 </button>
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                <button class="collapsible-menu" id="open-register">
+                                    <img src="{{url_for( 'static', filename='images/favorites.svg')}}"
+                                        style="width:20px; height:22px; margin-top:4px; margin-right:4px;"></img>
+                                    <label for="open-register" style="position:relative; top:-5px;">Open Register</label>
+                                </button>
+                            </td>
+                        </tr>
                     </table>
                 </div>
                 <button id="actions-button" class="collapsible" style="visibility:hidden;">Action</button>
@@ -562,7 +564,24 @@
                                 </button>
                             </td>
                         </tr>
-
+                        <tr>
+                            <td>
+                                <button class="collapsible-menu" id="register-pod">
+                                    <img src="{{url_for( 'static', filename='images/register.svg')}}"
+                                        style="width:20px; height:22px; margin-top:4px; margin-right:4px;"></img>
+                                    <label for="register-passport" style="position:relative; top:-5px;">Register Passport</label>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="collapsible-menu" id="register-pod">
+                                    <img src="{{url_for( 'static', filename='images/unregister.svg')}}"
+                                        style="width:20px; height:22px; margin-top:4px; margin-right:4px;"></img>
+                                    <label for="unregister-passport" style="position:relative; top:-5px;">Unregister Passport</label>
+                                </button>
+                            </td>
+                        </tr>
                         <tr>
                             <td>
                                 <button class="collapsible-menu" id="upload-file">
@@ -590,8 +609,16 @@
                                     <label for="backup-pod" style="position:relative; top:-5px;">Backup POD</label>
                                 </button>
                             </td>
+                        </tr>    
+                        <tr>
+                            <td>
+                                <button class="collapsible-menu" id="backup-pod">
+                                    <img src="{{url_for( 'static', filename='images/add-user.svg')}}"
+                                        style="width:20px; height:22px; margin-top:4px; margin-right:4px;"></img>
+                                    <label for="backup-pod" style="position:relative; top:-5px;">Add User</label>
+                                </button>
+                            </td>
                         </tr>
-
                     </table>
                 </div>
 

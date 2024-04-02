@@ -196,6 +196,15 @@
         </div>
     </script>
 
+    <script type="text/template" data-template="regsitered-pod-item">
+        <div id="passport-${id}" style="position:relative; text-align: center;" onclick="window.openPassport('${id}');">
+            <div style="position:relative; color:black; margin:auto;">
+                <img src="{{url_for( 'static', filename='images/new.svg')}}" width="64" height="64" />
+            </div>
+            <label id="label-passport-${id}">${id}</label>
+        </div>
+    </script>
+
 </head>
 
 <body style="overflow: hidden;" oncontextmenu="return false;">
@@ -217,6 +226,16 @@
         <img src="{{url_for( 'static', filename='images/exclamation.svg')}}" width="48" height="48"
             style="float: left;" />
         <p id="error-message" style="font-size: 18px; font-weight: bold;">/p>
+        <form method="dialog">
+            <button class="message-dialog-small-button" style="float: right;">OK</button>
+        </form>
+    </dialog>
+
+    
+    <dialog id="info-dialog" class="dialog message-dialog" style="min-width:400px;">
+        <img src="{{url_for( 'static', filename='images/info.svg')}}" width="48" height="48"
+            style="float: left; margin:5px;" />
+        <p id="info-message" style="font-size: 16px; font-weight: normal;">/p>
         <form method="dialog">
             <button class="message-dialog-small-button" style="float: right;">OK</button>
         </form>
@@ -490,6 +509,41 @@
 
         </div>
     </dialog>
+    
+    <dialog id="register-dialog" class="dialog message-dialog" style="min-width:840px; width:840px; height:540px;">
+        <div class="modal-header" style="background-color: black">
+            <span id="register-dialog-close" class="close close-button">&times;</span>
+            <h2>POD Register</h2>
+        </div>
+        <div id="register"
+            style="position:absolute; display:inline-block; width:800px; height:450px; overflow:auto; border:1px solid rgb(230,230,230)">
+
+            <div id="registered-artifacts"
+                style="position:absolute; width:790px; height:440px; overflow:auto;">
+                <div id="registered-artifacts-container" class="selection-box">
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog id="pod-open-dialog" class="dialog message-dialog" style="min-width:500px;">
+        <img src="{{url_for( 'static', filename='images/card.svg')}}" width="24" height="24" style="float: left;" />
+        <p style="font-size: 18px; font-weight: bold; text-align: top; float: left; margin-top:6px; width:90%;">
+            &nbsp;Open Passport</p>
+        <p style="height:5px"></p>
+        <label class="modal-label" value="Password">Password</label>
+        <input class="modal-entry template-entry" style="width:100%;" id="passport-password" type="password" name="password"
+            placeholder="Password...">
+        </input>
+        <p style="height:10px"></p>
+        <form method="dialog">
+            <button id="pod-open-dialog-cancel" class="close-button message-dialog-small-cancel-button"
+            style="float: right; margin-top:10px;">Cancel</button>
+
+            <button id="pod-open-dialog-ok" class="message-dialog-small-ok-button"
+                style="float: right; margin-top:10px;">Open</button>
+        </form>
+    </dialog>
 
     <div style="overflow:hidden; user-select: none;">
         <div style="overflow:hidden;">
@@ -566,7 +620,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <button class="collapsible-menu" id="register-pod">
+                                <button class="collapsible-menu" id="register-passport">
                                     <img src="{{url_for( 'static', filename='images/register.svg')}}"
                                         style="width:20px; height:22px; margin-top:4px; margin-right:4px;"></img>
                                     <label for="register-passport" style="position:relative; top:-5px;">Register Passport</label>
@@ -575,7 +629,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <button class="collapsible-menu" id="register-pod">
+                                <button class="collapsible-menu" id="unregister-passport">
                                     <img src="{{url_for( 'static', filename='images/unregister.svg')}}"
                                         style="width:20px; height:22px; margin-top:4px; margin-right:4px;"></img>
                                     <label for="unregister-passport" style="position:relative; top:-5px;">Unregister Passport</label>
@@ -612,10 +666,10 @@
                         </tr>    
                         <tr>
                             <td>
-                                <button class="collapsible-menu" id="backup-pod">
+                                <button class="collapsible-menu" id="add-user">
                                     <img src="{{url_for( 'static', filename='images/add-user.svg')}}"
                                         style="width:20px; height:22px; margin-top:4px; margin-right:4px;"></img>
-                                    <label for="backup-pod" style="position:relative; top:-5px;">Add User</label>
+                                    <label for="add-user" style="position:relative; top:-5px;">Add User</label>
                                 </button>
                             </td>
                         </tr>

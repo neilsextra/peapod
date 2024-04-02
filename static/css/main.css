@@ -39,6 +39,17 @@
     border: 1px;
     color: black;
 }
+
+.selection-box {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: left;
+    box-sizing: border-box;
+    border: 1px;
+    color: black;
+}
+
 .container {
     margin-top: 64x;
     display: flex;

@@ -306,6 +306,7 @@ function showArtifacts(artifcats) {
 
         let fragment = document.createRange().createContextualFragment(value);
         document.getElementById("artifacts-container").appendChild(fragment);
+
     }
 
     if (settings.view_keys) {
@@ -398,6 +399,11 @@ async function details(artificate, id, mimetype) {
 
 }
 
+/**
+ * Donwloadload the Artifact
+ * 
+ * @param {string} artifact 
+ */
 async function download(artifact) {
 
     if (artifact == "certificate") {
@@ -418,8 +424,48 @@ async function remove(artificate, attachmentName) {
     showArtifacts(window.cryptoArtificats);
 
     document.getElementById("details").innerHTML = "";
-    document.getElementById("error-message").innerHTML = `'${attachmentName}' : removed successfully`;
-    document.getElementById("error-dialog").showModal();
+    document.getElementById("info-message").innerHTML = `'${attachmentName}' : removed successfully`;
+    document.getElementById("info-dialog").showModal();
+
+}
+
+function openPassport(podID) {
+
+    function processURI(dataURI) {
+        var message = dataURI.split(/;|,|:/);
+        
+        return {
+            "base64" : message[3],
+            "mimetype" : message[1]
+        }
+    
+    }
+
+    function base64ToBlob(base64String, contentType = '') {
+        const byteCharacters = atob(base64String);
+        const byteArrays = [];
+    
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteArrays.push(byteCharacters.charCodeAt(i));
+        }
+    
+        const byteArray = new Uint8Array(byteArrays);
+        
+        return new Blob([byteArray], { type: contentType });
+    
+    }
+
+    var passport = window.localStorage.getItem( podID );
+
+    let processedURI = processURI(passport);
+
+    let blob = base64ToBlob(processedURI.base64, processedURI.mimetype);
+
+    var file = new File([blob], `POD-${podID}.p12`, {type:  processedURI.mimetype, lastModified: Date.now()});
+
+    window.passport = file;
+
+    document.getElementById("pod-open-dialog").showModal();
 
 }
 
@@ -444,6 +490,7 @@ window.onload = function () {
     window.view = view;
     window.remove = remove;
     window.download = download;
+    window.openPassport = openPassport;
 
     window.simplemde = new SimpleMDE({ element: document.getElementById("readme-editor"),
                                        toolbar: ["bold", "italic", "heading", "|", 
@@ -543,7 +590,7 @@ window.onload = function () {
 
             var fileUtil = new FileUtil(document);
 
-            fileUtil.saveAs(result, "pod.p12");
+            fileUtil.saveAs(result, `pod-${window.cryptoArtificats["ID"]}.p12`);
 
             document.getElementById("pod-save-dialog").close();
             document.getElementById("new-pod-dialog").close();
@@ -701,6 +748,10 @@ window.onload = function () {
 
         waitDialog.close();
 
+               
+        document.getElementById("info-message").innerHTML = `<b>Pod Backup Complete:</b> ${window.cryptoArtificats['id']}`;
+        document.getElementById("info-dialog").showModal();
+
     });
 
     
@@ -709,6 +760,64 @@ window.onload = function () {
 
         editDialog.showModal();
 
+    });
+
+    document.getElementById("register-passport").addEventListener("click", async function (event) {
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const blob = new Blob([new Uint8Array(e.target.result)], {type: window.passports[0].type });
+
+            var blobReader = new FileReader();
+            
+            blobReader.readAsDataURL(blob); 
+            
+            blobReader.onloadend = function() {
+            
+                var base64data = blobReader.result;                
+                
+                window.localStorage.setItem(window.cryptoArtificats['id'], base64data);
+
+                document.getElementById("info-message").innerHTML = `<b>Passport Registered:</b> ${window.cryptoArtificats['id']}`;
+                document.getElementById("info-dialog").showModal();
+
+            }
+
+        };
+
+        reader.readAsArrayBuffer(window.passports[0]);
+
+    });
+    
+    document.getElementById("unregister-passport").addEventListener("click", async function (event) {
+ 
+        window.localStorage.removeItem(window.cryptoArtificats['id']);
+
+        document.getElementById("info-message").innerHTML = `<b>Passport Unregistered:</b> ${window.cryptoArtificats['id']}`;
+        document.getElementById("info-dialog").showModal();
+
+
+    });
+
+    document.getElementById("open-register").addEventListener("click", async function (event) {
+
+        document.getElementById("registered-artifacts-container").innerHTML = "";
+        
+        for (var keyID = 0;  keyID < window.localStorage.length; keyID++) {            
+            let template = document.querySelector('script[data-template="regsitered-pod-item"]').text;
+            
+            let value = stringUtil.substitute(template, {
+                "id": window.localStorage.key( keyID )
+                });
+
+            let fragment = document.createRange().createContextualFragment(value);
+
+            document.getElementById("registered-artifacts-container").appendChild(fragment);
+
+        }
+
+        document.getElementById("register-dialog").showModal();
+  
     });
 
 }

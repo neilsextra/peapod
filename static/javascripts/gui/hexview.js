@@ -16,8 +16,6 @@ function hexview(data) {
 
     }
 
-    console.log(`I is ${i} - ${i % 16}`);
-
     if (i % 16) {
         innerHTML += " | ".padStart((16 - (i % 16)) * 3, "-").replace(/-/g, "&nbsp;") + chars;
     }

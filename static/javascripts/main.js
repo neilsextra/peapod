@@ -820,4 +820,29 @@ window.onload = function () {
   
     });
 
+    document.getElementById("pod-open-dialog-ok").addEventListener("click", async function (event) {
+
+        var message = new Message();
+        var result = await message.open(couchdb.getURL(), window.passport, 
+                        document.getElementById("pod-passport-password").value);
+
+        window.cryptoArtificats = result.response;
+
+        showArtifacts(window.cryptoArtificats);
+
+        document.getElementById("actions-button").style.visibility = "visible";
+        document.getElementById("actions-button-content").style.visibility = "visible";
+        document.getElementById("edit-button").style.visibility = "visible";
+        document.getElementById("edit-button-content").style.visibility = "visible";
+
+        expandCollapsible("actions-button");
+
+        document.getElementById("pod-open-dialog").close();
+        document.getElementById("register-dialog").close();
+
+        window.passports = [];
+        windows.passports.push(window.passport);
+   
+    });
+
 }

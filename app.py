@@ -234,7 +234,6 @@ def create():
 
     output['certificate'] = bytes.decode("UTF-8")
 
-
     document["passport"]["certificate"] = bytes.decode("UTF-8") 
 
     fernet_key = Fernet.generate_key()
@@ -598,6 +597,35 @@ def backup():
                 print("[BACKUP] Attachment: '%s' " % (attachment_name))
 
         return send_file(io.BytesIO(archive.getvalue()), "application/x-zip")
+
+@app.route("/set", methods=["POST"])
+def set():
+    couchdb_URL = request.values.get('couchdbURL')
+    certificate_pem = request.values.get('certificate')
+    folder = request.values.get('folder')
+    name = request.values.get('name')
+    value = request.values.get('value')
+    
+    server = pycouchdb.Server(couchdb_URL)
+
+    instance = get_instance(server, params.PEAPOD_DATABASE)
+
+    certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+    user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+
+    print("[SET] Document ID: '%s' " % (user_id))
+
+    document = instance.get(user_id)
+
+    document[folder][name] = value
+
+    document = save(instance, document)
+   
+    output = []
+
+    output['document'] = document
+
+    return json.dumps(output, sort_keys=True), 200
 
 if __name__ == "__main__":
     print("Listening: "  + environ.get('PORT', '8000'))

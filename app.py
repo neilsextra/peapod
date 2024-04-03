@@ -598,6 +598,22 @@ def backup():
 
         return send_file(io.BytesIO(archive.getvalue()), "application/x-zip")
 
+@app.route("/get", methods=["GET"])
+def get():
+    couchdb_URL = request.values.get('couchdbURL')
+    certificate_pem = request.values.get('certificate')
+    
+    server = pycouchdb.Server(couchdb_URL)
+
+    instance = get_instance(server, params.PEAPOD_DATABASE)
+
+    certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+    user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+
+    print("[GET] Document ID: '%s' " % (user_id))
+
+    return json.dumps(instance.get(user_id), sort_keys=True), 200
+
 @app.route("/set", methods=["POST"])
 def set():
     couchdb_URL = request.values.get('couchdbURL')
@@ -619,11 +635,8 @@ def set():
 
     document[folder][name] = value
 
-    document = save(instance, document)
-   
     output = []
-
-    output['document'] = document
+    output['document'] = save(instance, document)
 
     return json.dumps(output, sort_keys=True), 200
 

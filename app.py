@@ -43,6 +43,9 @@ template = {
     "passport" :{
         "certificate": ""
     },
+    "folder": {
+        "readme.md": "" 
+    },
     "tokens": [],
     "key" : {
     }
@@ -612,13 +615,12 @@ def get():
 
     print("[GET] Document ID: '%s' " % (user_id))
 
-    return json.dumps(instance.get(user_id), sort_keys=True), 200
+    return instance.get(user_id), 200
 
 @app.route("/set", methods=["POST"])
 def set():
     couchdb_URL = request.values.get('couchdbURL')
     certificate_pem = request.values.get('certificate')
-    folder = request.values.get('folder')
     name = request.values.get('name')
     value = request.values.get('value')
     
@@ -633,14 +635,13 @@ def set():
 
     document = instance.get(user_id)
 
-    document[folder][name] = value
+    document['folder'][name] = value
 
-    output = []
-    output['document'] = save(instance, document)
+    revised_document = save(instance, document)
 
-    return json.dumps(output, sort_keys=True), 200
+    return revised_document, 200
 
 if __name__ == "__main__":
-    print("Listening: "  + environ.get('PORT', '8000'))
-    PORT = int(environ.get('PORT', '8000'))
+    print("Listening: "  + environ.get('PORT', '8080'))
+    PORT = int(environ.get('PORT', '8080'))
     app.run(host='0.0.0.0', port=PORT)

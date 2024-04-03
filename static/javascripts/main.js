@@ -590,7 +590,7 @@ window.onload = function () {
 
             var fileUtil = new FileUtil(document);
 
-            fileUtil.saveAs(result, `pod-${window.cryptoArtificats["ID"]}.p12`);
+            fileUtil.saveAs(result, `pod-${window.cryptoArtificats["id"]}.p12`);
 
             document.getElementById("pod-save-dialog").close();
             document.getElementById("new-pod-dialog").close();
@@ -846,11 +846,9 @@ window.onload = function () {
     });
 
     document.getElementById("edit-dialog-ok").addEventListener("click", async function (event) {
-
-
         var message = new Message();
 
-        var result = await message.set(couchdb.getURL(), window.cryptoArtificats, "content", "readme", window.simplemde.value());
+        var result = await message.set(couchdb.getURL(), window.cryptoArtificats, "content", "readme.md", window.simplemde.value());
 
         document.getElementById("edit-dialog").close();
 

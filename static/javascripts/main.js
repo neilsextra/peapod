@@ -845,4 +845,15 @@ window.onload = function () {
    
     });
 
+    document.getElementById("edit-dialog-ok").addEventListener("click", async function (event) {
+
+
+        var message = new Message();
+
+        var result = await message.set(couchdb.getURL(), window.cryptoArtificats, "content", "readme", window.simplemde.value());
+
+        document.getElementById("edit-dialog").close();
+
+    });
+
 }

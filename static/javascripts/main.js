@@ -595,6 +595,10 @@ window.onload = function () {
             document.getElementById("pod-save-dialog").close();
             document.getElementById("new-pod-dialog").close();
 
+            window.passports = [];
+
+            window.passports.push(result);
+
             showArtifacts(window.cryptoArtificats);
 
         } catch (e) {
@@ -845,15 +849,14 @@ window.onload = function () {
         document.getElementById("pod-open-dialog").close();
         document.getElementById("register-dialog").close();
 
-        window.passports = [];
-        window.passports.push(window.passport);
-   
     });
 
     document.getElementById("edit-dialog-ok").addEventListener("click", async function (event) {
         var message = new Message();
 
         var result = await message.set(couchdb.getURL(), window.cryptoArtificats, "readme.md", window.simplemde.value());
+
+        console.log(result);
 
         window.cryptoArtificats['document'] = result;
 

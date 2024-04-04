@@ -681,8 +681,6 @@ def add():
         print(f"{type(e).__name__} was raised: {e}")
 
         return str(e), 500
-
-    revised_document = save(instance, document)
   
 if __name__ == "__main__":
     print("Listening: "  + environ.get('PORT', '8080'))

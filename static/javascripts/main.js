@@ -740,7 +740,7 @@ window.onload = function () {
 
         var message = new Message();
 
-        var result = await message.backup(couchdb.getURL(), window.cryptoArtificats)
+        var result = await message.backup(couchdb.getURL(), window.cryptoArtificats);
 
         var fileUtil = new FileUtil(document);
 
@@ -756,9 +756,14 @@ window.onload = function () {
 
     
     document.getElementById("edit-readme").addEventListener("click", async function (event) {
+        var message = new Message();
+        var result = await message.get(couchdb.getURL(), window.cryptoArtificats);
         var editDialog = document.getElementById("edit-dialog");
 
         editDialog.showModal();
+
+        window.simplemde.value(JSON.parse(result)['folder']['readme.md']);
+
 
     });
 
@@ -841,14 +846,16 @@ window.onload = function () {
         document.getElementById("register-dialog").close();
 
         window.passports = [];
-        windows.passports.push(window.passport);
+        window.passports.push(window.passport);
    
     });
 
     document.getElementById("edit-dialog-ok").addEventListener("click", async function (event) {
         var message = new Message();
 
-        var result = await message.set(couchdb.getURL(), window.cryptoArtificats, "content", "readme.md", window.simplemde.value());
+        var result = await message.set(couchdb.getURL(), window.cryptoArtificats, "readme.md", window.simplemde.value());
+
+        window.cryptoArtificats['document'] = result;
 
         document.getElementById("edit-dialog").close();
 

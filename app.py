@@ -1,5 +1,5 @@
 from configparser import NoOptionError
-from flask import Flask, Blueprint, render_template, request, send_file, Response
+from flask import Flask, Blueprint, render_template, request, send_file, jsonify, Response
 from os import environ
 from io import StringIO
 
@@ -549,59 +549,59 @@ def delete():
         
 @app.route("/backup", methods=["POST"])
 def backup():
-        couchdb_URL = request.values.get('couchdbURL')
-        certificate_pem = request.values.get('certificate')
-        private_key_pem = request.values.get('key')
-        
-        print("[BACKUP] CouchDB URL: %s " % (couchdb_URL))
+    couchdb_URL = request.values.get('couchdbURL')
+    certificate_pem = request.values.get('certificate')
+    private_key_pem = request.values.get('key')
+    
+    print("[BACKUP] CouchDB URL: %s " % (couchdb_URL))
 
-        server = pycouchdb.Server(couchdb_URL)
+    server = pycouchdb.Server(couchdb_URL)
 
-        instance = get_instance(server, params.PEAPOD_DATABASE)
+    instance = get_instance(server, params.PEAPOD_DATABASE)
 
-        certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+    certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
 
-        user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+    user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
 
-        document = instance.get(user_id)
-        
-        private_key = serialization.load_pem_private_key(
-            private_key_pem.encode('utf-8'),
-            password=None,
-        )
+    document = instance.get(user_id)
+    
+    private_key = serialization.load_pem_private_key(
+        private_key_pem.encode('utf-8'),
+        password=None,
+    )
 
-        server = pycouchdb.Server(couchdb_URL)
+    server = pycouchdb.Server(couchdb_URL)
 
-        certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+    certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
 
-        user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+    user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
 
-        print("[BACKUP] Document ID: '%s' " % (user_id))
+    print("[BACKUP] Document ID: '%s' " % (user_id))
 
-        document = instance.get(user_id)
+    document = instance.get(user_id)
 
-        encoded_key = document['key']
+    encoded_key = document['key']
 
-        session_key = decrypt_key(private_key, base64.b64decode(encoded_key))
+    session_key = decrypt_key(private_key, base64.b64decode(encoded_key))
 
-        archive = io.BytesIO()
+    archive = io.BytesIO()
 
-        with ZipFile(archive, 'w') as zip_archive:
+    with ZipFile(archive, 'w') as zip_archive:
 
-            for attachment_name in document["_attachments"]:
+        for attachment_name in document["_attachments"]:
 
-                attachment_bytes = instance.get_attachment(document, attachment_name, False)
-                decrypted_bytes = decrypt_content(session_key.decode("utf-8"), attachment_bytes)
+            attachment_bytes = instance.get_attachment(document, attachment_name, False)
+            decrypted_bytes = decrypt_content(session_key.decode("utf-8"), attachment_bytes)
 
-                file = ZipInfo(attachment_name)
+            file = ZipInfo(attachment_name)
 
-                zip_archive.writestr(file, decrypted_bytes)
+            zip_archive.writestr(file, decrypted_bytes)
 
-                print("[BACKUP] Attachment: '%s' " % (attachment_name))
+            print("[BACKUP] Attachment: '%s' " % (attachment_name))
 
-        return send_file(io.BytesIO(archive.getvalue()), "application/x-zip")
+    return send_file(io.BytesIO(archive.getvalue()), "application/x-zip")
 
-@app.route("/get", methods=["GET"])
+@app.route("/get", methods=["POST"])
 def get():
     couchdb_URL = request.values.get('couchdbURL')
     certificate_pem = request.values.get('certificate')
@@ -615,7 +615,7 @@ def get():
 
     print("[GET] Document ID: '%s' " % (user_id))
 
-    return instance.get(user_id), 200
+    return jsonify(instance.get(user_id))
 
 @app.route("/set", methods=["POST"])
 def set():
@@ -631,12 +631,14 @@ def set():
     certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
     user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
 
-    print("[SET] Document ID: '%s' " % (user_id))
+    print("[SET] Document ID: '%s' - '%s'='%s' " % (user_id, name, value))
 
     document = instance.get(user_id)
 
-    document['folder'][name] = value
-
+    document['folder'] = {
+        name: value
+    }
+    
     revised_document = save(instance, document)
 
     return revised_document, 200

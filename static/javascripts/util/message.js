@@ -400,7 +400,7 @@ function Message() {
 
     }
 
-    this.set = function (couchdbURL, cryptoArtifacts, folder, name, value) {
+    this.set = function (couchdbURL, cryptoArtifacts, name, value) {
 
         return new Promise((accept, reject) => {
             let parmURL = `/set`;
@@ -410,8 +410,8 @@ function Message() {
 
             formData.append("couchdbURL", couchdbURL);
             formData.append("certificate", cryptoArtifacts['certificate']);
-            formData.append("folder", folder);
             formData.append("name", name);
+
             formData.append("value", value);
 
             xhttp.open("POST", parmURL, true);
@@ -495,9 +495,9 @@ function Message() {
 
     }
             
-    Message.prototype.set = function (couchdbURL, cryptoArtifacts, folder, name, value) {
+    Message.prototype.set = function (couchdbURL, cryptoArtifacts, name, value) {
 
-        return this.backup(couchdbURL, cryptoArtifacts, folder, name, value);
+        return this.backup(couchdbURL, cryptoArtifacts, name, value);
 
     }
 

@@ -758,7 +758,6 @@ window.onload = function () {
 
     });
 
-    
     document.getElementById("edit-readme").addEventListener("click", async function (event) {
         var message = new Message();
         var result = await message.get(couchdb.getURL(), window.cryptoArtificats);
@@ -861,6 +860,43 @@ window.onload = function () {
         window.cryptoArtificats['document'] = result;
 
         document.getElementById("edit-dialog").close();
+
+    });
+
+    document.getElementById("add-user").addEventListener("click", async function (event) {
+        var dialog = document.getElementById("upload-certificate-dialog");
+
+        dialog.showModal();
+
+    });
+
+    document.getElementById("delete-pod").addEventListener("click", async function (event) {
+
+        document.getElementById("delete-message").innerHTML = `Delete POD - <b>${window.cryptoArtificats['id']}</b>&nbsp;?`;
+        
+        var dialog = document.getElementById("delete-dialog");
+
+        dialog.showModal();
+
+    });
+
+    document.getElementById("select-certificate-file").addEventListener("click", async function (event) {
+        var fileUtil = new FileUtil(document);
+
+        fileUtil.load(async function (files) {
+            window.certificates = [];
+
+            for (var file = 0; file < files.length; file++) {
+
+                document.getElementById("upload-certificate-file").value = files[file].name;
+
+                window.certificates.push(files[file]);
+
+            }
+
+        });
+
+        return false;
 
     });
 

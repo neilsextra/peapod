@@ -361,7 +361,6 @@ function Message() {
 
     }
 
-
     this.get = function (couchdbURL, cryptoArtifacts) {
 
         return new Promise((accept, reject) => {
@@ -420,6 +419,54 @@ function Message() {
                 if (this.readyState === 4 && this.status === 200) {
 
                     accept(this.response);
+
+                } else {
+
+                    reject({
+                        status: this.status,
+                        message: this.statusText
+                    });
+
+                }
+
+            };
+
+            xhttp.onerror = function () {
+            };
+
+            xhttp.send(formData);
+
+        });
+
+    }
+
+    this.add = function (couchdbURL, cryptoArtifactes, certificates) {
+
+        return new Promise((accept, reject) => {
+            let parmURL = `/add`;
+
+            var xhttp = new XMLHttpRequest();
+            var formData = new FormData();
+            
+            formData.append("couchdbURL", couchdbURL);
+            formData.append("certificate", cryptoArtifactes['certificate']);
+
+            for (var certificate = 0; certificate < certificates.length; certificate++) {
+                formData.append(certificates[certificate].name, certificates[certificate]);
+            }
+
+            xhttp.open("POST", parmURL, true);
+
+            xhttp.onload = function () {
+                var response = JSON.parse(this.responseText);
+
+                if (this.readyState === 4 && this.status === 200) {
+                    var result = JSON.parse(xhttp.response);
+
+                    accept({
+                        status: this.status,
+                        response: response
+                    });
 
                 } else {
 

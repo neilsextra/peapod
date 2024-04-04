@@ -480,7 +480,7 @@
     <dialog id="delete-dialog" class="dialog message-dialog" style="min-width:400px;">
         <img src="{{url_for( 'static', filename='images/delete.svg')}}" width="48" height="48"
             style="float: left;" />
-        <p id="delete-message" style="font-size: 18px; font-weight: bold;">/p>
+        <p id="delete-message" style="font-size: 18px;"></p>
         <div style="margin-top:10px;">
             
             <button id="delete-dialog-close" class="close-button message-dialog-small-cancel-button"
@@ -543,6 +543,34 @@
             <button id="pod-open-dialog-ok" class="message-dialog-small-ok-button"
                 style="float: right; margin-top:10px;">Open</button>
         </form>
+    </dialog>
+
+    <dialog id="upload-certificate-dialog" class="dialog message-dialog" style="min-width:700px;">
+        <img src="{{url_for( 'static', filename='images/add-user.svg')}}" width="48" height="48" style="float: left;" />
+        <p style="font-size: 18px; font-weight: bold;">Upload Certificate</p>
+        <div>
+            <div>
+                <input class="modal-entry" id="upload-certificate-file" style="width:93%;" type="text"
+                    name="upload-certificate-name" placeholder="Upload Certificate..." readonly>
+                </input>
+
+                <div style="float:right;padding-top:6px;">
+                    <button id="select-certificate-file" class="message-dialog-small-button">...</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="upload-certificate-message"
+            style="color:rgba(255,0,0,0.6); width:300px; float:left; font-size: 12px; margin-top:8px;"></div>
+
+        <div style="margin-top:10px;">
+            <button id="upload-certificate-dialog-close" class="close-button message-dialog-small-cancel-button"
+            style="float: right; margin-top:10px;">Cancel</button>
+
+            <button id="upload-certificate-dialog-ok" class="message-dialog-small-ok-button"
+                style="float: right; margin-top:10px;">Upload</button>
+        </div>
+
     </dialog>
 
     <div style="overflow:hidden; user-select: none;">

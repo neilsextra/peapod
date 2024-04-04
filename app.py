@@ -47,6 +47,7 @@ template = {
         "readme.md": "" 
     },
     "tokens": [],
+    "certificates": {},
     "key" : {
     }
 
@@ -631,7 +632,7 @@ def set():
     certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
     user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
 
-    print("[SET] Document ID: '%s' - '%s'='%s' " % (user_id, name, value))
+    print("[SET] Document ID: '%s' - '%s'='%s'" % (user_id, name, value))
 
     document = instance.get(user_id)
 
@@ -643,6 +644,46 @@ def set():
 
     return revised_document, 200
 
+@app.route("/add", methods=["POST"])
+def add():
+    couchdb_URL = request.values.get('couchdbURL')
+    certificate_pem = request.values.get('certificate')
+    
+    server = pycouchdb.Server(couchdb_URL)
+
+    instance = get_instance(server, params.PEAPOD_DATABASE)
+    certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+    user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+
+    print("[ADD] Document ID: '%s'" % ("certificate"))
+
+    document = instance.get(user_id)
+    certificates = document['certficates']
+
+    try:
+
+        files = request.files
+
+        for file in files:
+            user_certificate_pem = request.files.get(file).stream.read()
+            user_certificate = x509.load_pem_x509_certificate(user_certificate_pem.encode())
+            id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+
+            certificates[id] = user_certificate_pem
+
+
+        document['certficates'] = certificates
+        revised_document = save(instance, document)
+ 
+        return revised_document, 200
+
+    except Exception as e:
+        print(f"{type(e).__name__} was raised: {e}")
+
+        return str(e), 500
+
+    revised_document = save(instance, document)
+  
 if __name__ == "__main__":
     print("Listening: "  + environ.get('PORT', '8080'))
     PORT = int(environ.get('PORT', '8080'))

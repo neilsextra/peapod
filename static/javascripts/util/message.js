@@ -320,6 +320,49 @@ function Message() {
     
     }
 
+    this.delete = function (couchdbURL, certificate, attachmentName) {
+
+        return new Promise((accept, reject) => {
+            let parmURL = "/delete";
+    
+            var xhttp = new XMLHttpRequest();
+            var formData = new FormData();
+    
+            formData.append('couchdb-url', couchdbURL);
+            formData.append('certificate', certificate);
+
+            xhttp.open("POST", parmURL, true);
+    
+            xhttp.onload = function () {
+                var response = JSON.parse(this.responseText);
+                
+                if (this.readyState === 4 && this.status === 200) {
+    
+                    accept({
+                        status: this.status,
+                        response: response
+                    });
+    
+                } else {
+    
+                    reject({
+                        status: this.status,
+                        message: this.statusText
+                    });
+    
+                }
+    
+            };
+    
+            xhttp.onerror = function () {
+            };
+    
+            xhttp.send(formData);
+    
+        });
+    
+    }
+
     this.backup = function (couchdbURL, cryptoArtifacts) {
 
         return new Promise((accept, reject) => {
@@ -530,6 +573,12 @@ function Message() {
 
     }
            
+    Message.prototype.delete = function (couchdbURL, certificate) {
+
+        return this.remove(couchdbURL, certificate);
+
+    }
+
     Message.prototype.backup = function (couchdbURL, cryptoArtifacts) {
 
         return this.backup(couchdbURL, cryptoArtifacts);
@@ -545,6 +594,12 @@ function Message() {
     Message.prototype.set = function (couchdbURL, cryptoArtifacts, name, value) {
 
         return this.backup(couchdbURL, cryptoArtifacts, name, value);
+
+    }
+  
+    Message.prototype.add = function (couchdbURL, cryptoArtifacts, certificates) {
+
+        return this.add(couchdbURL, cryptoArtifacts, certificates);
 
     }
 

@@ -114,6 +114,21 @@
         </div>
     </script>
 
+    <script type="text/template" data-template="user-certificate-card-item">
+        <div id="user-certificate-${id}" class="card-crypto" style="position:relative;" onclick="window.view('certificate', '${id}');">
+            <div class="card-user-certificate-main">
+                <div style="position:relative; color:black;">
+                    <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="20" height="20" style="float: left;" />
+                </div>
+                <div style="font-size:12px; font-family:Arial, Helvetica, sans-serif; position:absolute; top:5px; bottom:0px; left:30px;">
+                    <label type="text" class="card-field"> 
+                        ${id}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </script>
+
     <script type="text/template" data-template="certificate-details">
         <div style="margin: 0 auto; margin-top: 6px; text-align:left; padding:10px; overflow:hidden;">
 
@@ -389,13 +404,14 @@
                     <label for="view-files" style="font-size:14px;">Files</label>
                 </div>
             </fieldset>
+            <button id="clear-pod-cache" class="message-dialog-small-cancel-button"
+            style="margin-top:10px;">Clear POD Cache</button>
         </div>
 
-        <button id="settings-dialog-cancel" class="close-button message-dialog-small-cancel-button"
-            style="float: right; margin-top:10px;">Cancel</button>
+        <div style="float: right; margin-top:10px;">
+            <button id="settings-dialog-cancel" class="close-button message-dialog-small-cancel-button">Cancel</button>
+            <button id="settings-dialog-ok" class="message-dialog-small-ok-button">Apply</button>
         </div>
-        <button id="settings-dialog-ok" class="message-dialog-small-button"
-            style="float: right; margin-top:10px;">Apply</button>
 
     </dialog>
 

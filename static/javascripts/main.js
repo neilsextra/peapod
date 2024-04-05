@@ -295,56 +295,59 @@ async function showPDF(id, mimetype) {
  */
 function showArtifacts(artifcats) {
     document.getElementById("artifacts-container").innerHTML = "";
+    if (artifcats != null) {
+        if (settings.view_certificates) {
+            let template = document.querySelector('script[data-template="certificate-card-item"]').text;
+            let value = stringUtil.substitute(template, {
+                "id": artifcats['id'],
+                "email": artifcats['email'],
+            });
 
-    if (settings.view_certificates) {
-        let template = document.querySelector('script[data-template="certificate-card-item"]').text;
-        let value = stringUtil.substitute(template, {
-            "id": artifcats['id'],
-            "email": artifcats['email'],
-        });
+            let fragment = document.createRange().createContextualFragment(value);
+            document.getElementById("artifacts-container").appendChild(fragment);
 
+        }
 
-        let fragment = document.createRange().createContextualFragment(value);
-        document.getElementById("artifacts-container").appendChild(fragment);
+        if (settings.view_keys) {
+            var template = document.querySelector('script[data-template="key-card-item"]').text;
+            var value = stringUtil.substitute(template, {
+                "id": artifcats['id'],
+                "email": artifcats['email'],
+            });
 
-    }
+            let fragment = document.createRange().createContextualFragment(value);
 
-    if (settings.view_keys) {
-        var template = document.querySelector('script[data-template="key-card-item"]').text;
-        var value = stringUtil.substitute(template, {
-            "id": artifcats['id'],
-            "email": artifcats['email'],
-        });
+            document.getElementById("artifacts-container").appendChild(fragment);
 
-        let fragment = document.createRange().createContextualFragment(value);
+        }
 
-        document.getElementById("artifacts-container").appendChild(fragment);
+        if (settings.view_files) {
+            if ((artifcats != null) && 'document' in artifcats && '_attachments' in artifcats.document) {
+                let attachments = Object.keys(artifcats.document['_attachments']);
 
-    }
+                for (var attachment in attachments) {
+                    var template = document.querySelector('script[data-template="attachment-card-item"]').text;
 
-    if (settings.view_files) {
-        if ('document' in artifcats && '_attachments' in artifcats.document) {
-            let attachments = Object.keys(artifcats.document['_attachments']);
+                    value = stringUtil.substitute(template, {
+                        "filename": attachments[attachment],
+                        "mimetype": artifcats.document['_attachments'][attachments[attachment]]['content_type']
+                    });
 
-            for (var attachment in attachments) {
-                var template = document.querySelector('script[data-template="attachment-card-item"]').text;
+                    let fragment = document.createRange().createContextualFragment(value);
 
-                value = stringUtil.substitute(template, {
-                    "filename": attachments[attachment],
-                    "mimetype": artifcats.document['_attachments'][attachments[attachment]]['content_type']
-                });
+                    document.getElementById("artifacts-container").appendChild(fragment);
 
-                let fragment = document.createRange().createContextualFragment(value);
-
-                document.getElementById("artifacts-container").appendChild(fragment);
+                }
 
             }
 
         }
 
-    }
+        document.getElementById("pod-status").innerHTML = `Pod ID: ${artifcats['id']} - &#128275;`;
 
-    document.getElementById("pod-status").innerHTML = `Pod ID: ${artifcats['id']} - &#128275;`;
+    } else {
+        document.getElementById("pod-status").innerHTML = "";
+    }
 
 }
 
@@ -595,6 +598,7 @@ window.onload = function () {
             document.getElementById("pod-save-dialog").close();
             document.getElementById("new-pod-dialog").close();
 
+            window.passportEncoded = true;
             window.passports = [];
 
             window.passports.push(result);
@@ -620,6 +624,7 @@ window.onload = function () {
 
         fileUtil.load(async function (files) {
             window.passports = [];
+            window.passportEncoded = false;
 
             for (var file = 0; file < files.length; file++) {
 
@@ -772,28 +777,36 @@ window.onload = function () {
 
     document.getElementById("register-passport").addEventListener("click", async function (event) {
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const blob = new Blob([new Uint8Array(e.target.result)], {type: window.passports[0].type });
+        if (!window.passportEncoded) {
+            const reader = new FileReader();
 
-            var blobReader = new FileReader();
-            
-            blobReader.readAsDataURL(blob); 
-            
-            blobReader.onloadend = function() {
-            
-                var base64data = blobReader.result;                
+            reader.onload = function(e) {
+                const blob = new Blob([new Uint8Array(e.target.result)], {type: window.passports[0].type });
+
+                var blobReader = new FileReader();
                 
-                window.localStorage.setItem(window.cryptoArtificats['id'], base64data);
+                blobReader.readAsDataURL(blob); 
+                
+                blobReader.onloadend = function() {
+                
+                    var base64data = blobReader.result;                
+                    
+                    window.localStorage.setItem(window.cryptoArtificats['id'], base64data);
 
-                document.getElementById("info-message").innerHTML = `<b>Passport Registered:</b> ${window.cryptoArtificats['id']}`;
-                document.getElementById("info-dialog").showModal();
+                    document.getElementById("info-message").innerHTML = `<b>Passport Registered:</b> ${window.cryptoArtificats['id']}`;
+                    document.getElementById("info-dialog").showModal();
 
-            }
+                }
 
-        };
+            };
 
-        reader.readAsArrayBuffer(window.passports[0]);
+            reader.readAsArrayBuffer(window.passports[0]);
+
+        } else {
+            window.localStorage.setItem(window.cryptoArtificats['id'], window.pem_passports[0]);
+            document.getElementById("info-message").innerHTML = `<b>Passport Registered:</b> ${window.cryptoArtificats['id']}`;
+            document.getElementById("info-dialog").showModal();
+        }
 
     });
     
@@ -855,8 +868,6 @@ window.onload = function () {
 
         var result = await message.set(couchdb.getURL(), window.cryptoArtificats, "readme.md", window.simplemde.value());
 
-        console.log(result);
-
         window.cryptoArtificats['document'] = result;
 
         document.getElementById("edit-dialog").close();
@@ -864,9 +875,8 @@ window.onload = function () {
     });
 
     document.getElementById("add-user").addEventListener("click", async function (event) {
-        var dialog = document.getElementById("upload-certificate-dialog");
-
-        dialog.showModal();
+       
+        document.getElementById("upload-certificate-dialog").showModal();
 
     });
 
@@ -874,9 +884,20 @@ window.onload = function () {
 
         document.getElementById("delete-message").innerHTML = `Delete POD - <b>${window.cryptoArtificats['id']}</b>&nbsp;?`;
         
-        var dialog = document.getElementById("delete-dialog");
+        document.getElementById("delete-dialog").showModal();
 
-        dialog.showModal();
+    });
+
+    document.getElementById("delete-dialog-ok").addEventListener("click", async function (event) {
+        var result = await message.delete(couchdb.getURL(), window.cryptoArtificats['certificate']);
+
+        window.cryptoArtificats = null;
+        document.getElementById("details").innerHTML = "";
+        window.passports = null;
+
+        showArtifacts(window.cryptoArtificats);
+
+        document.getElementById("delete-dialog").close();
 
     });
 
@@ -897,6 +918,22 @@ window.onload = function () {
         });
 
         return false;
+
+    });
+
+    document.getElementById("upload-certificate-dialog-ok").addEventListener("click", async function (event) {
+        var message = new Message();
+
+        var result = await message.add(couchdb.getURL(), window.cryptoArtificats, window.certificates);
+
+        window.certificates = [];
+
+        document.getElementById("upload-certificate-dialog").close()
+
+    });
+    document.getElementById("clear-pod-cache").addEventListener("click", async function (event) {
+
+        window.localStorage.clear();
 
     });
 

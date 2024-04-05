@@ -516,7 +516,8 @@ def delete():
 
     couchdb_URL = request.values.get('couchdb-url')
     certificate_pem = request.values.get('certificate')
-
+    print("[DELETE] CouchDB URL: %s " % (couchdb_URL))
+ 
     try:        
 
         server = pycouchdb.Server(couchdb_URL)
@@ -529,6 +530,8 @@ def delete():
 
         instance.delete(user_id)
 
+        print("[DELETE] Document: '%s' " % (user_id))
+
         output = {
             "status": 'success',
             "id": user_id
@@ -538,15 +541,9 @@ def delete():
     
     except Exception as e:
 
-        print("[DOWNLOAD] - ERROR '%s'" % str(e))
-        output
+        print("[DELETE] - ERROR '%s'" % str(e))
 
-        output = {
-            "status": 'fail',
-            "error": str(e)
-        }
-
-        return json.dumps(output, sort_keys=True), 500
+        return str(e), 500
         
 @app.route("/backup", methods=["POST"])
 def backup():
@@ -658,7 +655,7 @@ def add():
     print("[ADD] Document ID: '%s'" % ("certificate"))
 
     document = instance.get(user_id)
-    certificates = document['certficates']
+    certificates = document['certificates']
 
     try:
 
@@ -666,13 +663,13 @@ def add():
 
         for file in files:
             user_certificate_pem = request.files.get(file).stream.read()
-            user_certificate = x509.load_pem_x509_certificate(user_certificate_pem.encode())
+            user_certificate = x509.load_pem_x509_certificate(user_certificate_pem)
             id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
 
-            certificates[id] = user_certificate_pem
+            certificates[id] = user_certificate_pem.decode("UTF-8")
 
 
-        document['certficates'] = certificates
+        document['certificates'] = certificates
         revised_document = save(instance, document)
  
         return revised_document, 200
@@ -681,7 +678,7 @@ def add():
         print(f"{type(e).__name__} was raised: {e}")
 
         return str(e), 500
-  
+
 if __name__ == "__main__":
     print("Listening: "  + environ.get('PORT', '8080'))
     PORT = int(environ.get('PORT', '8080'))

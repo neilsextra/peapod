@@ -44,6 +44,23 @@
 .card-crypto-main:hover {
     background-color: #f5a1a1;
 }
+
+.card-user-certificate-main {
+    position: absolute;
+    width: 200px;
+    height: 70px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 10px;
+    margin: 5px;
+    color: rgba(0, 0, 0, 1.0);
+    padding: 5px;
+    background-color:rgba(243, 169, 169, 0.05);
+}
+
+.card-user-certificate-main:hover {
+    background-color: #2bdfd6;
+}
+
 .card-attachment {
     width: 222px;
     height: 92px;

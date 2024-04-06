@@ -933,6 +933,11 @@ window.onload = function () {
         document.getElementById("details").innerHTML = "";
         window.passports = null;
 
+        document.getElementById("actions-button").style.visibility = "hidden";
+        document.getElementById("actions-button-content").style.visibility = "hidden";
+        document.getElementById("edit-button").style.visibility = "hidden";
+        document.getElementById("edit-button-content").style.visibility = "hidden";
+        
         showArtifacts(window.cryptoArtificats);
 
         document.getElementById("delete-dialog").close();

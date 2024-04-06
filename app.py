@@ -256,6 +256,8 @@ def create():
     output['id'] =  document["_id"]
     output['private-key'] = bytes.decode("UTF-8")
     output['serial-number'] = '{0:x}'.format(certificate.serial_number)
+    output['not-valid-before'] = certificate.not_valid_before.strftime("%B %d, %Y")
+    output['not-valid-after'] = certificate.not_valid_after.strftime("%B %d, %Y")
     output['issuer'] = certificate.issuer.rfc4514_string()
     output['subject'] = certificate.subject.rfc4514_string()
     output['email'] = certificate.subject.get_attributes_for_oid(NameOID.EMAIL_ADDRESS)[0].value
@@ -341,6 +343,8 @@ def open_pod():
                     output['issuer'] = artifact.issuer.rfc4514_string()
                     output['subject'] = artifact.subject.rfc4514_string()
                     output['email'] = artifact.subject.get_attributes_for_oid(NameOID.EMAIL_ADDRESS)[0].value
+                    output['not-valid-before'] = artifact.not_valid_before.strftime("%B %d, %Y")
+                    output['not-valid-after'] = artifact.not_valid_after.strftime("%B %d, %Y")
                     output['serial-number'] = '{0:x}'.format(artifact.serial_number)
 
                     user_id = artifact.extensions.get_extension_for_oid(NameOID.USER_ID)

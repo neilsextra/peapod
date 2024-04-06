@@ -89,6 +89,24 @@ function substitute(template, values) {
 }
 
 /**
+ * Convert an Array to a string
+ * 
+ * @param {arrayBuffer} buffer 
+ * @returns  base 64 representation
+ */
+function arrayBufferToBase64( buffer ) {
+    var binary = '';
+    var bytes = new Uint8Array( buffer );
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode( bytes[ i ] );
+    }
+    
+    return window.btoa( binary );
+
+}
+
+/**
  * Remove all the event listeners for an element
  * @param {String} id the element Identifier
  */
@@ -432,16 +450,30 @@ async function remove(artificate, attachmentName) {
 
 }
 
+/**
+ * Open a password given the Passport Identifier
+ * 
+ * @param {string} podID the Passport Identifier
+ */
 function openPassport(podID) {
 
     function processURI(dataURI) {
-        var message = dataURI.split(/;|,|:/);
+
+        if (dataURI.startsWith("data:")) {
+            var message = dataURI.split(/;|,|:/);
         
-        return {
-            "base64" : message[3],
-            "mimetype" : message[1]
+            return {
+                "base64" : message[3],
+                "mimetype" : message[1]
+            }
+        } else {
+            return {
+                "base64" : dataURI,
+                "mimetype" : "application/x-pkcs12"             
+            }
+        
         }
-    
+
     }
 
     function base64ToBlob(base64String, contentType = '') {
@@ -589,7 +621,7 @@ window.onload = function () {
         try {
             var password = document.getElementById("p12-password").value;
 
-            var result = await message.generate(window.cryptoArtificats, password)
+            var result = await message.generate(window.cryptoArtificats, password);
 
             var fileUtil = new FileUtil(document);
 
@@ -629,7 +661,7 @@ window.onload = function () {
             for (var file = 0; file < files.length; file++) {
 
                 document.getElementById("upload-passport-file").value = files[file].name;
-
+                
                 window.passports.push(files[file]);
 
             }
@@ -790,7 +822,7 @@ window.onload = function () {
                 blobReader.onloadend = function() {
                 
                     var base64data = blobReader.result;                
-                    
+
                     window.localStorage.setItem(window.cryptoArtificats['id'], base64data);
 
                     document.getElementById("info-message").innerHTML = `<b>Passport Registered:</b> ${window.cryptoArtificats['id']}`;
@@ -803,7 +835,10 @@ window.onload = function () {
             reader.readAsArrayBuffer(window.passports[0]);
 
         } else {
-            window.localStorage.setItem(window.cryptoArtificats['id'], window.pem_passports[0]);
+
+            var certificate = arrayBufferToBase64(window.passports[0]);
+
+            window.localStorage.setItem(window.cryptoArtificats['id'], certificate);
             document.getElementById("info-message").innerHTML = `<b>Passport Registered:</b> ${window.cryptoArtificats['id']}`;
             document.getElementById("info-dialog").showModal();
         }
@@ -889,7 +924,10 @@ window.onload = function () {
     });
 
     document.getElementById("delete-dialog-ok").addEventListener("click", async function (event) {
+        var message = new Message();
         var result = await message.delete(couchdb.getURL(), window.cryptoArtificats['certificate']);
+
+        window.localStorage.removeItem(window.cryptoArtificats['id']);
 
         window.cryptoArtificats = null;
         document.getElementById("details").innerHTML = "";

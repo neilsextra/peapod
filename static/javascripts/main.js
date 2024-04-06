@@ -398,6 +398,8 @@ function view(artificate, id, mimetype) {
             "private-key-exponent": window.cryptoArtificats['private-key-exponent'],
             "issuer": window.cryptoArtificats['issuer'],
             "serial-number": window.cryptoArtificats['serial-number'],
+            "not-valid-before": window.cryptoArtificats['not-valid-before'],
+            "not-valid-after": window.cryptoArtificats['not-valid-after'],
             "certificate": window.cryptoArtificats['certificate']
         });
 
@@ -606,6 +608,7 @@ window.onload = function () {
 
         document.getElementById("p12-password").value = "";
         document.getElementById("pod-save-dialog").showModal();
+
         document.getElementById("actions-button").style.visibility = "visible";
         document.getElementById("actions-button-content").style.visibility = "visible";
         document.getElementById("edit-button").style.visibility = "visible";

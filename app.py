@@ -138,6 +138,29 @@ def decrypt_key(private_key, ciphertext):
 
     return plaintext
 
+def get_session_key(document, certificate_pem, private_key_pem):
+    certificate = x509.load_pem_x509_certificate(certificate_pem.encode())     
+
+    private_key = serialization.load_pem_private_key(
+            private_key_pem.encode('utf-8'),
+            password=None,
+        )
+
+    encoded_key = document['owners'][certificate.issuer.rfc4514_string()]['{0:x}'.format(certificate.serial_number)]["key"]
+    session_key = decrypt_key(private_key, base64.b64decode(encoded_key))
+
+    return session_key
+
+def get_pod(instance, certificate_pem):
+    
+    certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+    user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+
+    document = instance.get(user_id)
+
+    return document
+
+
 @app.route("/")
 def start():
     return render_template("index.html")
@@ -377,18 +400,10 @@ def upload():
 
         user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
 
-        document = instance.get(user_id)
+        document = get_pod(instance, certificate_pem)
+        
+        session_key = get_session_key(document, certificate_pem, private_key_pem)
 
-        certificate = x509.load_pem_x509_certificate(certificate_pem.encode())     
-
-        private_key = serialization.load_pem_private_key(
-            private_key_pem.encode('utf-8'),
-            password=None,
-        )
-
-        encoded_key = document['owners'][certificate.issuer.rfc4514_string()]['{0:x}'.format(certificate.serial_number)]["key"]
-        session_key = decrypt_key(private_key, base64.b64decode(encoded_key))
- 
         files = request.files
 
         for file in files:

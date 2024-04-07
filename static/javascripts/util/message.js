@@ -483,10 +483,10 @@ function Message() {
 
     }
 
-    this.add = function (couchdbURL, cryptoArtifactes, certificates) {
+    this.share = function (couchdbURL, cryptoArtifactes, certificates) {
 
         return new Promise((accept, reject) => {
-            let parmURL = `/add`;
+            let parmURL = `/share`;
 
             var xhttp = new XMLHttpRequest();
             var formData = new FormData();
@@ -597,9 +597,9 @@ function Message() {
 
     }
   
-    Message.prototype.add = function (couchdbURL, cryptoArtifacts, certificates) {
+    Message.prototype.share = function (couchdbURL, cryptoArtifacts, certificates) {
 
-        return this.add(couchdbURL, cryptoArtifacts, certificates);
+        return this.share(couchdbURL, cryptoArtifacts, certificates);
 
     }
 

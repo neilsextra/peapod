@@ -45,7 +45,7 @@ template = {
     "folder": {
         "readme.md": "" 
     },
-    "users": {}
+    "others": {}
 
 }
 
@@ -401,7 +401,7 @@ def upload():
         user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
 
         document = get_pod(instance, certificate_pem)
-        
+
         session_key = get_session_key(document, certificate_pem, private_key_pem)
 
         files = request.files
@@ -440,35 +440,17 @@ def download():
         print("[DOWNLOAD] CouchDB URL: %s " % (couchdb_URL))
         print("[DOWNLOAD] Attachment: '%s' " % (attachment_name))
 
-        server = pycouchdb.Server(couchdb_URL)
 
-        instance = get_instance(server, params.PEAPOD_DATABASE)
-
-        certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
-
-        user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
-
-        document = instance.get(user_id)
-        
         private_key = serialization.load_pem_private_key(
             private_key_pem.encode('utf-8'),
             password=None,
         )
 
         server = pycouchdb.Server(couchdb_URL)
+        instance = get_instance(server, params.PEAPOD_DATABASE)
 
-        certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
-
-        user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
-
-        print("[DOWNLOAD] Document ID: '%s' " % (user_id))
-
-        document = instance.get(user_id)
-
-        encoded_key = document['key']
-
-        session_key = decrypt_key(private_key, base64.b64decode(encoded_key))
-
+        document = get_pod(instance, certificate_pem) 
+        session_key = get_session_key(document, certificate_pem, private_key_pem)
         attachment_bytes = instance.get_attachment(document, attachment_name, False)
 
         decrypted_bytes = decrypt_content(session_key.decode("utf-8"), attachment_bytes)
@@ -586,19 +568,13 @@ def backup():
         password=None,
     )
 
-    server = pycouchdb.Server(couchdb_URL)
-
-    certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
-
-    user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
-
     print("[BACKUP] Document ID: '%s' " % (user_id))
 
-    document = instance.get(user_id)
+    server = pycouchdb.Server(couchdb_URL)
+    instance = get_instance(server, params.PEAPOD_DATABASE)
 
-    encoded_key = document['key']
-
-    session_key = decrypt_key(private_key, base64.b64decode(encoded_key))
+    document = get_pod(instance, certificate_pem) 
+    session_key = get_session_key(document, certificate_pem, private_key_pem)
 
     archive = io.BytesIO()
 
@@ -659,21 +635,20 @@ def set():
 
     return revised_document, 200
 
-@app.route("/add", methods=["POST"])
-def add():
+@app.route("/share", methods=["POST"])
+def share():
     couchdb_URL = request.values.get('couchdbURL')
     certificate_pem = request.values.get('certificate')
     
     server = pycouchdb.Server(couchdb_URL)
 
     instance = get_instance(server, params.PEAPOD_DATABASE)
-    certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
-    user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+  
+    document = get_pod(instance, certificate_pem)
 
     print("[ADD] Document ID: '%s'" % ("certificate"))
 
-    document = instance.get(user_id)
-    certificates = document['certificates']
+    others = document["others"]
 
     try:
 
@@ -682,12 +657,16 @@ def add():
         for file in files:
             user_certificate_pem = request.files.get(file).stream.read()
             user_certificate = x509.load_pem_x509_certificate(user_certificate_pem)
-            id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
-
-            certificates[id] = user_certificate_pem.decode("UTF-8")
 
 
-        document['certificates'] = certificates
+            if not user_certificate.issuer.rfc4514_string() in others:
+                others[user_certificate.issuer.rfc4514_string()] = {}
+            
+            others[user_certificate.issuer.rfc4514_string()]['{0:x}'.format(user_certificate.serial_number)] = {
+                "certificate" : user_certificate_pem.decode("UTF-8")
+            }
+                              
+        document['others'] = others
         revised_document = save(instance, document)
  
         return revised_document, 200

@@ -970,13 +970,14 @@ window.onload = function () {
     document.getElementById("upload-certificate-dialog-ok").addEventListener("click", async function (event) {
         var message = new Message();
 
-        var result = await message.add(couchdb.getURL(), window.cryptoArtificats, window.certificates);
+        var result = await message.share(couchdb.getURL(), window.cryptoArtificats, window.certificates);
 
         window.certificates = [];
 
         document.getElementById("upload-certificate-dialog").close()
 
     });
+
     document.getElementById("clear-pod-cache").addEventListener("click", async function (event) {
 
         window.localStorage.clear();

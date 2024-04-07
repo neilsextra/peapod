@@ -40,16 +40,12 @@ Npm(app)
 app.register_blueprint(views)
 
 template = {
-    "passport" :{
-        "certificate": ""
+    "owners" :{
     },
     "folder": {
         "readme.md": "" 
     },
-    "tokens": [],
-    "certificates": {},
-    "key" : {
-    }
+    "users": {}
 
 }
 
@@ -234,16 +230,18 @@ def create():
         private_key=private_key, algorithm=hashes.SHA256(),
     )
 
-    bytes = certificate.public_bytes(serialization.Encoding.PEM)
-
-    output['certificate'] = bytes.decode("UTF-8")
-
-    document["passport"]["certificate"] = bytes.decode("UTF-8") 
+    certificate_pem = certificate.public_bytes(serialization.Encoding.PEM)
 
     fernet_key = Fernet.generate_key()
-
     encrypted_key = encrypt_key(certificate, fernet_key)
-    document["key"] = encrypted_key 
+
+    document["owners"][certificate.issuer.rfc4514_string()] = {
+         '{0:x}'.format(certificate.serial_number) : {     
+            "certificate": certificate_pem.decode("UTF-8"),
+            "key": encrypted_key
+             
+         }
+    }
 
     save(instance, document)
 
@@ -254,6 +252,7 @@ def create():
     )
     
     output['id'] =  document["_id"]
+    output['certificate'] = certificate_pem.decode("UTF-8")
     output['private-key'] = bytes.decode("UTF-8")
     output['serial-number'] = '{0:x}'.format(certificate.serial_number)
     output['not-valid-before'] = certificate.not_valid_before.strftime("%B %d, %Y")
@@ -387,7 +386,7 @@ def upload():
             password=None,
         )
 
-        encoded_key = document['key']
+        encoded_key = document['owners'][certificate.issuer.rfc4514_string()]['{0:x}'.format(certificate.serial_number)]["key"]
         session_key = decrypt_key(private_key, base64.b64decode(encoded_key))
  
         files = request.files

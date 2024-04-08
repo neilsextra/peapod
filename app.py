@@ -152,7 +152,6 @@ def get_session_key(document, certificate_pem, private_key_pem):
     return session_key
 
 def get_pod(instance, certificate_pem):
-    
     certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
     user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
 
@@ -160,6 +159,36 @@ def get_pod(instance, certificate_pem):
 
     return document
 
+def expand_others(document):
+    output = []
+    try:
+
+        others = document['others']
+
+        issuers = others.keys()
+
+        for issuer in issuers:
+            serials = others[issuer].keys()
+
+            for serial in serials:
+
+                certificate = x509.load_pem_x509_certificate(others[issuer][serial]["certificate"].encode())
+
+                output.append({
+                    "issuer": certificate.issuer.rfc4514_string(),
+                    "serial": '{0:x}'.format(certificate.serial_number),
+                    "email":  certificate.subject.get_attributes_for_oid(NameOID.EMAIL_ADDRESS)[0].value,
+                    "not-valid-before": certificate.not_valid_before.strftime("%B %d, %Y"),
+                    "not-valid-after" : certificate.not_valid_after.strftime("%B %d, %Y"),
+                    "certificate": others[issuer][serial]["certificate"]
+                })
+                
+    except Exception as e:
+        print(f"{type(e).__name__} was raised: {e}")
+
+    print(output)
+
+    return output
 
 @app.route("/")
 def start():
@@ -213,7 +242,7 @@ def create():
     key_size = int(request.values.get('keysize'))
     exponent = int(request.values.get('exponent'))
 
-    print("[KEYS] - 'CERT: %s - %s - %s - %s - %d - %d - %d" % (email, issuer, organisation_name, common_name, validity, key_size, exponent))
+    print("[Create] - 'Certificate: %s - %s - %s - %s - %d - %d - %d" % (email, issuer, organisation_name, common_name, validity, key_size, exponent))
 
     one_day = datetime.timedelta(1, 0, 0)
 
@@ -292,6 +321,7 @@ def create():
     output['private-key-modulus'] = str(public_numbers.n)
     output['private-key-exponent'] = str(public_numbers.e)
     output['document'] = document
+    output['others'] = {}
 
     return json.dumps(output, sort_keys=True), 200
     
@@ -318,10 +348,10 @@ def open_pod():
     couchdb_URL = request.values.get('couchdbURL')
     password = request.values.get('password')
 
-    print("[OPEN] Files: %d " % len(request.files))
+    print("[Open] Files: %d " % len(request.files))
 
-    print("[OPEN] URL: '%s' " % (couchdb_URL))
-    print("[OPEN] Password: '%s' " % (password))
+    print("[Open] URL: '%s' " % (couchdb_URL))
+    print("[Open] Password: '%s' " % (password))
 
     try:
 
@@ -332,13 +362,12 @@ def open_pod():
             passport = request.files.get(file).stream.read()
             artifacts = pkcs12.load_key_and_certificates(passport, password.encode(), backend=None)
 
-            print("[OPEN] Tuples: '%d' " % len(artifacts))
+            print("[Open] Tuples: '%d' " % len(artifacts))
 
             for artifact in artifacts:
-                print("[OPEN] - Object: '%s' " %  type(artifact).__name__)
 
                 if  type(artifact).__name__ == "_RSAPrivateKey":
-                    print("[OPEN] - Decoding Key")
+                    print("[Open] - Decoding Key")
 
                     public_numbers = artifact.public_key().public_numbers()
 
@@ -356,7 +385,7 @@ def open_pod():
                     output['private-key'] = bytes.decode("UTF-8")
 
                 elif type(artifact).__name__ == "Certificate":
-                    print("[OPEN] - Decoding Certifcate")
+                    print("[Open] - Decoding Certifcate")
 
                     bytes = artifact.public_bytes(serialization.Encoding.PEM)
 
@@ -373,6 +402,7 @@ def open_pod():
 
                     output['id'] = user_id.value.value.decode("utf-8")
                     output['document'] = get_document(couchdb_URL, output['id'])
+                    output['others'] = expand_others(output['document'])
 
         return json.dumps(output, sort_keys=True), 200
 
@@ -387,8 +417,8 @@ def upload():
     certificate_pem = request.values.get('certificate')
     private_key_pem = request.values.get('key')
 
-    print("[UPLOAD] Files: %d " % len(request.files))
-    print("[UPLOAD] URL: '%s' " % (couchdb_URL))
+    print("[Upload] Files: %d " % len(request.files))
+    print("[Upload] URL: '%s' " % (couchdb_URL))
  
     try:
 
@@ -418,7 +448,7 @@ def upload():
 
     except Exception as e:
 
-        print("[UPLOAD] - ERROR '%s'" % str(e))
+        print("[Upload] - ERROR '%s'" % str(e))
         output = {} 
 
         output = {
@@ -437,8 +467,8 @@ def download():
         private_key_pem = request.values.get('key')
         attachment_name = request.values.get('attachment')
 
-        print("[DOWNLOAD] CouchDB URL: %s " % (couchdb_URL))
-        print("[DOWNLOAD] Attachment: '%s' " % (attachment_name))
+        print("[Download] CouchDB URL: %s " % (couchdb_URL))
+        print("[Download] Attachment: '%s' " % (attachment_name))
 
 
         private_key = serialization.load_pem_private_key(
@@ -459,7 +489,7 @@ def download():
 
     except Exception as e:
 
-        print("[UPLOAD] - ERROR '%s'" % str(e))
+        print("[Download] - ERROR '%s'" % str(e))
 
         output = {
             "status": 'fail',
@@ -475,8 +505,8 @@ def remove():
     certificate_pem = request.values.get('certificate')
     attachment_name = request.values.get('attachment-name')
 
-    print("[REMOVE] CouchDB URL: %s " % (couchdb_URL))
-    print("[REMOVE] Attachment: '%s' " % (attachment_name))
+    print("[Remove] CouchDB URL: %s " % (couchdb_URL))
+    print("[Remove] Attachment: '%s' " % (attachment_name))
     
     try:        
 
@@ -503,7 +533,7 @@ def remove():
 
     except Exception as e:
 
-        print("[REMOVE] - ERROR '%s'" % str(e))
+        print("[Remove] - ERROR '%s'" % str(e))
         output = {
             "status": 'fail',
             "error": str(e)
@@ -516,7 +546,7 @@ def delete():
 
     couchdb_URL = request.values.get('couchdb-url')
     certificate_pem = request.values.get('certificate')
-    print("[DELETE] CouchDB URL: %s " % (couchdb_URL))
+    print("[Delete] CouchDB URL: %s " % (couchdb_URL))
  
     try:        
 
@@ -530,7 +560,7 @@ def delete():
 
         instance.delete(user_id)
 
-        print("[DELETE] Document: '%s' " % (user_id))
+        print("[Delete] Document: '%s' " % (user_id))
 
         output = {
             "status": 'success',
@@ -541,7 +571,7 @@ def delete():
     
     except Exception as e:
 
-        print("[DELETE] - ERROR '%s'" % str(e))
+        print("[Delete] - ERROR '%s'" % str(e))
 
         return str(e), 500
         
@@ -551,7 +581,7 @@ def backup():
     certificate_pem = request.values.get('certificate')
     private_key_pem = request.values.get('key')
     
-    print("[BACKUP] CouchDB URL: %s " % (couchdb_URL))
+    print("[Backup] CouchDB URL: %s " % (couchdb_URL))
 
     server = pycouchdb.Server(couchdb_URL)
 
@@ -568,7 +598,7 @@ def backup():
         password=None,
     )
 
-    print("[BACKUP] Document ID: '%s' " % (user_id))
+    print("[Backup] Document ID: '%s' " % (user_id))
 
     server = pycouchdb.Server(couchdb_URL)
     instance = get_instance(server, params.PEAPOD_DATABASE)
@@ -605,7 +635,7 @@ def get():
     certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
     user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
 
-    print("[GET] Document ID: '%s' " % (user_id))
+    print("[Get] Document ID: '%s' " % (user_id))
 
     return jsonify(instance.get(user_id))
 
@@ -623,7 +653,7 @@ def set():
     certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
     user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
 
-    print("[SET] Document ID: '%s' - '%s'='%s'" % (user_id, name, value))
+    print("[Set] Document ID: '%s' - '%s'='%s'" % (user_id, name, value))
 
     document = instance.get(user_id)
 
@@ -646,7 +676,7 @@ def share():
   
     document = get_pod(instance, certificate_pem)
 
-    print("[ADD] Document ID: '%s'" % ("certificate"))
+    print("[ADD] Document ID: '%s'" % document["_id"])
 
     others = document["others"]
 
@@ -675,6 +705,26 @@ def share():
         print(f"{type(e).__name__} was raised: {e}")
 
         return str(e), 500
+    
+@app.route("/expand", methods=["POST"])
+def expand():
+    couchdb_URL = request.values.get('couchdbURL')
+    certificate_pem = request.values.get('certificate')
+    
+    server = pycouchdb.Server(couchdb_URL)
+
+    instance = get_instance(server, params.PEAPOD_DATABASE)
+  
+    document = get_pod(instance, certificate_pem)
+
+    print("[Expand] Document ID: '%s'" % document["_id"])
+
+    output = {}
+
+    output["document"] = document
+    output['others'] = expand_others(document)
+    
+    return output, 200
 
 if __name__ == "__main__":
     print("Listening: "  + environ.get('PORT', '8080'))

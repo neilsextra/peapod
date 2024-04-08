@@ -45,7 +45,14 @@
     background-color: #f5a1a1;
 }
 
-.card-user-certificate-main {
+.card-other {
+    width: 222px;
+    height: 92px;
+    font-size: 10px;
+    color: rgba(0, 0, 0, 1.0);
+}
+
+.card-other-certificate-main {
     position: absolute;
     width: 200px;
     height: 70px;
@@ -57,7 +64,7 @@
     background-color:rgba(243, 169, 169, 0.05);
 }
 
-.card-user-certificate-main:hover {
+.card-other-certificate-main:hover {
     background-color: #2bdfd6;
 }
 

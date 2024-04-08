@@ -225,10 +225,10 @@
         <div style="margin: 0 auto; margin-top: 6px; text-align:left; padding:10px; overflow:hidden;">
 
             <div style="position:relative; color:black;">
-                <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="24" height="24" style="float: left; margin:5px;" />
+                <img src="{{url_for( 'static', filename='images/user.svg')}}" width="24" height="24" style="float: left; margin:5px;" />
             </div>
 
-            <h1 style="color:black; font-size:16px; font-weight: bold; margin-top:6px;">Certificate</h1>
+            <h1 style="color:black; font-size:16px; font-weight: bold; margin-top:6px;">Other Certificate</h1>
     
             <p style="height:10px;"></p>
             <label style="color:navy; font-size:12px; margin-bottom:10px;">Email: ${email}</label>
@@ -250,7 +250,7 @@
             </div>
             <div style="position:absolute; bottom:10px; height:36px; left:10px; right:10px;">
                 <span style="float:right; border:1px solid rgb(230,230,230); background-color:rgba(255,255,255,0.9); margin:3px; padding:3px; ">
-                    <img id="download-certificate" class="menu-item" style="margin-left:5px; margin-right:5px; margin-top:-1;" src="{{url_for( 'static', filename='images/download.svg')}}" width="24" height="24" onclick="window.download('certificate');"/>
+                    <img id="delete-other-certificate" class="menu-item" style="margin-left:5px; margin-right:5px; margin-top:-1;" src="{{url_for( 'static', filename='images/trash.svg')}}" width="24" height="24" onclick="window.unshare(${ref});"/>
                 </span>
             </div>
         </div>

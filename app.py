@@ -176,7 +176,7 @@ def expand_others(document):
 
                 output.append({
                     "issuer": certificate.issuer.rfc4514_string(),
-                    "serial": '{0:x}'.format(certificate.serial_number),
+                    "serial-number": '{0:x}'.format(certificate.serial_number),
                     "email":  certificate.subject.get_attributes_for_oid(NameOID.EMAIL_ADDRESS)[0].value,
                     "not-valid-before": certificate.not_valid_before.strftime("%B %d, %Y"),
                     "not-valid-after" : certificate.not_valid_after.strftime("%B %d, %Y"),

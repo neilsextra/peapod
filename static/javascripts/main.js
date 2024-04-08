@@ -368,7 +368,7 @@ function showArtifacts(artifcats) {
             for (var other in artifcats.others) {
 
                 var value = stringUtil.substitute(template, {
-                    "id":  artifcats.others[other]["serial"],
+                    "id":  artifcats.others[other]["serial-number"],
                     "ref": other,
                     "email": artifcats.others[other]['email'],
                 });
@@ -406,6 +406,22 @@ function view(artificate, id, mimetype) {
         var fragment = document.createRange().createContextualFragment(value);
         document.getElementById("details").appendChild(fragment);
 
+    } else if (artificate == 'other') {
+        let template = document.querySelector('script[data-template="other-certificate-details"]').text
+
+        let value = stringUtil.substitute(template, {
+            "ref": id,
+            "email": window.cryptoArtificats.others[id]['email'],
+            "issuer": window.cryptoArtificats.others[id]['issuer'],
+            "serial-number": window.cryptoArtificats.others[id]['serial-number'],
+            "not-valid-before": window.cryptoArtificats.others[id]['not-valid-before'],
+            "not-valid-after": window.cryptoArtificats.others[id]['not-valid-after'],
+            "certificate": window.cryptoArtificats.others[id]['certificate']
+        });
+
+        var fragment = document.createRange().createContextualFragment(value);
+        document.getElementById("details").appendChild(fragment);
+
     } else {
         let template = (artificate == "certificate") ? document.querySelector('script[data-template="certificate-details"]').text
             : document.querySelector('script[data-template="key-details"]').text;
@@ -424,7 +440,6 @@ function view(artificate, id, mimetype) {
 
         var fragment = document.createRange().createContextualFragment(value);
         document.getElementById("details").appendChild(fragment);
-
     }
 
 }

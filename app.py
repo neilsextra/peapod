@@ -676,7 +676,7 @@ def share():
   
     document = get_pod(instance, certificate_pem)
 
-    print("[ADD] Document ID: '%s'" % document["_id"])
+    print("[Share] Document ID: '%s'" % document["_id"])
 
     others = document["others"]
 

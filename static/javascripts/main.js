@@ -55,6 +55,7 @@ class DataView extends SyncTableModel {
 var settings = {
     view_certificates: false,
     view_keys: false,
+    view_others: false,
     view_files: true
 }
 
@@ -359,6 +360,24 @@ function showArtifacts(artifcats) {
 
             }
 
+        }
+
+        if (settings.view_others) {
+            var template = document.querySelector('script[data-template="other-certificate-card-item"]').text;
+ 
+            for (var other in artifcats.others) {
+
+                var value = stringUtil.substitute(template, {
+                    "id":  artifcats.others[other]["serial"],
+                    "ref": other,
+                    "email": artifcats.others[other]['email'],
+                });
+
+                let fragment = document.createRange().createContextualFragment(value);
+
+                document.getElementById("artifacts-container").appendChild(fragment);
+
+            }
         }
 
         document.getElementById("pod-status").innerHTML = `Pod ID: ${artifcats['id']} - &#128275;`;
@@ -770,6 +789,7 @@ window.onload = function () {
         settings.view_certificates = document.getElementById("view-certificates").checked;
         settings.view_keys = document.getElementById("view-keys").checked;
         settings.view_files = document.getElementById("view-files").checked;
+        settings.view_others = document.getElementById("view-others").checked;
 
         showArtifacts(window.cryptoArtificats);
 

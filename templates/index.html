@@ -115,7 +115,7 @@
     </script>
 
     <script type="text/template" data-template="other-certificate-card-item">
-        <div id="other-certificate-${id}" class="card-other" style="position:relative;" onclick="window.view('certificate', '${id}');">
+        <div id="other-certificate-${id}" class="card-other" style="position:relative;" onclick="window.view('other', '${ref}');">
             <div class="card-other-certificate-main">
                 <div style="position:relative; color:black;">
                     <img src="{{url_for( 'static', filename='images/user.svg')}}" width="20" height="20" style="float: left;" />
@@ -442,6 +442,10 @@
                 <div style="margin-top: 4px;">
                     <input id="view-keys" type="checkbox" name="view-keys"></input>
                     <label for="view-keys" style="font-size:14px;">Keys</label>
+                </div>
+                <div style="margin-top: 4px;">
+                    <input id="view-others" type="checkbox" name="view-others"></input>
+                    <label for="view-others" style="font-size:14px;">Other Certificates</label>
                 </div>
                 <div style="margin-top: 4px;">
                     <input id="view-files" type="checkbox" name="view-files"></input>

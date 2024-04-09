@@ -486,6 +486,19 @@ async function remove(artificate, attachmentName) {
 
 }
 
+async function unshare(artificate, ref) {
+    var message = new Message()
+   
+    var result = await message.unshare(couchdb.getURL(), window.cryptoArtificats, window.cryptoArtificats['others'][ref]);
+    result = await message.expand(couchdb.getURL(), window.cryptoArtificats);
+
+    window.cryptoArtificats["others"] = result["others"];
+    document.getElementById("details").innerHTML = "";
+
+    showArtifacts(window.cryptoArtificats);
+
+}
+
 /**
  * Open a password given the Passport Identifier
  * 
@@ -562,6 +575,7 @@ window.onload = function () {
     window.remove = remove;
     window.download = download;
     window.openPassport = openPassport;
+    window.unshare = unshare;
 
     window.simplemde = new SimpleMDE({ element: document.getElementById("readme-editor"),
                                        toolbar: ["bold", "italic", "heading", "|", 
@@ -1007,8 +1021,6 @@ window.onload = function () {
         var result = await message.share(couchdb.getURL(), window.cryptoArtificats, window.certificates);
        
         result = await message.expand(couchdb.getURL(), window.cryptoArtificats);
-
-        alert(result);
 
         window.certificates = [];
 

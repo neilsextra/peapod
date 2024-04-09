@@ -688,7 +688,6 @@ def share():
             user_certificate_pem = request.files.get(file).stream.read()
             user_certificate = x509.load_pem_x509_certificate(user_certificate_pem)
 
-
             if not user_certificate.issuer.rfc4514_string() in others:
                 others[user_certificate.issuer.rfc4514_string()] = {}
             
@@ -697,6 +696,44 @@ def share():
             }
                               
         document['others'] = others
+        revised_document = save(instance, document)
+ 
+        return revised_document, 200
+
+    except Exception as e:
+        print(f"{type(e).__name__} was raised: {e}")
+
+        return str(e), 500
+
+@app.route("/unshare", methods=["POST"])
+def unshare():
+    couchdb_URL = request.values.get('couchdbURL')
+    certificate_pem = request.values.get('certificate')
+    
+    server = pycouchdb.Server(couchdb_URL)
+
+    instance = get_instance(server, params.PEAPOD_DATABASE)
+  
+    document = get_pod(instance, certificate_pem)
+
+    print("[Unshare] Document ID: '%s'" % document["_id"])
+
+    others = document["others"]
+
+    try:
+
+        files = request.files
+
+        for file in files:
+            user_certificate_pem = request.files.get(file).stream.read()
+            user_certificate = x509.load_pem_x509_certificate(user_certificate_pem)
+                              
+            others[user_certificate.issuer.rfc4514_string()].pop('{0:x}'.format(user_certificate.serial_number), None);
+        
+            if len(others[user_certificate.issuer.rfc4514_string()]) == 0:
+                others.pop(user_certificate.issuer.rfc4514_string(), None)
+
+        document["others"] = others
         revised_document = save(instance, document)
  
         return revised_document, 200

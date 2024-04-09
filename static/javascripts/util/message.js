@@ -483,6 +483,44 @@ function Message() {
 
     }
 
+    this.expand = function (couchdbURL, cryptoArtifacts) {
+
+        return new Promise((accept, reject) => {
+            let parmURL = `/expand`;
+
+            var xhttp = new XMLHttpRequest();
+            var formData = new FormData();
+
+            formData.append("couchdbURL", couchdbURL);
+            formData.append("certificate", cryptoArtifacts['certificate']);
+
+            xhttp.open("POST", parmURL, true);
+
+            xhttp.onload = function () {
+                if (this.readyState === 4 && this.status === 200) {
+
+                    accept(this.response);
+
+                } else {
+
+                    reject({
+                        status: this.status,
+                        message: this.statusText
+                    });
+
+                }
+
+            };
+
+            xhttp.onerror = function () {
+            };
+
+            xhttp.send(formData);
+
+        });
+
+    }
+
     this.share = function (couchdbURL, cryptoArtifactes, certificates) {
 
         return new Promise((accept, reject) => {
@@ -597,6 +635,12 @@ function Message() {
 
     }
   
+    Message.prototype.expand = function (couchdbURL, cryptoArtifacts) {
+
+        return this.expand(couchdbURL, cryptoArtifacts);
+
+    }
+
     Message.prototype.share = function (couchdbURL, cryptoArtifacts, certificates) {
 
         return this.share(couchdbURL, cryptoArtifacts, certificates);

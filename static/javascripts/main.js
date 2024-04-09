@@ -1004,11 +1004,18 @@ window.onload = function () {
 
     document.getElementById("upload-certificate-dialog-ok").addEventListener("click", async function (event) {
         var message = new Message();
-
         var result = await message.share(couchdb.getURL(), window.cryptoArtificats, window.certificates);
+       
+        result = await message.expand(couchdb.getURL(), window.cryptoArtificats);
+
+        alert(result);
 
         window.certificates = [];
 
+        window.cryptoArtificats["others"] = result["others"];
+
+        showArtifacts(window.cryptoArtificats);
+   
         document.getElementById("upload-certificate-dialog").close()
 
     });

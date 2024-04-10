@@ -472,6 +472,20 @@ async function download(artifact) {
 
 }
 
+async function expand() {
+    var message = new Message();
+    var result = await message.expand(couchdb.getURL(), window.cryptoArtificats);
+
+    var objects = JSON.parse(result);
+
+    window.certificates = [];
+
+    window.cryptoArtificats["others"] = objects["others"];
+
+    showArtifacts(window.cryptoArtificats);
+
+}
+
 async function remove(artificate, attachmentName) {
     var message = new Message()
     var result = await message.remove(couchdb.getURL(), window.cryptoArtificats['certificate'], attachmentName);
@@ -486,16 +500,16 @@ async function remove(artificate, attachmentName) {
 
 }
 
-async function unshare(artificate, ref) {
+async function unshare(ref) {
     var message = new Message()
    
-    var result = await message.unshare(couchdb.getURL(), window.cryptoArtificats, window.cryptoArtificats['others'][ref]);
-    result = await message.expand(couchdb.getURL(), window.cryptoArtificats);
+    alert(window.cryptoArtificats.others[ref]['certificate']);
+    
+    await message.unshare(couchdb.getURL(), window.cryptoArtificats, window.cryptoArtificats.others[ref]['certificate']);
 
-    window.cryptoArtificats["others"] = result["others"];
     document.getElementById("details").innerHTML = "";
 
-    showArtifacts(window.cryptoArtificats);
+    expand();
 
 }
 
@@ -1018,17 +1032,10 @@ window.onload = function () {
 
     document.getElementById("upload-certificate-dialog-ok").addEventListener("click", async function (event) {
         var message = new Message();
-        var result = await message.share(couchdb.getURL(), window.cryptoArtificats, window.certificates);
+        
+        await message.share(couchdb.getURL(), window.cryptoArtificats, window.certificates);
        
-        result = await message.expand(couchdb.getURL(), window.cryptoArtificats);
-
-        var objects = JSON.parse(result);
-
-        window.certificates = [];
-
-        window.cryptoArtificats["others"] = objects["others"];
-
-        showArtifacts(window.cryptoArtificats);
+        expand();
    
         document.getElementById("upload-certificate-dialog").close()
 

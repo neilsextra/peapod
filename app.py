@@ -709,6 +709,7 @@ def share():
 def unshare():
     couchdb_URL = request.values.get('couchdbURL')
     certificate_pem = request.values.get('certificate')
+    other_pem = request.values.get('other')
     
     server = pycouchdb.Server(couchdb_URL)
 
@@ -716,22 +717,19 @@ def unshare():
   
     document = get_pod(instance, certificate_pem)
 
-    print("[Unshare] Document ID: '%s'" % document["_id"])
+    print("[Unshare] Document ID: '%s'" % document["_id"])  
+    print("[Unshare] Other: '%s'" % other_pem)
 
     others = document["others"]
 
     try:
 
-        files = request.files
-
-        for file in files:
-            user_certificate_pem = request.files.get(file).stream.read()
-            user_certificate = x509.load_pem_x509_certificate(user_certificate_pem)
+        other_certificate = x509.load_pem_x509_certificate(other_pem.encode("utf-8"))
                               
-            others[user_certificate.issuer.rfc4514_string()].pop('{0:x}'.format(user_certificate.serial_number), None);
+        others[other_certificate.issuer.rfc4514_string()].pop('{0:x}'.format(other_certificate.serial_number), None);
         
-            if len(others[user_certificate.issuer.rfc4514_string()]) == 0:
-                others.pop(user_certificate.issuer.rfc4514_string(), None)
+        if len(others[other_certificate.issuer.rfc4514_string()]) == 0:
+            others.pop(other_certificate.issuer.rfc4514_string(), None)
 
         document["others"] = others
         revised_document = save(instance, document)

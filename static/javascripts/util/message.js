@@ -569,7 +569,7 @@ function Message() {
 
     }
 
-    this.unshare = function (couchdbURL, cryptoArtifactes, certificates) {
+    this.unshare = function (couchdbURL, cryptoArtifactes, other) {
 
         return new Promise((accept, reject) => {
             let parmURL = `/unshare`;
@@ -579,10 +579,7 @@ function Message() {
             
             formData.append("couchdbURL", couchdbURL);
             formData.append("certificate", cryptoArtifactes['certificate']);
-
-            for (var certificate = 0; certificate < certificates.length; certificate++) {
-                formData.append(certificates[certificate].name, certificates[certificate]);
-            }
+            formData.append("other", other);
 
             xhttp.open("POST", parmURL, true);
 
@@ -690,9 +687,9 @@ function Message() {
     }
 
     
-    Message.prototype.unshare = function (couchdbURL, cryptoArtifacts, certificates) {
+    Message.prototype.unshare = function (couchdbURL, cryptoArtifacts, other) {
 
-        return this.unshare(couchdbURL, cryptoArtifacts, certificates);
+        return this.unshare(couchdbURL, cryptoArtifacts, other);
 
     }
       

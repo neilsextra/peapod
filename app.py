@@ -758,7 +758,7 @@ def expand():
 
     output = {}
 
-    output["document"] = document
+    output['document'] = document
     output['others'] = expand_others(document)
     
     return output, 200

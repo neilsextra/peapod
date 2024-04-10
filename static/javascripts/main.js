@@ -1022,9 +1022,11 @@ window.onload = function () {
        
         result = await message.expand(couchdb.getURL(), window.cryptoArtificats);
 
+        var objects = JSON.parse(result);
+
         window.certificates = [];
 
-        window.cryptoArtificats["others"] = result["others"];
+        window.cryptoArtificats["others"] = objects["others"];
 
         showArtifacts(window.cryptoArtificats);
    

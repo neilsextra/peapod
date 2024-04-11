@@ -240,6 +240,32 @@ async function showCSV(id) {
 }
 
 /**
+ * Open the Register
+ * 
+ */
+function openRegister() {
+
+    document.getElementById("registered-artifacts-container").innerHTML = "";
+            
+    for (var keyID = 0;  keyID < window.localStorage.length; keyID++) {            
+        let template = document.querySelector('script[data-template="regsitered-pod-item"]').text;
+        
+        let value = stringUtil.substitute(template, {
+            "id": window.localStorage.key( keyID )
+            });
+
+        let fragment = document.createRange().createContextualFragment(value);
+
+        document.getElementById("registered-artifacts-container").appendChild(fragment);
+
+    }
+
+    
+    document.getElementById("register-dialog").showModal();
+
+}
+
+/**
  * Show the File as Hex in a pageable display
  * 
  * @param {string} id the attachment identifier   
@@ -641,6 +667,10 @@ window.onload = function () {
 
             document.getElementById("connect-dialog-cancel").style.display = "inline-block";
 
+            if (window.localStorage.length > 0) {
+                openRegister();
+            }
+
         } catch (e) {
             document.getElementById("connect-message").innerHTML = e.message;
             waitDialog.close();
@@ -921,22 +951,7 @@ window.onload = function () {
 
     document.getElementById("open-register").addEventListener("click", async function (event) {
 
-        document.getElementById("registered-artifacts-container").innerHTML = "";
-        
-        for (var keyID = 0;  keyID < window.localStorage.length; keyID++) {            
-            let template = document.querySelector('script[data-template="regsitered-pod-item"]').text;
-            
-            let value = stringUtil.substitute(template, {
-                "id": window.localStorage.key( keyID )
-                });
-
-            let fragment = document.createRange().createContextualFragment(value);
-
-            document.getElementById("registered-artifacts-container").appendChild(fragment);
-
-        }
-
-        document.getElementById("register-dialog").showModal();
+        openRegister();
   
     });
 

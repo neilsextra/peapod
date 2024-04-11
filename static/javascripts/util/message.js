@@ -684,7 +684,6 @@ function Message() {
         return this.share(couchdbURL, cryptoArtifacts, certificates);
 
     }
-
     
     Message.prototype.unshare = function (couchdbURL, cryptoArtifacts, other) {
 
@@ -697,4 +696,5 @@ function Message() {
         return this.expand(couchdbURL, cryptoArtifacts);
 
     }
+
 }

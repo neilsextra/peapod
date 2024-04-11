@@ -502,8 +502,6 @@ async function remove(artificate, attachmentName) {
 
 async function unshare(ref) {
     var message = new Message()
-   
-    alert(window.cryptoArtificats.others[ref]['certificate']);
     
     await message.unshare(couchdb.getURL(), window.cryptoArtificats, window.cryptoArtificats.others[ref]['certificate']);
 

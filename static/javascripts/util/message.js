@@ -34,7 +34,6 @@ function Message() {
             };
 
             xhttp.onerror = function () {
-                console.log("im here d");
      
                 alert(this.statusText);
 

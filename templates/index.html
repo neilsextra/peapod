@@ -55,8 +55,8 @@
     <!-- templates -->
 
     <script type="text/template" data-template="certificate-card-item">
-        <div id="certificate-${id}" class="card-crypto" style="position:relative;" onclick="window.view('certificate', '${id}');">
-            <div class="card-crypto-main">
+        <div id="certificate-${id}" class="card-view card-crypto" style="position:relative;" onclick="window.view('certificate', '${id}');">
+            <div id="certificate-view-${id}" class="card-crypto-main card-view-main" style="border-bottom:4px solid rgba(0,0,0, 0.0);">
                 <div style="position:relative; color:black;">
                     <img src="{{url_for( 'static', filename='images/certificate.svg')}}" width="20" height="20" style="float: left;" />
                 </div>
@@ -73,8 +73,8 @@
     </script>
 
     <script type="text/template" data-template="key-card-item">
-        <div id="key-${id}" class="card-crypto" style="position:relative;" onclick="window.attachment-view('key', '${id}');">
-            <div class="card-crypto-main">
+        <div id="key-${id}" class="card-crypto" style="position:relative;" onclick="window.view('key', '${id}');">
+            <div id="key-view-${id}" class="card-crypto-main card-view-main" style="border-bottom:4px solid rgba(0,0,0, 0.0);">
                 <div>
                     <div style="position:relative; color:black;">
                         <img src="{{url_for( 'static', filename='images/keys.svg')}}" width="20" height="20" style="float: left;" />
@@ -95,7 +95,7 @@
 
     <script type="text/template" data-template="attachment-card-item">
         <div id="attachment-${id}" class="card-attachment" style="position:relative;" onclick="window.view('attachment', '${filename}', '${mimetype}');">
-            <div class="card-attachment-main">
+            <div id="attachment-view-${filename}" class="card-attachment-main card-view-main" style="border-bottom:4px solid rgba(0,0,0, 0.0);">
                 <div>
                     <div style="position:relative; color:black;">
                         <img src="{{url_for( 'static', filename='images/file.svg')}}" width="20" height="20" style="float: left;" />
@@ -115,8 +115,8 @@
     </script>
 
     <script type="text/template" data-template="other-certificate-card-item">
-        <div id="other-certificate-${id}" class="card-other" style="position:relative;" onclick="window.view('other', '${ref}');">
-            <div class="card-other-certificate-main">
+        <div id="other-certificate-${id}" class="card-view card-other" style="position:relative;" onclick="window.view('other', '${ref}');">
+            <div id="other-view-${ref}" class="card-other-certificate-main card-view-main" style="border-bottom:4px solid rgba(0,0,0, 0.0);">
                 <div style="position:relative; color:black;">
                     <img src="{{url_for( 'static', filename='images/user.svg')}}" width="20" height="20" style="float: left;" />
                 </div>
@@ -703,15 +703,6 @@
                     <table class="selection" style="margin-top: 4px;">
                         <tr>
                             <td>
-                                <button class="collapsible-menu" id="save-passport">
-                                    <img src="{{url_for( 'static', filename='images/secure-save.svg')}}"
-                                        style="width:20px; height:22px; margin-top:4px;margin-right:4px;"></img>
-                                    <label for="save-pod" style="position:relative; top:-5px;">Save Passport</label>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
                                 <button class="collapsible-menu" id="register-passport">
                                     <img src="{{url_for( 'static', filename='images/register.svg')}}"
                                         style="width:20px; height:22px; margin-top:4px; margin-right:4px;"></img>
@@ -736,8 +727,41 @@
                                     <label for="upload-file" style="position:relative; top:-5px;">Upload File</label>
                                 </button>
                             </td>
+                        </tr>  
+                        <tr>
+                            <td>
+                                <button class="collapsible-menu" id="add-user">
+                                    <img src="{{url_for( 'static', filename='images/add-user.svg')}}"
+                                        style="width:20px; height:22px; margin-top:4px; margin-right:4px;"></img>
+                                    <label for="add-user" style="position:relative; top:-5px;">Add User</label>
+                                </button>
+                            </td>
                         </tr>
+                        <tr>
+                            <td>
+                                <button class="collapsible-menu" id="edit-readme">
+                                    <img src="{{url_for( 'static', filename='images/readme-editor.svg')}}"
+                                        style="width:20px; height:22px; margin-top:4px;margin-right:4px;"></img>
+                                    <label for="edit-readme" style="position:relative; top:-5px;">Edit Readme</label>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
 
+                <button id="edit-button" class="collapsible" style="visibility:hidden;">Maintenance</button>
+                <div id="edit-button-content" class="collapsible-content"
+                    style="margin-top:4px; margin-bottom:12px; margin-bottom:12px; visibility:hidden;">
+                    <table class="selection" style="margin-top: 4px;">
+                        <tr>
+                            <td>
+                                <button class="collapsible-menu" id="save-passport">
+                                    <img src="{{url_for( 'static', filename='images/secure-save.svg')}}"
+                                        style="width:20px; height:22px; margin-top:4px;margin-right:4px;"></img>
+                                    <label for="save-pod" style="position:relative; top:-5px;">Save Passport</label>
+                                </button>
+                            </td>
+                        </tr>
                         <tr>
                             <td>
                                 <button class="collapsible-menu" id="delete-pod">
@@ -755,35 +779,11 @@
                                     <label for="backup-pod" style="position:relative; top:-5px;">Backup POD</label>
                                 </button>
                             </td>
-                        </tr>    
-                        <tr>
-                            <td>
-                                <button class="collapsible-menu" id="add-user">
-                                    <img src="{{url_for( 'static', filename='images/add-user.svg')}}"
-                                        style="width:20px; height:22px; margin-top:4px; margin-right:4px;"></img>
-                                    <label for="add-user" style="position:relative; top:-5px;">Add User</label>
-                                </button>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-
-                <button id="edit-button" class="collapsible" style="visibility:hidden;">Edit</button>
-                <div id="edit-button-content" class="collapsible-content"
-                    style="margin-top:4px; margin-bottom:12px; margin-bottom:12px; visibility:hidden;">
-                    <table class="selection" style="margin-top: 4px;">
-                        <tr>
-                            <td>
-                                <button class="collapsible-menu" id="edit-readme">
-                                    <img src="{{url_for( 'static', filename='images/readme-editor.svg')}}"
-                                        style="width:20px; height:22px; margin-top:4px;margin-right:4px;"></img>
-                                    <label for="edit-readme" style="position:relative; top:-5px;">Edit Readme</label>
-                                </button>
-                            </td>
-                        </tr>
+                        </tr>  
                     </table>
                 </div>          
             </div>
+
             <div id="container"
                 style="position:absolute; top:44px; left:460px; right:495px; bottom:40px; border: 1px solid rgba(0,0,0, 0.2); overflow:hidden;">
 

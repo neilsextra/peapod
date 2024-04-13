@@ -414,6 +414,20 @@ function showArtifacts(artifcats) {
 
 }
 
+function toggleSelected(artifact, id) {
+    var elements = document.getElementsByClassName("card-view-main");
+
+    for (var element in elements) {
+ 
+        if (elements[element] && elements[element].style) {
+            elements[element].style.borderBottom = "4px solid rgba(0,0,0, 0.0)";
+        }
+
+    }
+    
+    document.getElementById(`${artifact}-view-${id}`).style.borderBottom = "4px solid rgba(135,206,235, 1.0)";
+}
+
 /**
  * Show the details about the Artifcat in the Detail's Pane
  * @param {json} artificate the type of artifact, certificate, key, file, etc
@@ -421,6 +435,8 @@ function showArtifacts(artifcats) {
  */
 function view(artificate, id, mimetype) {
     document.getElementById("details").innerHTML = "";
+
+    toggleSelected(artificate, id);
 
     if (artificate == 'attachment') {
         let template = document.querySelector('script[data-template="attachment-details"]').text

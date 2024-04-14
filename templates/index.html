@@ -211,7 +211,27 @@
             <h1 style="color:black; font-size:16px; font-weight: bold; margin-top:6px;">${filename}</h1>
             <p></p>
             <p style="color:black; font-size:12px; margin-top:6px;">Mime-type: ${mimetype}</p>
- 
+            <p style="height:10px;"></p>
+            <label style="color:navy; font-size:12px; margin-bottom:10px;">Size (on disk): ${size}</label>
+            <p style="height:-3px"></p>
+            <label style="color:navy; font-size:12px; margin-bottom:10px;">Revision: ${revision}</label>  
+            <p style="height:10px"></p>
+            <div>
+            <div style="width:200px; height:200px; background: conic-gradient(rgba(0,0,255, 0.6) 0% ${percent}%, rgba(110,110,110, 0.4) ${percent}% 100%); border-radius: 50%; border:2px solid black;"></div>
+            <div style="position:absolute; top: 200px; left:250px;">
+                <div>
+                    <div style="float: left; width:10px; height:10px; background-color:rgba(0,0,255, 0.6)">
+                    </div>
+                    <label style="float: left;">&nbsp;Used - ${percent}%</label>
+                </div>
+                <p style="width:100%; height:10px;"></p>
+                <div>
+                    <div style="float: left; width:10px; height:10px; background-color: rgba(110,110,110, 0.4)">
+                    </div>
+                    <label style="float: left;">&nbsp;Other - ${other}%</label>
+                </div>
+            </div>
+    
             <div style="position:absolute; bottom:10px; height:36px; left:10px; right:10px;">
                 <span style="float:right; border:1px solid rgb(230,230,230); background-color:rgba(255,255,255,0.9); margin:3px; padding:3px; ">
                     <img id="view-attachment" class="menu-item" style="margin-right:5px; margin-top:-1;" src="{{url_for( 'static', filename='images/view.svg')}}" width="24" height="24" onclick="window.details('attachment', '${filename}', '${mimetype}');"/>
@@ -749,7 +769,7 @@
                     </table>
                 </div>
 
-                <button id="edit-button" class="collapsible" style="visibility:hidden;">Maintenance</button>
+                <button id="edit-button" class="collapsible" style="visibility:hidden;">Support</button>
                 <div id="edit-button-content" class="collapsible-content"
                     style="margin-top:4px; margin-bottom:12px; margin-bottom:12px; visibility:hidden;">
                     <table class="selection" style="margin-top: 4px;">

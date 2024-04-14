@@ -424,7 +424,7 @@ function toggleSelected(artifact, id) {
         }
 
     }
-    
+
     document.getElementById(`${artifact}-view-${id}`).style.borderBottom = "4px solid rgba(135,206,235, 1.0)";
 }
 
@@ -439,10 +439,26 @@ function view(artificate, id, mimetype) {
     toggleSelected(artificate, id);
 
     if (artificate == 'attachment') {
+        var total = 0;
+
+        for (var attachment in window.cryptoArtificats["document"]["_attachments"]) {
+ 
+            total += window.cryptoArtificats["document"]["_attachments"][attachment]["length"];
+
+        }
+
+        var percent = Math.round((window.cryptoArtificats["document"]["_attachments"][id]["length"] * 100)/ total);
+
+        percent = percent == 0 ? 1 : percent;
+
         let template = document.querySelector('script[data-template="attachment-details"]').text
         let value = stringUtil.substitute(template, {
             "filename": id,
-            "mimetype": mimetype
+            "mimetype": mimetype,
+            "size": window.cryptoArtificats["document"]["_attachments"][id]["length"],
+            "revision": window.cryptoArtificats["document"]["_attachments"][id]["revpos"],
+            "percent" : percent,
+            "other" : (100 - percent)
         });
 
         var fragment = document.createRange().createContextualFragment(value);

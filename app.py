@@ -186,8 +186,6 @@ def expand_others(document):
     except Exception as e:
         print(f"{type(e).__name__} was raised: {e}")
 
-    print(output)
-
     return output
 
 @app.route("/")
@@ -616,12 +614,66 @@ def backup():
             decrypted_bytes = decrypt_content(session_key.decode("utf-8"), attachment_bytes)
 
             file = ZipInfo(attachment_name)
+            file.comment = document["_attachments"][attachment_name]["content_type"].encode()
 
             zip_archive.writestr(file, decrypted_bytes)
 
-            print("[BACKUP] Attachment: '%s' " % (attachment_name))
+            print("[Backup] Attachment: '%s' - '%s' " % (attachment_name, file.comment.decode('utf-8')))
 
     return send_file(io.BytesIO(archive.getvalue()), "application/x-zip")
+
+@app.route("/restore", methods=["POST"])
+def restore():
+    couchdb_URL = request.values.get('couchdbURL')
+    certificate_pem = request.values.get('certificate')
+    private_key_pem = request.values.get('key')
+    
+    print("[Restore] CouchDB URL: %s " % (couchdb_URL))
+
+    server = pycouchdb.Server(couchdb_URL)
+
+    instance = get_instance(server, params.PEAPOD_DATABASE)
+
+    certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+
+    user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
+
+    document = instance.get(user_id)
+    
+    private_key = serialization.load_pem_private_key(
+        private_key_pem.encode('utf-8'),
+        password=None,
+    )
+
+    print("[Restore] Document ID: '%s' " % (user_id))
+
+    server = pycouchdb.Server(couchdb_URL)
+    instance = get_instance(server, params.PEAPOD_DATABASE)
+
+    session_key = get_session_key(document, certificate_pem, private_key_pem)
+
+    files = request.files
+
+    output = {}
+    count = 0
+
+    for file in files:
+
+        content = request.files.get(file)
+
+        with ZipFile(io.BytesIO(content.stream.read())) as zip_file:
+                for name in zip_file.namelist():
+                    print("[Restore] Document ID: '%s' - '%s'" % (name, zip_file.getinfo (name).comment.decode("utf-8")))
+
+                    encrypted_content = encrypt_content(session_key, zip_file.read(name))
+                    document = instance.put_attachment(document, encrypted_content, filename=name, content_type=zip_file.getinfo (name).comment)
+                    count += 1
+
+                    output['document'] = document
+    
+    output["count"] = count
+
+    return output, 200
 
 @app.route("/get", methods=["POST"])
 def get():

@@ -95,15 +95,15 @@ function substitute(template, values) {
  * @param {arrayBuffer} buffer 
  * @returns  base 64 representation
  */
-function arrayBufferToBase64( buffer ) {
+function arrayBufferToBase64(buffer) {
     var binary = '';
-    var bytes = new Uint8Array( buffer );
+    var bytes = new Uint8Array(buffer);
     var len = bytes.byteLength;
     for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode( bytes[ i ] );
+        binary += String.fromCharCode(bytes[i]);
     }
-    
-    return window.btoa( binary );
+
+    return window.btoa(binary);
 
 }
 
@@ -153,7 +153,7 @@ function expandCollapsible(id) {
     var collapsible = document.getElementById(id);
 
     if (!collapsible.classList.contains("collapsible-active")) {
-       
+
         collapsible.classList.toggle("collapsible-active");
 
         var content = collapsible.nextElementSibling;
@@ -188,9 +188,9 @@ async function showCSV(id) {
     waitDialog.showModal();
 
     var message = new Message()
-    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], 
-                                                          window.cryptoArtificats['private-key'], 
-                                                          id, false);
+    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'],
+        window.cryptoArtificats['private-key'],
+        id, false);
 
     let results = Papa.parse(result);
     let lines = results.data;
@@ -246,13 +246,13 @@ async function showCSV(id) {
 function openRegister() {
 
     document.getElementById("registered-artifacts-container").innerHTML = "";
-            
-    for (var keyID = 0;  keyID < window.localStorage.length; keyID++) {            
+
+    for (var keyID = 0; keyID < window.localStorage.length; keyID++) {
         let template = document.querySelector('script[data-template="regsitered-pod-item"]').text;
-        
+
         let value = stringUtil.substitute(template, {
-            "id": window.localStorage.key( keyID )
-            });
+            "id": window.localStorage.key(keyID)
+        });
 
         let fragment = document.createRange().createContextualFragment(value);
 
@@ -260,7 +260,7 @@ function openRegister() {
 
     }
 
-    
+
     document.getElementById("register-dialog").showModal();
 
 }
@@ -275,9 +275,9 @@ async function showHex(id) {
 
     waitDialog.showModal();
 
-    var result = await (new Message()).download(couchdb.getURL(), window.cryptoArtificats['certificate'], 
-                                                          window.cryptoArtificats['private-key'], 
-                                                          id, true)
+    var result = await (new Message()).download(couchdb.getURL(), window.cryptoArtificats['certificate'],
+        window.cryptoArtificats['private-key'],
+        id, true)
 
     var hex = hexview(result);
 
@@ -286,7 +286,7 @@ async function showHex(id) {
     waitDialog.close();
 
     document.getElementById("display-hex-dialog").showModal();
-    
+
 }
 
 /**
@@ -300,8 +300,8 @@ async function showPDF(id, mimetype) {
     waitDialog.showModal();
 
     var message = new Message()
-    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'], 
-                                                          window.cryptoArtificats['private-key'], id, true);
+    var result = await message.download(couchdb.getURL(), window.cryptoArtificats['certificate'],
+        window.cryptoArtificats['private-key'], id, true);
 
     var pdfView = new PDFView(result, "attachment-view", 1.0);
 
@@ -390,11 +390,11 @@ function showArtifacts(artifcats) {
 
         if (settings.view_others) {
             var template = document.querySelector('script[data-template="other-certificate-card-item"]').text;
- 
+
             for (var other in artifcats.others) {
 
                 var value = stringUtil.substitute(template, {
-                    "id":  artifcats.others[other]["serial-number"],
+                    "id": artifcats.others[other]["serial-number"],
                     "ref": other,
                     "email": artifcats.others[other]['email'],
                 });
@@ -418,7 +418,7 @@ function toggleSelected(artifact, id) {
     var elements = document.getElementsByClassName("card-view-main");
 
     for (var element in elements) {
- 
+
         if (elements[element] && elements[element].style) {
             elements[element].style.borderBottom = "4px solid rgba(0,0,0, 0.0)";
         }
@@ -442,12 +442,12 @@ function view(artificate, id, mimetype) {
         var total = 0;
 
         for (var attachment in window.cryptoArtificats["document"]["_attachments"]) {
- 
+
             total += window.cryptoArtificats["document"]["_attachments"][attachment]["length"];
 
         }
 
-        var percent = Math.round((window.cryptoArtificats["document"]["_attachments"][id]["length"] * 100)/ total);
+        var percent = Math.round((window.cryptoArtificats["document"]["_attachments"][id]["length"] * 100) / total);
 
         percent = percent == 0 ? 1 : percent;
 
@@ -457,8 +457,8 @@ function view(artificate, id, mimetype) {
             "mimetype": mimetype,
             "size": window.cryptoArtificats["document"]["_attachments"][id]["length"],
             "revision": window.cryptoArtificats["document"]["_attachments"][id]["revpos"],
-            "percent" : percent,
-            "other" : (100 - percent)
+            "percent": percent,
+            "other": (100 - percent)
         });
 
         var fragment = document.createRange().createContextualFragment(value);
@@ -525,7 +525,7 @@ async function download(artifact) {
         var fileUtil = new FileUtil(document);
 
         fileUtil.saveAs(window.cryptoArtificats['certificate'], `pod-${window.cryptoArtificats['id']}.cer`);
-    
+
     }
 
 }
@@ -560,7 +560,7 @@ async function remove(artificate, attachmentName) {
 
 async function unshare(ref) {
     var message = new Message()
-    
+
     await message.unshare(couchdb.getURL(), window.cryptoArtificats, window.cryptoArtificats.others[ref]['certificate']);
 
     document.getElementById("details").innerHTML = "";
@@ -580,17 +580,17 @@ function openPassport(podID) {
 
         if (dataURI.startsWith("data:")) {
             var message = dataURI.split(/;|,|:/);
-        
+
             return {
-                "base64" : message[3],
-                "mimetype" : message[1]
+                "base64": message[3],
+                "mimetype": message[1]
             }
         } else {
             return {
-                "base64" : dataURI,
-                "mimetype" : "application/x-pkcs12"             
+                "base64": dataURI,
+                "mimetype": "application/x-pkcs12"
             }
-        
+
         }
 
     }
@@ -598,27 +598,29 @@ function openPassport(podID) {
     function base64ToBlob(base64String, contentType = '') {
         const byteCharacters = atob(base64String);
         const byteArrays = [];
-    
+
         for (let i = 0; i < byteCharacters.length; i++) {
             byteArrays.push(byteCharacters.charCodeAt(i));
         }
-    
+
         const byteArray = new Uint8Array(byteArrays);
-        
+
         return new Blob([byteArray], { type: contentType });
-    
+
     }
 
-    var passport = window.localStorage.getItem( podID );
+    var passport = window.localStorage.getItem(podID);
 
     let processedURI = processURI(passport);
 
     let blob = base64ToBlob(processedURI.base64, processedURI.mimetype);
 
-    var file = new File([blob], `POD-${podID}.p12`, {type:  processedURI.mimetype, lastModified: Date.now()});
+    var file = new File([blob], `POD-${podID}.p12`, { type: processedURI.mimetype, lastModified: Date.now() });
 
     window.passport = file;
 
+    document.getElementById("pod-passport-password").value = "";
+    
     document.getElementById("pod-open-dialog").showModal();
 
 }
@@ -647,12 +649,14 @@ window.onload = function () {
     window.openPassport = openPassport;
     window.unshare = unshare;
 
-    window.simplemde = new SimpleMDE({ element: document.getElementById("readme-editor"),
-                                       toolbar: ["bold", "italic", "heading", "|", 
-                                       "quote", "ordered-list", "unordered-list", "|",
-                                       "table", "horizontal-rule", "|",
-                                       "preview"
-                                    ]});
+    window.simplemde = new SimpleMDE({
+        element: document.getElementById("readme-editor"),
+        toolbar: ["bold", "italic", "heading", "|",
+            "quote", "ordered-list", "unordered-list", "|",
+            "table", "horizontal-rule", "|",
+            "preview"
+        ]
+    });
 
     //Global Variables
     document.getElementById("new-pod").addEventListener("click", async function (event) {
@@ -786,7 +790,7 @@ window.onload = function () {
             for (var file = 0; file < files.length; file++) {
 
                 document.getElementById("upload-passport-file").value = files[file].name;
-                
+
                 window.passports.push(files[file]);
 
             }
@@ -915,7 +919,7 @@ window.onload = function () {
 
         waitDialog.close();
 
-               
+
         document.getElementById("info-message").innerHTML = `<b>Pod Backup Complete:</b> ${window.cryptoArtificats['id']}`;
         document.getElementById("info-dialog").showModal();
 
@@ -938,16 +942,16 @@ window.onload = function () {
         if (!window.passportEncoded) {
             const reader = new FileReader();
 
-            reader.onload = function(e) {
-                const blob = new Blob([new Uint8Array(e.target.result)], {type: window.passports[0].type });
+            reader.onload = function (e) {
+                const blob = new Blob([new Uint8Array(e.target.result)], { type: window.passports[0].type });
 
                 var blobReader = new FileReader();
-                
-                blobReader.readAsDataURL(blob); 
-                
-                blobReader.onloadend = function() {
-                
-                    var base64data = blobReader.result;                
+
+                blobReader.readAsDataURL(blob);
+
+                blobReader.onloadend = function () {
+
+                    var base64data = blobReader.result;
 
                     window.localStorage.setItem(window.cryptoArtificats['id'], base64data);
 
@@ -970,9 +974,9 @@ window.onload = function () {
         }
 
     });
-    
+
     document.getElementById("unregister-passport").addEventListener("click", async function (event) {
- 
+
         window.localStorage.removeItem(window.cryptoArtificats['id']);
 
         document.getElementById("info-message").innerHTML = `<b>Passport Unregistered:</b> ${window.cryptoArtificats['id']}`;
@@ -984,14 +988,14 @@ window.onload = function () {
     document.getElementById("open-register").addEventListener("click", async function (event) {
 
         openRegister();
-  
+
     });
 
     document.getElementById("pod-open-dialog-ok").addEventListener("click", async function (event) {
 
         var message = new Message();
-        var result = await message.open(couchdb.getURL(), window.passport, 
-                        document.getElementById("pod-passport-password").value);
+        var result = await message.open(couchdb.getURL(), window.passport,
+            document.getElementById("pod-passport-password").value);
 
         window.cryptoArtificats = result.response;
 
@@ -1021,7 +1025,7 @@ window.onload = function () {
     });
 
     document.getElementById("add-user").addEventListener("click", async function (event) {
-       
+
         document.getElementById("upload-certificate-dialog").showModal();
 
     });
@@ -1029,7 +1033,7 @@ window.onload = function () {
     document.getElementById("delete-pod").addEventListener("click", async function (event) {
 
         document.getElementById("delete-message").innerHTML = `Delete POD - <b>${window.cryptoArtificats['id']}</b>&nbsp;?`;
-        
+
         document.getElementById("delete-dialog").showModal();
 
     });
@@ -1048,7 +1052,7 @@ window.onload = function () {
         document.getElementById("actions-button-content").style.visibility = "hidden";
         document.getElementById("edit-button").style.visibility = "hidden";
         document.getElementById("edit-button-content").style.visibility = "hidden";
-        
+
         showArtifacts(window.cryptoArtificats);
 
         document.getElementById("delete-dialog").close();
@@ -1077,11 +1081,11 @@ window.onload = function () {
 
     document.getElementById("upload-certificate-dialog-ok").addEventListener("click", async function (event) {
         var message = new Message();
-        
+
         await message.share(couchdb.getURL(), window.cryptoArtificats, window.certificates);
-       
+
         expand();
-   
+
         document.getElementById("upload-certificate-dialog").close()
 
     });
@@ -1089,6 +1093,52 @@ window.onload = function () {
     document.getElementById("clear-pod-cache").addEventListener("click", async function (event) {
 
         window.localStorage.clear();
+
+    });
+
+    document.getElementById("restore-pod").addEventListener("click", async function (event) {
+
+        document.getElementById("restore-file-dialog").showModal();
+
+    });
+
+    document.getElementById("select-restore-file").addEventListener("click", async function (event) {
+        var fileUtil = new FileUtil(document);
+
+        fileUtil.load(async function (files) {
+            window.backups = [];
+
+            for (var file = 0; file < files.length; file++) {
+
+                document.getElementById("restore-file-name").value = files[file].name;
+
+                window.backups.push(files[file]);
+
+            }
+
+        });
+
+        return false;
+
+    });
+
+    document.getElementById("restore-file-dialog-ok").addEventListener("click", async function (event) {
+        var waitDialog = document.getElementById("wait-dialog");
+
+        waitDialog.showModal();
+        
+        var message = new Message();
+
+        var result = await message.restore(couchdb.getURL(), window.cryptoArtificats['certificate'],
+            window.cryptoArtificats['private-key'], window.backups);
+
+        window.cryptoArtificats['document'] =  result.response['document'];
+
+        showArtifacts(window.cryptoArtificats);
+
+        waitDialog.close();
+
+        document.getElementById("restore-file-dialog").close();
 
     });
 

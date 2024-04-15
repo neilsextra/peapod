@@ -507,6 +507,35 @@
 
             <button id="upload-file-dialog-ok" class="message-dialog-small-ok-button"
                 style="float: right; margin-top:10px;">Upload</button>
+        </div>
+
+    </dialog>
+
+    <dialog id="restore-file-dialog" class="dialog message-dialog" style="min-width:720px;">
+        <img src="{{url_for( 'static', filename='images/restore.svg')}}" width="48" height="48" style="float: left;" />
+        <p style="font-size: 18px; font-weight: bold;">&nbsp;Restore Backup File</p>
+        <div>
+            <div>
+                <input class="modal-entry" id="restore-file-name" style="width:93%;" type="text" name="restore-file-name"
+                    placeholder="Backup File..." readonly>
+                </input>
+
+                <div style="float:right;padding-top:6px;">
+                    <button id="select-restore-file" class="message-dialog-small-button">...</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="restore-message"
+            style="color:rgba(255,0,0,0.6); width:300px; float:left; font-size: 12px; margin-top:8px;"></div>
+
+        <div style="margin-top:10px;">
+            
+            <button id="restore-file-dialog-close" class="close-button message-dialog-small-cancel-button"
+            style="float: right; margin-top:10px;">Cancel</button>
+            
+            <button id="restore-file-dialog-ok" class="message-dialog-small-ok-button"
+            style="float: right; margin-top:10px;">Restore</button>
 
         </div>
 
@@ -802,10 +831,10 @@
                         </tr>
                         <tr>
                             <td>
-                                <button class="collapsible-menu" id="backup-pod">
+                                <button class="collapsible-menu" id="restore-pod">
                                     <img src="{{url_for( 'static', filename='images/restore.svg')}}"
                                         style="width:20px; height:22px; margin-top:4px; margin-right:4px;"></img>
-                                    <label for="backup-pod" style="position:relative; top:-5px;">Restore POD</label>
+                                    <label for="restore-pod" style="position:relative; top:-5px;">Restore POD</label>
                                 </button>
                             </td>
                         </tr>   

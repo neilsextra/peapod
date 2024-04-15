@@ -403,6 +403,55 @@ function Message() {
 
     }
 
+    this.restore = function (couchdbURL, certificate, key, files) {
+
+        return new Promise((accept, reject) => {
+            let parmURL = `/restore`;
+
+            var xhttp = new XMLHttpRequest();
+            var formData = new FormData();
+            
+            formData.append("couchdbURL", couchdbURL);
+            formData.append("certificate", certificate);
+            formData.append("key", key);
+
+            for (var file = 0; file < files.length; file++) {
+                formData.append(files[file].name, files[file]);
+            }
+
+            xhttp.open("POST", parmURL, true);
+
+            xhttp.onload = function () {
+                var response = JSON.parse(this.responseText);
+
+                if (this.readyState === 4 && this.status === 200) {
+                    var result = JSON.parse(xhttp.response);
+
+                    accept({
+                        status: this.status,
+                        response: response
+                    });
+
+                } else {
+
+                    reject({
+                        status: this.status,
+                        message: this.statusText
+                    });
+
+                }
+
+            };
+
+            xhttp.onerror = function () {
+            };
+
+            xhttp.send(formData);
+
+        });
+
+    }
+
     this.get = function (couchdbURL, cryptoArtifacts) {
 
         return new Promise((accept, reject) => {
@@ -666,7 +715,13 @@ function Message() {
         return this.backup(couchdbURL, cryptoArtifacts);
 
     }
-               
+       
+    Message.prototype.restore = function (couchdbURL, certificate, key, files) {
+        
+        return this.restore(couchdbURL, certificate, key, files);
+
+    }
+            
     Message.prototype.get = function (couchdbURL, cryptoArtifacts) {
 
         return this.backup(couchdbURL, cryptoArtifacts);

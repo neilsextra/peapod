@@ -152,8 +152,6 @@ function Message() {
             xhttp.open("POST", parmURL, true);
 
             xhttp.onload = function () {
-                var response = JSON.parse(this.responseText);
-
                 if (this.readyState === 4 && this.status === 200) {
                     var result = JSON.parse(xhttp.response);
 

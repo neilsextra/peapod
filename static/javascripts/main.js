@@ -620,7 +620,7 @@ function openPassport(podID) {
     window.passport = file;
 
     document.getElementById("pod-passport-password").value = "";
-    
+
     document.getElementById("pod-open-dialog").showModal();
 
 }
@@ -805,21 +805,25 @@ window.onload = function () {
         var password = document.getElementById("passport-password").value;
 
         var message = new Message();
+
+        try {
         var result = await message.open(couchdb.getURL(), passports[0], password)
 
-        window.cryptoArtificats = result.response;
+            window.cryptoArtificats = result.response;
 
-        showArtifacts(window.cryptoArtificats);
+            showArtifacts(window.cryptoArtificats);
 
-        document.getElementById("actions-button").style.visibility = "visible";
-        document.getElementById("actions-button-content").style.visibility = "visible";
-        document.getElementById("edit-button").style.visibility = "visible";
-        document.getElementById("edit-button-content").style.visibility = "visible";
+            document.getElementById("actions-button").style.visibility = "visible";
+            document.getElementById("actions-button-content").style.visibility = "visible";
+            document.getElementById("edit-button").style.visibility = "visible";
+            document.getElementById("edit-button-content").style.visibility = "visible";
 
+            expandCollapsible("actions-button");
 
-        expandCollapsible("actions-button");
-
-        document.getElementById("upload-passport-dialog").close();
+            document.getElementById("upload-passport-dialog").close();
+        } catch (e) {
+            document.getElementById("upload-message").innerHTML = e.error;
+        }
 
         return false;
 

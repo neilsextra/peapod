@@ -60,115 +60,6 @@ var settings = {
 }
 
 /**
- * Capitalize the first letter of a String e.g. "fred" -> "Fred"
- * 
- * @param {String} string the string to capitalize e.g. "fred" -> "Fred"
- * @returns a capitalized String
- */
-function capitalize(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-/**
- * Parameter Substitution for templates
- * 
- * @param {String} template the template 
- * @param {*} values the values as a dictionary
- * @returns a string with substituted values that conform to the template
- */
-function substitute(template, values) {
-    let value = template;
-
-    let keys = Object.keys(values);
-
-    for (let key in keys) {
-        value = value.split("${" + keys[key] + "}").join(values[keys[key]]);
-    }
-
-    return value;
-
-}
-
-/**
- * Convert an Array to a string
- * 
- * @param {arrayBuffer} buffer 
- * @returns  base 64 representation
- */
-function arrayBufferToBase64(buffer) {
-    var binary = '';
-    var bytes = new Uint8Array(buffer);
-    var len = bytes.byteLength;
-    for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
-
-    return window.btoa(binary);
-
-}
-
-/**
- * Remove all the event listeners for an element
- * @param {String} id the element Identifier
- */
-
-function removeAllEventListeners(id) {
-    var oldElement = document.getElementById(id);
-    var newElement = oldElement.cloneNode(true);
-
-    oldElement.parentNode.replaceChild(newElement, oldElement);
-
-}
-
-/**
- * Set the Collapsible Handler
- */
-function setCollapsible() {
-    var collapsible = document.getElementsByClassName("collapsible");
-    for (var content = 0; content < collapsible.length; content++) {
-        collapsible[content].addEventListener("click", function () {
-
-            this.classList.toggle("collapsible-active");
-
-            var content = this.nextElementSibling;
-
-            if (content.style.maxHeight) {
-                content.style.maxHeight = null;
-            } else {
-                content.style.maxHeight = content.scrollHeight + "px";
-            }
-
-        });
-
-    }
-
-}
-
-/**
- * Expand the Collapsible
- * @param {string} id the Element Identifier to expand
- */
-function expandCollapsible(id) {
-
-    var collapsible = document.getElementById(id);
-
-    if (!collapsible.classList.contains("collapsible-active")) {
-
-        collapsible.classList.toggle("collapsible-active");
-
-        var content = collapsible.nextElementSibling;
-
-        if (content.style.maxHeight) {
-            content.style.maxHeight = null;
-        } else {
-            content.style.maxHeight = content.scrollHeight + "px";
-        }
-
-    }
-
-}
-
-/**
  * Get the Connection
  */
 async function getConnection() {
@@ -768,7 +659,10 @@ window.onload = function () {
             showArtifacts(window.cryptoArtificats);
 
         } catch (e) {
-            alert("ERROR: " + e);
+
+            document.getElementById("error-message").innerHTML = e;
+            document.getElementById("error-dialog").showModal();
+
         }
 
     });
@@ -777,6 +671,9 @@ window.onload = function () {
 
         document.getElementById("upload-passport-file").value = "";
         document.getElementById("passport-password").value = "";
+
+        disableButton("upload-passport-dialog-ok");
+
         document.getElementById("upload-passport-dialog").showModal();
 
     });
@@ -793,11 +690,13 @@ window.onload = function () {
                 document.getElementById("upload-passport-file").value = files[file].name;
 
                 window.passports.push(files[file]);
+                
+                enableButton("upload-passport-dialog-ok");
 
             }
 
         });
-
+        
         return false;
 
     });
@@ -833,6 +732,7 @@ window.onload = function () {
     document.getElementById("upload-file").addEventListener("click", async function (event) {
 
         document.getElementById("upload-file-name").value = "";
+        disableButton("upload-file-dialog-ok");
         document.getElementById("upload-file-dialog").showModal();
 
     });
@@ -855,6 +755,8 @@ window.onload = function () {
                 document.getElementById("upload-file-name").value = files[file].name;
 
                 window.files.push(files[file]);
+
+                enableButton("upload-file-dialog-ok");
 
             }
 
@@ -883,8 +785,6 @@ window.onload = function () {
         waitDialog.close();
 
     });
-
-    getConnection();
 
     document.getElementById("update-settings").addEventListener("click", async function (event) {
 
@@ -971,7 +871,7 @@ window.onload = function () {
 
         } else {
 
-            var certificate = arrayBufferToBase64(window.passports[0]);
+            var certificate = stringUtil.arrayBufferToBase64(window.passports[0]);
 
             window.localStorage.setItem(window.cryptoArtificats['id'], certificate);
             document.getElementById("info-message").innerHTML = `<b>Passport Registered:</b> ${window.cryptoArtificats['id']}`;
@@ -1036,6 +936,7 @@ window.onload = function () {
 
     document.getElementById("add-user").addEventListener("click", async function (event) {
 
+        disableButton("upload-certificate-dialog-ok");
         document.getElementById("upload-certificate-dialog").showModal();
 
     });
@@ -1080,6 +981,8 @@ window.onload = function () {
                 document.getElementById("upload-certificate-file").value = files[file].name;
 
                 window.certificates.push(files[file]);
+                
+                enableButton("upload-certificate-dialog-ok");
 
             }
 
@@ -1108,6 +1011,7 @@ window.onload = function () {
 
     document.getElementById("restore-pod").addEventListener("click", async function (event) {
 
+        disableButton("restore-file-dialog-ok");
         document.getElementById("restore-file-dialog").showModal();
 
     });
@@ -1123,7 +1027,9 @@ window.onload = function () {
                 document.getElementById("restore-file-name").value = files[file].name;
 
                 window.backups.push(files[file]);
-
+                
+                enableButton("restore-file-dialog-ok");
+    
             }
 
         });
@@ -1151,5 +1057,7 @@ window.onload = function () {
         document.getElementById("restore-file-dialog").close();
 
     });
+
+    getConnection();
 
 }

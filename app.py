@@ -349,7 +349,6 @@ def open_pod():
     print("[Open] Files: %d " % len(request.files))
 
     print("[Open] URL: '%s' " % (couchdb_URL))
-    print("[Open] Password: '%s' " % (password))
 
     try:
 
@@ -405,6 +404,8 @@ def open_pod():
         return json.dumps(output, sort_keys=True), 200
 
     except Exception as e:
+        print("[Open] Err: '%s' " % (str(e)))
+
         return str(e), 500
 
 @app.route("/upload", methods=["POST"])

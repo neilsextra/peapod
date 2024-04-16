@@ -34,9 +34,6 @@ function Message() {
             };
 
             xhttp.onerror = function () {
-     
-                alert(this.statusText);
-
             };
 
             xhttp.send();
@@ -72,7 +69,7 @@ function Message() {
                     reject({
                         status: this.status,
                         error: this.statusText,
-                        message: this.response
+                        message: this.responseText
                     });
 
                 }
@@ -152,8 +149,11 @@ function Message() {
             xhttp.open("POST", parmURL, true);
 
             xhttp.onload = function () {
+ 
+                 
                 if (this.readyState === 4 && this.status === 200) {
-                    var result = JSON.parse(xhttp.response);
+
+                    var response = JSON.parse(this.responseText);
 
                     accept({
                         status: this.status,
@@ -161,10 +161,11 @@ function Message() {
                     });
 
                 } else {
+
                     reject({
                         status: this.status,
                         error: this.statusText,
-                        message: this.response
+                        message: this.responseText
                     });
                 }
 
@@ -629,10 +630,9 @@ function Message() {
             xhttp.open("POST", parmURL, true);
 
             xhttp.onload = function () {
-                var response = JSON.parse(this.responseText);
-
+ 
                 if (this.readyState === 4 && this.status === 200) {
-                    var result = JSON.parse(xhttp.response);
+                     var response = JSON.parse(this.responseText);
 
                     accept({
                         status: this.status,

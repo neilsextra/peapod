@@ -822,7 +822,7 @@ window.onload = function () {
 
             document.getElementById("upload-passport-dialog").close();
         } catch (e) {
-            document.getElementById("upload-message").innerHTML = e.error;
+            document.getElementById("upload-message").innerHTML = e.message;
         }
 
         return false;

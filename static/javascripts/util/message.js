@@ -161,7 +161,6 @@ function Message() {
                     });
 
                 } else {
-
                     reject({
                         status: this.status,
                         error: this.statusText,

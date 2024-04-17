@@ -227,10 +227,13 @@ async function showPDF(id, mimetype) {
 
 /**
  * Show the Cryptographic Artifacts - Certificate Information
- * @param {json} artifcats the Artifacts to show
+ * @param {json} artifcats the structured Artifacts
  */
 function showArtifacts(artifcats) {
+
     document.getElementById("artifacts-container").innerHTML = "";
+    document.getElementById("details").innerHTML = "";
+   
     if (artifcats != null) {
         if (settings.view_certificates) {
             let template = document.querySelector('script[data-template="certificate-card-item"]').text;
@@ -671,6 +674,7 @@ window.onload = function () {
 
         document.getElementById("upload-passport-file").value = "";
         document.getElementById("passport-password").value = "";
+        document.getElementById("upload-message").value = "";
 
         disableButton("upload-passport-dialog-ok");
 
@@ -690,7 +694,7 @@ window.onload = function () {
                 document.getElementById("upload-passport-file").value = files[file].name;
 
                 window.passports.push(files[file]);
-                
+
                 enableButton("upload-passport-dialog-ok");
 
             }
@@ -885,6 +889,7 @@ window.onload = function () {
         window.localStorage.removeItem(window.cryptoArtificats['id']);
 
         document.getElementById("info-message").innerHTML = `<b>Passport Unregistered:</b> ${window.cryptoArtificats['id']}`;
+        window.passportEncoded = true;
         document.getElementById("info-dialog").showModal();
 
 

@@ -277,7 +277,7 @@
     </script>
 
     <script type="text/template" data-template="registered-pod-item">
-        <div id="passport-${id}" style="position:relative; text-align: center; margin:5px;" onclick="window.openPassport('${id}');">
+        <div id="passport-${id}" class="registered-item" onclick="window.openPassport('${id}');">
             <div style="position:relative; color:black; margin:auto;">
                 <img src="{{url_for( 'static', filename='images/new.svg')}}" width="64" height="64" />
             </div>

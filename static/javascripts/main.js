@@ -644,12 +644,17 @@ window.onload = function () {
 
         try {
             var password = document.getElementById("p12-password").value;
+            var p12 = null;
 
-            var result = await message.generate(window.cryptoArtificats, password);
+            if (document.getElementById("regenerate-keys").checked) {
+                p12 = await message.regenerate(window.cryptoArtificats, password);
+            } else {
+                p12 = await message.generate(window.cryptoArtificats, password);
+            }
 
             var fileUtil = new FileUtil(document);
 
-            fileUtil.saveAs(result, `pod-${window.cryptoArtificats["id"]}.p12`);
+            fileUtil.saveAs(p12, `pod-${window.cryptoArtificats["id"]}.p12`);
 
             document.getElementById("pod-save-dialog").close();
             document.getElementById("new-pod-dialog").close();
@@ -657,7 +662,7 @@ window.onload = function () {
             window.passportEncoded = true;
             window.passports = [];
 
-            window.passports.push(result);
+            window.passports.push(p12);
 
             showArtifacts(window.cryptoArtificats);
 
@@ -743,8 +748,8 @@ window.onload = function () {
 
     document.getElementById("save-passport").addEventListener("click", async function (event) {
 
-        document.getElementById("p12-password").value = "";
-        document.getElementById("pod-save-dialog").showModal();
+        document.getElementById("save-p12-password").value = "";
+        document.getElementById("p12-save-dialog").showModal();
 
     });
 
@@ -1060,6 +1065,36 @@ window.onload = function () {
         waitDialog.close();
 
         document.getElementById("restore-file-dialog").close();
+
+    });
+
+    document.getElementById("p12-save-dialog-ok").addEventListener("click", async function (event) {
+        var message = new Message();
+
+        try {
+            var password = document.getElementById("p12-password").value;
+
+            var result = await message.generate(window.cryptoArtificats, password);
+
+            var fileUtil = new FileUtil(document);
+
+            fileUtil.saveAs(result, `pod-${window.cryptoArtificats["id"]}.p12`);
+
+            document.getElementById("p12-save-dialog").close();
+ 
+            window.passportEncoded = true;
+            window.passports = [];
+
+            window.passports.push(result);
+
+            showArtifacts(window.cryptoArtificats);
+
+        } catch (e) {
+
+            document.getElementById("error-message").innerHTML = e;
+            document.getElementById("error-dialog").showModal();
+
+        }
 
     });
 

@@ -203,10 +203,10 @@ def connect():
 
         print("[CONNECT] 'URL: %s' " % (couchdb_URL))
 
-        server = pycouchdb.Server(couchdb_URL)
+        # Connect to the CouchDB Database
 
+        server = pycouchdb.Server(couchdb_URL)
         get_instance(server, params.PEAPOD_DATABASE)
-        
         output['version'] = server.info()['version']
         
         print("[CONNECTED] 'Version: %s' " % (output['version']))
@@ -217,8 +217,7 @@ def connect():
         print(f"{type(e).__name__} was raised: {e}")
 
         return str(e), 500
-
-
+    
 @app.route("/create", methods=["GET"])
 def create():
 
@@ -241,6 +240,8 @@ def create():
     exponent = int(request.values.get('exponent'))
 
     print("[Create] - 'Certificate: %s - %s - %s - %s - %d - %d - %d" % (email, issuer, organisation_name, common_name, validity, key_size, exponent))
+
+    # Build the Certificate
 
     one_day = datetime.timedelta(1, 0, 0)
 
@@ -282,8 +283,12 @@ def create():
 
     certificate_pem = certificate.public_bytes(serialization.Encoding.PEM)
 
+    # Generate the Fernet Key and encrypt with RSA Key
+
     fernet_key = Fernet.generate_key()
     encrypted_key = encrypt_key(certificate, fernet_key)
+
+    # Store the Certificate
 
     document["owners"][certificate.issuer.rfc4514_string()] = {
          '{0:x}'.format(certificate.serial_number) : {     
@@ -294,6 +299,8 @@ def create():
     }
 
     save(instance, document)
+
+    # Return the Key and Cerrtificate Attrributes to the User
 
     bytes = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
@@ -337,7 +344,105 @@ def generate():
         b"peo-pod-passport", key, certificate, None, BestAvailableEncryption(password.encode())
     )
 
-    return send_file(io.BytesIO(p12), mimetype='application/pdf')
+    return send_file(io.BytesIO(p12), mimetype='application/x-pkcs12')
+
+@app.route("/regenerate", methods=["POST"])
+def regenerate():
+    couchdb_URL = request.values.get('couchdbURL')
+    password = request.values.get('password')
+    private_key_pem = request.values.get('private-key')
+    certificate_pem = request.values.get('certificate')
+
+    print("[Regenerate] URL: '%s' " % (couchdb_URL))
+
+    certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
+
+    print("[Regenerate] Certificate: '%s' " % ('{0:x}'.format(certificate.serial_number)))
+
+    key = load_pem_private_key(private_key_pem.encode(), None)
+    server = pycouchdb.Server(couchdb_URL)
+
+    # Obtain session key
+
+    instance = get_instance(server, params.PEAPOD_DATABASE)
+    document = get_pod(instance, certificate_pem) 
+    
+    session_key = get_session_key(document, certificate_pem, private_key_pem)
+
+    # Generate a new private key
+
+    private_key = rsa.generate_private_key(
+        public_exponent=key.public_key().public_numbers(),
+        key_size=key.key_size,
+    )
+
+    public_key = private_key.public_key()
+
+    # Build the new Certificate 
+
+    builder = x509.CertificateBuilder()
+
+    public_key = private_key.public_key()
+    builder = x509.CertificateBuilder()
+    builder = builder.subject_name(x509.Name([
+        x509.NameAttribute(NameOID.COMMON_NAME, 
+                           certificate.subject.get_attributes_for_oid(NameOID.COMMON_NAME)[0].value),
+        x509.NameAttribute(NameOID.ORGANIZATION_NAME, 
+                           certificate.subject.get_attributes_for_oid(NameOID.ORGANIZATION_NAME)[0].value),
+        x509.NameAttribute(NameOID.EMAIL_ADDRESS, 
+                           certificate.subject.get_attributes_for_oid(NameOID.EMAIL_ADDRESS)[0].value)]))
+    
+    builder = builder.issuer_name(x509.Name([
+        x509.NameAttribute(NameOID.COMMON_NAME, certificate.issuer),
+    ]))
+
+    builder = builder.not_valid_before(certificate.not_valid_before)
+    builder = builder.not_valid_after(certificate.not_valid_after)
+    builder = builder.serial_number(certificate.serial_number)
+    builder = builder.public_key(public_key)
+    builder = builder.add_extension(
+        x509.SubjectAlternativeName(
+            [x509.DNSName(certificate.issuer)]
+        ),
+        critical=False
+    )
+    
+    builder = builder.add_extension(x509.UnrecognizedExtension(NameOID.USER_ID, document["_id"].encode()),
+        critical=False)
+
+    builder = builder.add_extension(
+        x509.BasicConstraints(ca=False, path_length=None), critical=True,
+    )
+
+    new_certificate = builder.sign(
+        private_key=private_key, algorithm=hashes.SHA256(),
+    )
+
+    # Generate the Fernet Key and encrypt with RSA Key
+
+    encrypted_key = encrypt_key(new_certificate, session_key)
+
+    # Store the Certificate
+
+    document["owners"][new_certificate.issuer.rfc4514_string()] = {
+         '{0:x}'.format(new_certificate.serial_number) : {     
+            "certificate": new_certificate.decode("UTF-8"),
+            "key": encrypted_key
+             
+         }
+    }
+
+    save(instance, document)
+    
+    # Serialize the Passport
+
+    p12 = pkcs12.serialize_key_and_certificates(
+        b"peo-pod-passport", private_key, new_certificate, None, BestAvailableEncryption(password.encode())
+    )
+
+   # Return Passport
+
+    return send_file(io.BytesIO(p12), mimetype='application/x-pkcs12')
 
 @app.route("/open", methods=["POST"])
 def open_pod():
@@ -347,12 +452,13 @@ def open_pod():
     password = request.values.get('password')
 
     print("[Open] Files: %d " % len(request.files))
-
     print("[Open] URL: '%s' " % (couchdb_URL))
 
     try:
 
         files = request.files
+
+        # Open the P12 - there should only be one file uploaded
 
         for file in files:
 
@@ -362,6 +468,8 @@ def open_pod():
             print("[Open] Tuples: '%d' " % len(artifacts))
 
             for artifact in artifacts:
+                
+                # Found the RSA Key - decode the key
 
                 if  type(artifact).__name__ == "_RSAPrivateKey":
                     print("[Open] - Decoding Key")
@@ -380,6 +488,8 @@ def open_pod():
                     )
 
                     output['private-key'] = bytes.decode("UTF-8")
+
+               # Found the Certificate in the file
 
                 elif type(artifact).__name__ == "Certificate":
                     print("[Open] - Decoding Certifcate")
@@ -424,7 +534,6 @@ def upload():
         server = pycouchdb.Server(couchdb_URL)
 
         instance = get_instance(server, params.PEAPOD_DATABASE)
-
         certificate = x509.load_pem_x509_certificate(certificate_pem.encode())
 
         user_id = certificate.extensions.get_extension_for_oid(NameOID.USER_ID).value.value.decode("utf-8")
@@ -468,7 +577,6 @@ def download():
 
         print("[Download] CouchDB URL: %s " % (couchdb_URL))
         print("[Download] Attachment: '%s' " % (attachment_name))
-
 
         private_key = serialization.load_pem_private_key(
             private_key_pem.encode('utf-8'),
@@ -548,7 +656,6 @@ def delete():
     print("[Delete] CouchDB URL: %s " % (couchdb_URL))
  
     try:        
-
         server = pycouchdb.Server(couchdb_URL)
                 
         instance = get_instance(server, params.PEAPOD_DATABASE)

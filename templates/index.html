@@ -407,6 +407,7 @@
         <input class="modal-entry template-entry" style="width:100%;" id="p12-password" type="password" name="password"
             placeholder="Password...">
         </input>
+        
         <p style="height:10px"></p>
         <form method="dialog">
             <button id="pod-save-dialog-cancel" class="close-button message-dialog-small-cancel-button"
@@ -415,6 +416,33 @@
             <button id="pod-save-dialog-ok" class="message-dialog-small-ok-button"
                 style="float: right; margin-top:10px;">Download</button>
         </form>
+    </dialog>
+
+    <dialog id="p12-save-dialog" class="dialog message-dialog" style="min-width:500px;">
+        <img src="{{url_for( 'static', filename='images/card.svg')}}" width="32" height="32" style="float: left;" />
+        <p style="font-size: 18px; font-weight: bold; text-align: top; float: left; margin-top:6px; width:90%;">
+            &nbsp;Save Passport</p>
+        <p style="height:5px"></p>
+        <label class="modal-label" value="Password">Password</label>
+        <input class="modal-entry template-entry" style="width:100%;" id="save-p12-password" type="password" name="password"
+            placeholder="Password...">
+        </input>
+        <div style="margin-top: 16px;">
+            <input id="regenerate-keys" type="checkbox" name="regenerate-keys" checked></input>
+            <label for="regenerate-keys" style="font-size:14px;">Regenerate Keys</label>
+            <p></p>
+            <input id="register-p12" type="checkbox" name="register-p12" checked></input>
+            <label for="register-p12" style="font-size:14px;">Re-register Passport</label>
+
+        </div>
+
+        <p style="height:10px"></p>
+
+        <button id="p12-save-dialog-cancel" class="close-button message-dialog-small-cancel-button"
+            style="float: right; margin-top:10px;">Cancel</button>
+
+        <button id="p12-save-dialog-ok" class="message-dialog-small-ok-button"
+            style="float: right; margin-top:10px;">Download</button>
     </dialog>
 
     <dialog id="upload-passport-dialog" class="dialog message-dialog" style="min-width:700px;">

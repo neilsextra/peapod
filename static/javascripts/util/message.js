@@ -85,6 +85,49 @@ function Message() {
 
     }
 
+    
+    this.regenerate = function (cryptoArtifacts, password) {
+
+        return new Promise((accept, reject) => {
+            let parmURL = `/regenerate`;
+
+            var xhttp = new XMLHttpRequest();
+            var formData = new FormData();
+
+            formData.append('password', password);
+            formData.append('private-key', cryptoArtifacts['private-key']);
+            formData.append('certificate', cryptoArtifacts['certificate']);
+
+            xhttp.responseType = "arraybuffer";
+
+            xhttp.open("POST", parmURL, true);
+
+            xhttp.onload = function () {
+                if (this.readyState === 4 && this.status === 200) {
+
+                    accept(this.response);
+
+                } else {
+
+                    reject({
+                        status: this.status,
+                        error: this.statusText,
+                        message: this.responseText
+                    });
+
+                }
+
+            };
+
+            xhttp.onerror = function () {
+            };
+
+            xhttp.send(formData);
+
+        });
+
+    }
+
     this.create = function (couchdbURL, email, issuer, org, cn, validity, keysize, exponent) {
 
         return new Promise((accept, reject) => {
@@ -659,9 +702,15 @@ function Message() {
 
     }
 
-    Message.prototype.generate = function (cryptoArtificats) {
+    Message.prototype.generate = function (cryptoArtifacts, password) {
 
-        return this.generate(file);
+        return this.generate(cryptoArtifacts, password);
+
+    }
+    
+    Message.prototype.regenerate = function (cryptoArtifacts, password) {
+
+        return this.generate(cryptoArtifacts, password);
 
     }
 

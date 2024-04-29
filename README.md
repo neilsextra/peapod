@@ -11,7 +11,7 @@ Some Terms:
 - **SESSION KEY** this ais a *fernet* key encrypted by the RSA Key within the certificate.  The session key is used to encrypt the files contained within the POD.
 - **FILE** a *csv*, *pdf*, *image* or text file.  There may be any number of files contained within a POD.  There are viewers for CSVand PDF files as for other file types there is a hexadecimal display available.
 - **COUCHDB** is the underlying database that supports PEAPOD.
-- **CERTIFICATE**
+- **CERTIFICATE** contains the PEAPOD identifier and the *public key* used to encrypt the artificats contained within the POD.
 
 PEAPOD manager has a javascript front-end and Python backend.  The Python back-end utilised the Flask web framework to generate the HTML.  
 > **Note:** The javascript is a Single Page Application - SPA - and avoids using web-frameworks like react.
@@ -22,8 +22,10 @@ Peapod is best run in a docker container to build PEAPOD
 
     docker build -t "peapod:*version*" .
 
-To execute Peapod
+To execute/run Peapod
 
     docker run -p 8080"8080 --name peapod "peapod:*version*" .
 
-![The San Juan Mountains are beautiful!](/assets/images/Screenshot-2024-04-30-085705.png "San Juan Mountains")
+# The Main Console
+
+![Main Console - PEAPOD Manager!](/assets/images/Screenshot-console-001.png "PEAPOD Manager")

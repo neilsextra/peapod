@@ -21,3 +21,6 @@ PEAPOD manager has a javascript front-end and Python backend.  The Python back-e
 Peapod is best run in a docker container to build PEAPOD
 
     docker build -t "peapod:*version*" .
+
+![Screen shot - Main COnsole](/assets/images/tux.png)
+    Screenshot 2024-04-30 085705.png

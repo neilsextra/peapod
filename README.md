@@ -26,4 +26,5 @@ To execute Peapod
 
     docker run -p 8080"8080 --name peapod "peapod:*version*" .
 
-![Screen shot - Main Console](/assets/images/Screenshot 2024-04-30 085705.png)
+![The San Juan Mountains are beautiful!](/assets/images/san-juan-mountains.jpg "San Juan Mountains")
+![Screen shot - Main Console](/assets/images/Screenshot 2024-04-30 085705.png "Main Console)

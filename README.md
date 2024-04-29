@@ -10,7 +10,7 @@ Some Terms:
 - **PASSPORT** a P12 file that conatins the certificate (which containes the POD identifer, issuer, email, common name, validaty period and the Public Key).  Also, the associated private key to decrypt the session key.The passpord is dowloaded as a P12 file and can later uploaded to open a POD.  Each Passport has an associated Password cannot be changed but a new Passport can be generated with a different Password.  It is also possible to create a new Passport and invalidate any existing Passports. 
 - **SESSION KEY** this ais a *fernet* key which is encrypted by the RSA Key within the certificate.  The session key is used to encrypt the files, database connections contained within the POD.
 - **FILE** a *csv*, *pdf*, *image* or text file.  There may be any number of files contained within a POD.  There are viewers for CSVand PDF files as for other file types there is a hexadecimal display available.
-- **COUCHDB** is the underlying database that supports PEAPOD.  COUCHDB is a no-sql document store.
+- **COUCHDB** is the underlying database that supports PEAPOD.  COUCHDB is a no-sql document store.  This dabase was also chosen because of its replication capabilities.
 - **CERTIFICATE** contains the PEAPOD identifier and the *public key* used to encrypt the artificats contained within the POD.
 - **OTHER CERTIFICATE** these are certificates that idetify people who have read access to a POD.
 - **REGISTER** is a store of Passports within a browser.  This utilises local storage within a browser and thefore may not be replicated in other browsers.
@@ -51,8 +51,23 @@ This is example of the CSV File Viewer =- the file viewer has been designed to d
 
 PEADPOD Manager Actions:
 
+#### File Commands ####
 - **New POD** Creates a new POD and Passport
 - **Unlock POD** Opens a POD for a given passport. The password is requested to open the Passport. 
-- **Open Register** Brings the the register
+- **Open Register** Displays the register and allows a USer to select a register.  Each POD within the register will also require a password to unlock it.  All entries within the register can be completely erased from the settings menu.
+  
+#### Action Commands ####
+- **Register Passport** Registers a passport witin the *Register*.  This passport will be selected within the **Open Register** console.
+- **Unregister Passport** Removes the Passport from the register therefore makes this POD unavailable from the register.  This does not **delete** the POD.
+- **Upload File** Uploads a file into the POD. Can be of any file type.
+- **Add User** Adds an *other person* certificate into the POD.  This identifies users who have read access to the POD.
+- **Edit Readme** Edits the README file.  Each POD has a README file.  The README utlises the *Markdown* language.
+
+#### Support Commands ####
+- **Save Passport** Can save a passport with a different password. In addition, the passport could be regenerated with a completely different private key when is used to encrypt the session key.
+- **Delete POD** This will delete the POD and its contents. Use with caution because this command is not reversable.
+- **Backup POD** This will generate a *ZIP file* that contains all the files within a POD.  The contents of the *ZIP file* are not encrypted. 
+
+#### The PEAPOD Manager - Register ####
 
 ![Main Console - PEAPOD Manager Register!](/assets/images/Screenshot-console-003.png "PEAPOD Manager Register")

@@ -16,8 +16,14 @@ Some Terms:
 PEAPOD manager has a javascript front-end and Python backend.  The Python back-end utilised the Flask web framework to generate the HTML.  
 > **Note:** The javascript is a Single Page Application - SPA - and avoids using web-frameworks like react.
 
-## Operation
+## Build and Deploy
 
 Peapod is best run in a docker container to build PEAPOD
 
     docker build -t "peapod:*version*" .
+
+To execute Peapod
+
+    docker run -p 8080"8080 --name peapod "peapod:*version*" .
+
+![The San Juan Mountains are beautiful!](/assets/images/Screenshot-2024-04-30-085705.png "San Juan Mountains")

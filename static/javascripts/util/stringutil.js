@@ -29,5 +29,38 @@ function StringUtil() {
 
     }
 
+    StringUtil.prototype.base64ToBlob = (base64String, contentType = '') => {
+        const byteCharacters = atob(base64String);
+        const byteArrays = [];
+
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteArrays.push(byteCharacters.charCodeAt(i));
+        }
+
+        const byteArray = new Uint8Array(byteArrays);
+
+        return new Blob([byteArray], { type: contentType });
+
+    }
+
+    StringUtil.prototype.processURI = (dataURI) => {
+
+        if (dataURI.startsWith("data:")) {
+            var message = dataURI.split(/;|,|:/);
+
+            return {
+                "base64": message[3],
+                "mimetype": message[1]
+            }
+        } else {
+            return {
+                "base64": dataURI,
+                "mimetype": "application/x-pkcs12"
+            }
+
+        }
+
+    }
+
 
 }

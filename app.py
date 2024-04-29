@@ -178,6 +178,8 @@ def expand_others(document):
                     "issuer": certificate.issuer.rfc4514_string(),
                     "serial-number": '{0:x}'.format(certificate.serial_number),
                     "email":  certificate.subject.get_attributes_for_oid(NameOID.EMAIL_ADDRESS)[0].value,
+                    "common-name": certificate.subject.get_attributes_for_oid(NameOID.COMMON_NAME)[0].value,
+                    "organisation": certificate.subject.get_attributes_for_oid(NameOID.ORGANIZATION_NAME)[0].value,
                     "not-valid-before": certificate.not_valid_before.strftime("%B %d, %Y"),
                     "not-valid-after" : certificate.not_valid_after.strftime("%B %d, %Y"),
                     "certificate": others[issuer][serial]["certificate"]
@@ -317,6 +319,9 @@ def create():
     output['issuer'] = certificate.issuer.rfc4514_string()
     output['subject'] = certificate.subject.rfc4514_string()
     output['email'] = certificate.subject.get_attributes_for_oid(NameOID.EMAIL_ADDRESS)[0].value
+    output['common-name'] = certificate.subject.get_attributes_for_oid(NameOID.COMMON_NAME)[0].value
+    output['organisation'] = certificate.subject.get_attributes_for_oid(NameOID.ORGANIZATION_NAME)[0].value
+
     output['id'] = document["_id"]
 
     output['key-size'] = private_key.key_size
@@ -372,7 +377,7 @@ def regenerate():
     # Generate a new private key
 
     private_key = rsa.generate_private_key(
-        public_exponent=key.public_key().public_numbers(),
+        public_exponent=key.public_key().public_numbers().e,
         key_size=key.key_size,
     )
 
@@ -393,7 +398,7 @@ def regenerate():
                            certificate.subject.get_attributes_for_oid(NameOID.EMAIL_ADDRESS)[0].value)]))
     
     builder = builder.issuer_name(x509.Name([
-        x509.NameAttribute(NameOID.COMMON_NAME, certificate.issuer),
+        x509.NameAttribute(NameOID.COMMON_NAME, certificate.issuer.rfc4514_string()),
     ]))
 
     builder = builder.not_valid_before(certificate.not_valid_before)
@@ -402,7 +407,7 @@ def regenerate():
     builder = builder.public_key(public_key)
     builder = builder.add_extension(
         x509.SubjectAlternativeName(
-            [x509.DNSName(certificate.issuer)]
+            [x509.DNSName(certificate.issuer.rfc4514_string())]
         ),
         critical=False
     )
@@ -420,27 +425,31 @@ def regenerate():
 
     # Generate the Fernet Key and encrypt with RSA Key
 
-    encrypted_key = encrypt_key(new_certificate, session_key)
+    new_encrypted_key = encrypt_key(new_certificate, session_key)
 
-    # Store the Certificate
+    # Store the Certificate and key
 
+    new_certificate_pem = new_certificate.public_bytes(serialization.Encoding.PEM)
+    
     document["owners"][new_certificate.issuer.rfc4514_string()] = {
          '{0:x}'.format(new_certificate.serial_number) : {     
-            "certificate": new_certificate.decode("UTF-8"),
-            "key": encrypted_key
+            "certificate": new_certificate_pem.decode("UTF-8"),
+            "key": new_encrypted_key
              
          }
     }
 
     save(instance, document)
     
+    print("[Regenerate] Regenerated Certificate Saved")
+ 
     # Serialize the Passport
 
     p12 = pkcs12.serialize_key_and_certificates(
         b"peo-pod-passport", private_key, new_certificate, None, BestAvailableEncryption(password.encode())
     )
 
-   # Return Passport
+    # Return Passport
 
     return send_file(io.BytesIO(p12), mimetype='application/x-pkcs12')
 
@@ -501,6 +510,9 @@ def open_pod():
                     output['issuer'] = artifact.issuer.rfc4514_string()
                     output['subject'] = artifact.subject.rfc4514_string()
                     output['email'] = artifact.subject.get_attributes_for_oid(NameOID.EMAIL_ADDRESS)[0].value
+                    output['common-name'] = artifact.subject.get_attributes_for_oid(NameOID.COMMON_NAME)[0].value
+                    output['organisation'] = artifact.subject.get_attributes_for_oid(NameOID.ORGANIZATION_NAME)[0].value
+
                     output['not-valid-before'] = artifact.not_valid_before.strftime("%B %d, %Y")
                     output['not-valid-after'] = artifact.not_valid_after.strftime("%B %d, %Y")
                     output['serial-number'] = '{0:x}'.format(artifact.serial_number)
@@ -510,6 +522,7 @@ def open_pod():
                     output['id'] = user_id.value.value.decode("utf-8")
                     output['document'] = get_document(couchdb_URL, output['id'])
                     output['others'] = expand_others(output['document'])
+
 
         return json.dumps(output, sort_keys=True), 200
 

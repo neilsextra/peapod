@@ -366,6 +366,8 @@ function view(artificate, id, mimetype) {
             "email": window.cryptoArtificats.others[id]['email'],
             "issuer": window.cryptoArtificats.others[id]['issuer'],
             "serial-number": window.cryptoArtificats.others[id]['serial-number'],
+            "organisation": window.cryptoArtificats.others[id]['organisation'],
+            "common-name": window.cryptoArtificats.others[id]['common-name'],
             "not-valid-before": window.cryptoArtificats.others[id]['not-valid-before'],
             "not-valid-after": window.cryptoArtificats.others[id]['not-valid-after'],
             "certificate": window.cryptoArtificats.others[id]['certificate']
@@ -381,6 +383,9 @@ function view(artificate, id, mimetype) {
         let value = stringUtil.substitute(template, {
             "id": window.cryptoArtificats['id'],
             "email": window.cryptoArtificats['email'],
+            "serial-number": window.cryptoArtificats['serial-number'],
+            "organisation": window.cryptoArtificats['organisation'],
+            "common-name": window.cryptoArtificats['common-name'],
             "private-key-modulus": window.cryptoArtificats['private-key-modulus'],
             "private-key-exponent": window.cryptoArtificats['private-key-exponent'],
             "issuer": window.cryptoArtificats['issuer'],
@@ -392,6 +397,7 @@ function view(artificate, id, mimetype) {
 
         var fragment = document.createRange().createContextualFragment(value);
         document.getElementById("details").appendChild(fragment);
+
     }
 
 }
@@ -464,50 +470,16 @@ async function unshare(ref) {
 }
 
 /**
- * Open a password given the Passport Identifier
+ * Open a passport given the Passport Identifier
  * 
  * @param {string} podID the Passport Identifier
  */
 function openPassport(podID) {
-
-    function processURI(dataURI) {
-
-        if (dataURI.startsWith("data:")) {
-            var message = dataURI.split(/;|,|:/);
-
-            return {
-                "base64": message[3],
-                "mimetype": message[1]
-            }
-        } else {
-            return {
-                "base64": dataURI,
-                "mimetype": "application/x-pkcs12"
-            }
-
-        }
-
-    }
-
-    function base64ToBlob(base64String, contentType = '') {
-        const byteCharacters = atob(base64String);
-        const byteArrays = [];
-
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteArrays.push(byteCharacters.charCodeAt(i));
-        }
-
-        const byteArray = new Uint8Array(byteArrays);
-
-        return new Blob([byteArray], { type: contentType });
-
-    }
-
     var passport = window.localStorage.getItem(podID);
 
-    let processedURI = processURI(passport);
+    let processedURI = stringUtil.processURI(passport);
 
-    let blob = base64ToBlob(processedURI.base64, processedURI.mimetype);
+    let blob = stringUtil.base64ToBlob(processedURI.base64, processedURI.mimetype);
 
     var file = new File([blob], `POD-${podID}.p12`, { type: processedURI.mimetype, lastModified: Date.now() });
 
@@ -515,7 +487,6 @@ function openPassport(podID) {
 
     document.getElementById("pod-passport-password").value = "";
     document.getElementById("pod-open-message").innerHTML = "";
-
     document.getElementById("pod-open-dialog").showModal();
 
 }
@@ -644,14 +615,7 @@ window.onload = function () {
 
         try {
             var password = document.getElementById("p12-password").value;
-            var p12 = null;
-
-            if (document.getElementById("regenerate-keys").checked) {
-                p12 = await message.regenerate(window.cryptoArtificats, password);
-            } else {
-                p12 = await message.generate(window.cryptoArtificats, password);
-            }
-
+            var p12 = await message.generate(window.cryptoArtificats, password);
             var fileUtil = new FileUtil(document);
 
             fileUtil.saveAs(p12, `pod-${window.cryptoArtificats["id"]}.p12`);
@@ -880,9 +844,9 @@ window.onload = function () {
 
         } else {
 
-            var certificate = stringUtil.arrayBufferToBase64(window.passports[0]);
+            var p12 = stringUtil.arrayBufferToBase64(window.passports[0]);
 
-            window.localStorage.setItem(window.cryptoArtificats['id'], certificate);
+            window.localStorage.setItem(window.cryptoArtificats['id'], p12);
             document.getElementById("info-message").innerHTML = `<b>Passport Registered:</b> ${window.cryptoArtificats['id']}`;
             document.getElementById("info-dialog").showModal();
         }
@@ -1073,19 +1037,37 @@ window.onload = function () {
 
         try {
             var password = document.getElementById("p12-password").value;
+            var p12 = null;
 
-            var result = await message.generate(window.cryptoArtificats, password);
+            if (document.getElementById("regenerate-keys").checked) {
+
+                p12 = await message.regenerate(couchdb.getURL(), window.cryptoArtificats, password);
+            
+                var file = new File([p12], `POD-${window.cryptoArtificats["id"]}.p12`, { type:"application/x-pkcs12", lastModified: Date.now() });
+            
+                var result = await message.open(couchdb.getURL(), file, password)
+
+                window.cryptoArtificats = result.response;
+
+            } else {
+                p12 = await message.generate(window.cryptoArtificats, password);
+            }
 
             var fileUtil = new FileUtil(document);
 
-            fileUtil.saveAs(result, `pod-${window.cryptoArtificats["id"]}.p12`);
+            fileUtil.saveAs(p12, `pod-${window.cryptoArtificats["id"]}.p12`);
 
             document.getElementById("p12-save-dialog").close();
  
             window.passportEncoded = true;
             window.passports = [];
 
-            window.passports.push(result);
+            window.passports.push(p12);
+
+            if (document.getElementById("register-p12").checked) {
+                var base64data = stringUtil.arrayBufferToBase64(window.passports[0]);
+                window.localStorage.setItem(window.cryptoArtificats['id'], base64data);
+            }
 
             showArtifacts(window.cryptoArtificats);
 

@@ -86,7 +86,7 @@ function Message() {
     }
 
     
-    this.regenerate = function (cryptoArtifacts, password) {
+    this.regenerate = function (couchdbURL, cryptoArtifacts, password) {
 
         return new Promise((accept, reject) => {
             let parmURL = `/regenerate`;
@@ -94,6 +94,7 @@ function Message() {
             var xhttp = new XMLHttpRequest();
             var formData = new FormData();
 
+            formData.append('couchdbURL', couchdbURL);
             formData.append('password', password);
             formData.append('private-key', cryptoArtifacts['private-key']);
             formData.append('certificate', cryptoArtifacts['certificate']);
@@ -708,9 +709,9 @@ function Message() {
 
     }
     
-    Message.prototype.regenerate = function (cryptoArtifacts, password) {
+    Message.prototype.regenerate = function (couchdbURL, cryptoArtifacts, password) {
 
-        return this.generate(cryptoArtifacts, password);
+        return this.regenerate(couchdbURL, cryptoArtifacts, password);
 
     }
 

@@ -47,10 +47,12 @@ Then main console (modelled on windows setings applet) then allows. the administ
 
 This is example of the CSV File Viewer =- the file viewer has been designed to display millions of records and doesn't utilise the HTML Table Tag. 
 
-![Main Console - PEAPOD Manager Filoe Viewer!](/assets/images/Screenshot-console-002.png "PEAPOD Manager File Viewer")
+![Main Console - PEAPOD Manager File Viewer!](/assets/images/Screenshot-console-002.png "PEAPOD Manager File Viewer")
 
 PEADPOD Manager Actions:
 
 - **New POD** Creates a new POD and Passport
-- **Unlock POD** Opens a POD for a given passport. The passport is upload.
-- 
+- **Unlock POD** Opens a POD for a given passport. The password is requested to open the Passport. 
+- **Open Register** Brings the the register
+
+![Main Console - PEAPOD Manager Register!](/assets/images/Screenshot-console-003.png "PEAPOD Manager Register")

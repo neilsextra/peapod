@@ -17,7 +17,10 @@ Some Terms:
 - **POD Identifier** is an unqiue identifier to select the pod.  Each certificate contains a unique POD Identifier.
 - **PRIVATE KEY** is a key contained within the Pasport to encrypt the session key.  This is never stored in a POD.
 - **BACKUP** is a zip file that contains the contents (except certificates and keys) of all files and database connections.
-- **VIEWERS** there are 3 viewers, a CSV viewer, PDF viewer and a Hex viewer for everything all other file formats.
+- **VIEWERS** there are 3 viewers available:
+    - a **CSV** viewer,
+    - a **PDF** viewer,
+    - and a **HEX** viewer for all other file formats.
 
 PEAPOD manager has a javascript front-end and Python backend.  The Python back-end utilised the Flask web framework to generate the HTML.  
 > **Note:** The console is written in javascript and is a Single Page Application - *SPA*. It avoids using web-frameworks like REACT, jQuery, VUE, etc.
@@ -77,5 +80,3 @@ The register is store within the browser (local storage).  The *action command* 
 ![Main Console - PEAPOD Manager Register!](/assets/images/Screenshot-console-003.png "PEAPOD Manager Register")
 
 > **Note:** Each browser has its own local storage and this storage is not usually shared between browsers.
-
-

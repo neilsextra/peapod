@@ -96,7 +96,7 @@ The setting's display controls what is display within the centre pane.  There ar
 
 ![Main Console - PEAPOD Manager Settings!](/assets/images/Screenshot-console-004.png "PEAPOD Manager Settings")
 
-Acknowledgments:
+## Acknowledgments ##
 
 - *README* Editor - Great little Control
 - *Python's Crypotographic Library Support* - wish it included more PKCS7 support

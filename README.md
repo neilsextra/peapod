@@ -72,7 +72,7 @@ PEADPOD Manager Actions:
 > **Warning:** The *regenerate keys* option will invalidate all paspports associated with this pod. The register entry is also invalid.  
 - **Delete POD** This will delete the POD and its contents. Use with caution because this command is not reversable.
 - **Backup POD** This will generate a *ZIP file* that contains all the files within a POD.  The contents of the *ZIP file* are not encrypted.  In addition, the ZIP file is not password protected.
-> **Warning:** This is a destructive command and irreversable.  Ensure all the files are backed up before the command issuing this command.
+> **Warning:** This is a destructive command and irreversable.  Ensure all the files are backed up before the issuing this command.
 - **Restore POD** This can ingest a Backup from the previous command and load the files and database connections into the POD.  The contents are then encrypted ans secured.
 
 #### The PEAPOD Manager - Register ####

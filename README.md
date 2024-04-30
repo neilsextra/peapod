@@ -76,6 +76,6 @@ The register is store within the browser (local storage).  The *action command* 
 
 ![Main Console - PEAPOD Manager Register!](/assets/images/Screenshot-console-003.png "PEAPOD Manager Register")
 
-> **Note:** Each browser has its own local storage and this storage is not shared.
+> **Note:** Each browser has its own local storage and this storage is not usually shared between browsers.
 
 

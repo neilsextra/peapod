@@ -72,7 +72,7 @@ PEADPOD Manager Actions:
 
 #### The PEAPOD Manager - Register ####
 
-The register is store within the browser (local storage).  
+The register is store within the browser (local storage).  The *action command* menu allows for the registration of a POD and the removal of a POD from the register
 
 ![Main Console - PEAPOD Manager Register!](/assets/images/Screenshot-console-003.png "PEAPOD Manager Register")
 

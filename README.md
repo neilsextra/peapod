@@ -69,8 +69,10 @@ PEADPOD Manager Actions:
 
 #### Support Commands ####
 - **Save Passport** Can save a passport with a different password. In addition, the passport could be regenerated with a completely different private key when is used to encrypt the session key.
+> **Warning:** The *regenerate keys* option will invalidate all paspports associated with this pod. The register entry is also invalid.  
 - **Delete POD** This will delete the POD and its contents. Use with caution because this command is not reversable.
 - **Backup POD** This will generate a *ZIP file* that contains all the files within a POD.  The contents of the *ZIP file* are not encrypted.  In addition, the ZIP file is not password protected.
+> **Warning:** This is a destructive command and irreversable.  Ensure all the files are backed up before the command issuing this command.
 - **Restore POD** This can ingest a Backup from the previous command and load the files and database connections into the POD.  The contents are then encrypted ans secured.
 
 #### The PEAPOD Manager - Register ####
@@ -80,3 +82,22 @@ The register is store within the browser (local storage).  The *action command* 
 ![Main Console - PEAPOD Manager Register!](/assets/images/Screenshot-console-003.png "PEAPOD Manager Register")
 
 > **Note:** Each browser has its own local storage and this storage is not usually shared between browsers.
+
+## The Settings Display ##
+
+The setting's display controls what is display within the centre pane.  There are 4 options:
+
+- **Certificate** - this display the certificate used to identify the POD
+- **Key** - this will display the public elements of the key and the detail that relate to the assoicated certificate.
+- **Other Certificates** - this display the *other* certificate(s)
+- **Files** - This will display the files contained within the POD.
+
+> **Note:** The *Clear POD Cache* will remove all entries with in the register.
+
+![Main Console - PEAPOD Manager Settings!](/assets/images/Screenshot-console-004.png "PEAPOD Manager Settings")
+
+Acknowledgments:
+
+- *README* Editor - Great little Control
+- *Python's Crypotographic Library Support* - wish it included more PKCS7 support
+- *CouchDB* - Great NoSQL Document Store 

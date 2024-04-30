@@ -16,7 +16,8 @@ Some Terms:
 - **REGISTER** is a store of Passports within a browser.  This utilises local storage within a browser and thefore may not be replicated in other browsers.
 - **POD Identifier** is an unqiue identifier to select the pod.  Each certificate contains a unique POD Identifier.
 - **PRIVATE KEY** is a key contained within the Pasport to encrypt the session key.  This is never stored in a POD.
-- **VIEWERS** there are 3 viewers, a CSV viewer, PDF viewer and a Hex viewer for everything else.
+- **BACKUP** is a zip file that contains the contents (except certificates and keys) of all files and database connections.
+- **VIEWERS** there are 3 viewers, a CSV viewer, PDF viewer and a Hex viewer for everything all other file formats.
 
 PEAPOD manager has a javascript front-end and Python backend.  The Python back-end utilised the Flask web framework to generate the HTML.  
 > **Note:** The console is written in javascript and is a Single Page Application - *SPA*. It avoids using web-frameworks like REACT, jQuery, VUE, etc.
@@ -54,7 +55,7 @@ PEADPOD Manager Actions:
 #### File Commands ####
 - **New POD** Creates a new POD and Passport
 - **Unlock POD** Opens a POD for a given passport. The password is requested to open the Passport. 
-- **Open Register** Displays the register and allows a USer to select a register.  Each POD within the register will also require a password to unlock it.  All entries within the register can be completely erased from the settings menu.
+- **Open Register** Displays the register and allows a user to select a register.  Each POD within the register will also require a password to unlock it.  All entries within the register can be completely erased from the settings menu.
   
 #### Action Commands ####
 - **Register Passport** Registers a passport witin the *Register*.  This passport will be selected within the **Open Register** console.
@@ -66,7 +67,8 @@ PEADPOD Manager Actions:
 #### Support Commands ####
 - **Save Passport** Can save a passport with a different password. In addition, the passport could be regenerated with a completely different private key when is used to encrypt the session key.
 - **Delete POD** This will delete the POD and its contents. Use with caution because this command is not reversable.
-- **Backup POD** This will generate a *ZIP file* that contains all the files within a POD.  The contents of the *ZIP file* are not encrypted. 
+- **Backup POD** This will generate a *ZIP file* that contains all the files within a POD.  The contents of the *ZIP file* are not encrypted.  In addition, the ZIP file is not password protected.
+- **Restore POD** This can ingest a Backup from the previous command and load the files and database connections into the POD.  The contents are then encrypted ans secured.
 
 #### The PEAPOD Manager - Register ####
 

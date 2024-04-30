@@ -72,4 +72,10 @@ PEADPOD Manager Actions:
 
 #### The PEAPOD Manager - Register ####
 
+The register is store within the browser (local storage).  
+
 ![Main Console - PEAPOD Manager Register!](/assets/images/Screenshot-console-003.png "PEAPOD Manager Register")
+
+> **Note:** Each browser has its own local storage and this storage is not shared.
+
+
